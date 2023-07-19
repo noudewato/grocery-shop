@@ -1,0 +1,87 @@
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+// @mui
+import { Link, Stack, IconButton, InputAdornment, TextField, Checkbox } from '@mui/material';
+import { LoadingButton } from '@mui/lab';
+import { useSelector, useDispatch } from 'react-redux';
+
+import { toast } from 'react-toastify';
+
+// components
+import Iconify from '../../../components/form-input/iconify';
+
+import { userLoginAction } from '../../../actions/auth.action';
+
+// ----------------------------------------------------------------------
+
+export default function LoginForm() {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const userLogin = useSelector((state) => state.userLogin);
+  const { success, loading } = userLogin;
+
+  const loginField = {
+    email: '',
+    password: '',
+  };
+
+  const [formField, setFormField] = useState(loginField);
+
+  const { email, password } = formField;
+
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    setFormField({ ...formField, [name]: value });
+  };
+
+  const handleClick = () => {
+    dispatch(userLoginAction(email, password));
+  };
+
+  useEffect(() => {
+    if (success) {
+      toast.success('success');
+      navigate('/dashboard/app', { replace: true });
+    }
+  }, [success, navigate]);
+
+  return (
+    <>
+      <Stack spacing={3} component="form">
+        <TextField value={email} onChange={handleChange}  name="email" label="Email address" />
+
+        <TextField
+          name="password"
+          label="Password"
+          value={password}
+          onChange={handleChange}
+          type={showPassword ? 'text' : 'password'}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
+                  <Iconify icon={showPassword ? 'eva:eye-fill' : 'eva:eye-off-fill'} />
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
+        />
+      </Stack>
+
+      <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ my: 2 }}>
+        <Checkbox name="remember" label="Remember me" />
+        <Link variant="subtitle2" underline="hover">
+          Forgot password?
+        </Link>
+      </Stack>
+
+      <LoadingButton fullWidth size="large" type="submit" variant="contained" onClick={handleClick}>
+        {loading && <>.....</>} Login
+      </LoadingButton>
+    </>
+  );
+}
