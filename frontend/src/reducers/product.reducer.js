@@ -2,6 +2,7 @@ import {
   PRODUCT_CREATE_FAILED,
   PRODUCT_CREATE_REQUEST,
   PRODUCT_CREATE_SUCCESS,
+  PRODUCT_CREATE_RESET,
   PRODUCT_DELETE_FAILED,
   PRODUCT_DELETE_REQUEST,
   PRODUCT_DELETE_RESET,
@@ -60,6 +61,9 @@ export const productCreateReducer = (state = {}, action) => {
         loading: false,
         error: action.payload,
       };
+
+      case PRODUCT_CREATE_RESET:
+      return {};
     default:
       return state;
   }

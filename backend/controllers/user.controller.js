@@ -9,7 +9,7 @@ export const registerUser = async (req, res) => {
     //   location
     // }
 
-    const { username, email, phonenumber, password } = req.body;
+    // const { username, email, phonenumber, password } = req.body;
 
     if (!username || !email || !phonenumber || !password) {
       return res.send("Please all field are required");

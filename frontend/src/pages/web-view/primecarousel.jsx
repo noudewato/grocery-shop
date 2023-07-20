@@ -14,11 +14,11 @@ export default function NumScrollDemo() {
        dispatch(categoryListAction());
      }, [dispatch]);
   const responsiveOptions = [
-    {
-      breakpoint: '1199px',
-      numVisible: 1,
-      numScroll: 1,
-    },
+    // {
+    //   breakpoint: '1199px',
+    //   numVisible: 1,
+    //   numScroll: 1,
+    // },
     {
       breakpoint: '991px',
       numVisible: 2,

@@ -21,6 +21,7 @@ import FormInput from '../components/form-input/form-input.component';
 import { categoryListAction } from '../actions/category.action';
 import { productCreateAction } from '../actions/product.action';
 import Spinner from '../components/spinner/spinner.component';
+import { PRODUCT_CREATE_RESET } from '../constants/product.constant';
 
 const NewProductPage = () => {
   const dispatch = useDispatch();
@@ -51,12 +52,6 @@ const NewProductPage = () => {
         description,
       })
     );
-
-    setName('');
-    setDescription('');
-    setImage('');
-    setCategory('');
-    setPrice('');
     // const data = new FormData();
     // data.append('file', file);
     // data.append('upload_preset', 'uploads');
@@ -123,6 +118,14 @@ const NewProductPage = () => {
   useEffect(() => {
     if (success) {
       toast.success(`${product.name} is created successfully`);
+       setName('');
+       setDescription('');
+       setImage('');
+       setCategory('');
+      setPrice('');
+      dispatch({
+        type: PRODUCT_CREATE_RESET
+      })
       navigate('/dashboard/products');
     } else {
       toast.error(error);

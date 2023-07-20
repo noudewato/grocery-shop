@@ -15,8 +15,8 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import { Stack, Divider, Avatar } from '@mui/material';
 import { styled, alpha } from '@mui/material/styles';
+import { useSelector, useDispatch  } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
 import AccountPopover from '../../../layouts/dashboard/header/AccountPopover';
 
 const drawerWidth = 240;
@@ -45,7 +45,7 @@ function Header(props) {
     <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center' }}>
       <Box sx={{ px: 2.5, py: 3, display: 'inline-flex' }}>
         <Stack direction="row">
-          <Link to="/GroceryShop/home">
+          <Link href="/app">
             <Typography variant="h6" component="div">
               Grocery
             </Typography>
@@ -77,11 +77,11 @@ function Header(props) {
       <List>
         {navItems.map((item) => (
           <ListItem key={item} disablePadding>
-            <ListItemButton sx={{ textAlign: 'center' }}>
-              <Link to='/GroceryShop/shop'>
+            <Link>
+              <ListItemButton sx={{ textAlign: 'center' }}>
                 <ListItemText primary={item} />
-              </Link>
-            </ListItemButton>
+              </ListItemButton>
+            </Link>
           </ListItem>
         ))}
       </List>
@@ -123,7 +123,7 @@ function Header(props) {
             ))}
           </Box>
           <Box sx={{ flexGrow: 1 }} />
-          <Box sx={{mr:5 }}>
+          <Box sx={{ mr: {xs:0, sm:0, lg:5} }}>
             <AccountPopover />
           </Box>
         </Toolbar>

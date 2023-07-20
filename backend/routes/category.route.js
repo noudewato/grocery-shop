@@ -17,7 +17,7 @@ categoryRouter.post(
   createCategoryController
 );
 categoryRouter.get("/get-category", getAllCategoryController);
-categoryRouter.get("/single-category/:id",protect, isAdmin, getSingleCategoryController);
+categoryRouter.get("/single-category/:id", getSingleCategoryController);
 categoryRouter.put(
   "/update-category/:id",
   protect,

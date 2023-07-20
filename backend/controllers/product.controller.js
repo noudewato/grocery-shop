@@ -1,7 +1,9 @@
 import productModel from "../models/product.model.js";
+import categoryModel from "../models/category.model.js";
 import fs from "fs";
 import { type } from "os";
 import slugify from "slugify";
+
 
 export const createProductController = async (req, res) => {
   try {
@@ -113,7 +115,6 @@ export const getAllProductsController = async (req, res) => {
       .find({})
       .populate("category")
       .populate("user")
-      .limit(12)
       .sort({ createdAt: -1 });
 
     res.status(200).json(products);
@@ -222,3 +223,12 @@ export const getProductPhotoController = async (req, res) => {
     });
   }
 };
+
+export const productsCategory = async(req, res) => {
+  try {
+    const category = req.query.category
+    const productsCategory = await productModel.find({category})
+  } catch (error) {
+    console.log(error)
+  }
+}

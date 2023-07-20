@@ -25,8 +25,6 @@ productRouter.get("/get-products", getAllProductsController);
 //single product
 productRouter.get(
   "/single-product/:id",
-  protect,
-  isAdmin,
   getSingleProductController
 );
 

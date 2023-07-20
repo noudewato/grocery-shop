@@ -36,7 +36,6 @@ export default function AccountPopover() {
 
    const logout = () => {
      dispatch(logout());
-     setOpen(null);
    };
 
   return (

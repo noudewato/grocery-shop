@@ -68,7 +68,7 @@ export default function ProductCard({ product }) {
         <StyledProductImg alt={name} src={image} />
       </Box>
 
-      <Stack spacing={2} sx={{ p: 3 }}>
+      <Stack spacing={2} sx={{ p: 1 }}>
         <Link color="inherit" underline="hover">
           <Typography variant="subtitle2" noWrap>
             {name}
@@ -78,7 +78,7 @@ export default function ProductCard({ product }) {
         <Stack direction="row" alignItems="center" justifyContent="space-between">
           {/* <ColorPreview colors={colors} /> */}
           <Button variant="outlined" color="success" onClick={handleClick} disabled={isActive === false}>
-            add to cart
+            +
           </Button>
           <Typography variant="subtitle1">
             <Typography

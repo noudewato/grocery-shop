@@ -41,7 +41,7 @@ const productSchema = new schema(
     isActive: {
       type: Boolean,
       required: true,
-      default: false,
+      default: true,
     },
   },
   {
