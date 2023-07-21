@@ -65,7 +65,7 @@ export default function Router() {
     },
     {
       path: '/GroceryShop/checkout',
-      element:<Checkout/>
+      element: <Checkout />,
     },
     {
       element: <SimpleLayout />,
@@ -77,6 +77,10 @@ export default function Router() {
     },
     {
       path: '/GroceryShop/home',
+      element: <Home />,
+    },
+    {
+      path: '/GroceryShop/home/:keyword',
       element: <Home />,
     },
     {

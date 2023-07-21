@@ -15,7 +15,7 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import { Stack, Divider, Avatar } from '@mui/material';
 import { styled, alpha } from '@mui/material/styles';
-import { useSelector, useDispatch  } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import AccountPopover from '../../../layouts/dashboard/header/AccountPopover';
 
@@ -45,14 +45,16 @@ function Header(props) {
     <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center' }}>
       <Box sx={{ px: 2.5, py: 3, display: 'inline-flex' }}>
         <Stack direction="row">
-          <Link href="/app">
-            <Typography variant="h6" component="div">
-              Grocery
-            </Typography>
-            <Typography variant="h6" component="div" sx={{ color: 'green' }}>
-              Shop
-            </Typography>
-          </Link>
+          <Button>
+            <Link to={'/GroceryShop/home'}>
+              <Typography variant="h6" component="div">
+                Grocery
+              </Typography>
+              <Typography variant="h6" component="div" sx={{ color: 'green' }}>
+                Shop
+              </Typography>
+            </Link>
+          </Button>
         </Stack>
       </Box>
 
@@ -105,14 +107,18 @@ function Header(props) {
             <MenuIcon />
           </IconButton>
           <Box sx={{ display: { xs: 'none', sm: 'block' }, ml: 5 }}>
-            <Stack direction="row">
-              <Typography variant="h6" component="div">
-                Grocery
+           
+              <Link style={{ color: 'black', listStyle: 'none', textDecoration: 'none' }} to={'/GroceryShop/home'}>
+               <Stack direction="row">
+                <Typography variant="h6" component="div">
+                  Grocery
+                </Typography>
+                <Typography variant="h6" component="div" sx={{ color: 'green' }}>
+                  Shop
               </Typography>
-              <Typography variant="h6" component="div" sx={{ color: 'green' }}>
-                Shop
-              </Typography>
-            </Stack>
+               </Stack>
+              </Link>
+           
           </Box>
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
@@ -123,7 +129,7 @@ function Header(props) {
             ))}
           </Box>
           <Box sx={{ flexGrow: 1 }} />
-          <Box sx={{ mr: {xs:0, sm:0, lg:5} }}>
+          <Box sx={{ mr: { xs: 0, sm: 0, lg: 5 } }}>
             <AccountPopover />
           </Box>
         </Toolbar>

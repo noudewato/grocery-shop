@@ -7,7 +7,7 @@ const productSchema = new schema(
     user: {
       type: schema.Types.ObjectId,
       ref: "User",
-      required:true
+      required: true,
     },
     name: {
       type: String,
@@ -33,10 +33,15 @@ const productSchema = new schema(
     category: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Category",
+      required: true,
     },
     image: {
       type: String,
-      required: true
+      required: true,
+    },
+    status: {
+      type: String,
+      enum: ["New", "Hot", "On Sale" ],
     },
     isActive: {
       type: Boolean,
@@ -48,7 +53,7 @@ const productSchema = new schema(
     timestamps: true,
   }
 );
+productSchema.index({ name: "text" });
+const Product = model("Product", productSchema);
 
-const productModel = model("Product", productSchema);
-
-export default productModel;
+export default Product;

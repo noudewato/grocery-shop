@@ -8,10 +8,12 @@ const categorySchema = new schema(
       ref: "User",
       required: true,
     },
-    products: [{
-      type: schema.Types.ObjectId,
-      ref: "Product",
-    }],
+    products: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Product",
+      },
+    ],
     name: {
       type: String,
       required: [true, "please name field is required"],
@@ -27,10 +29,10 @@ const categorySchema = new schema(
       type: String,
       required: true,
     },
-    checked: {
+    isActive: {
       type: Boolean,
       required: true,
-      default: false,
+      default: true,
     },
   },
   {
@@ -38,6 +40,6 @@ const categorySchema = new schema(
   }
 );
 
-const categoryModel = mongoose.model("Category", categorySchema);
+const Category = mongoose.model("Category", categorySchema);
 
-export default categoryModel;
+export default Category;

@@ -37,9 +37,9 @@ const NewProductPage = () => {
   const [price, setPrice] = useState('');
   const [description, setDescription] = useState('');
   const [uploading, setUploading] = useState(false);
-  const [checked, setChecked] = useState(true);
+  const [isActive, setIsActive] = useState(true);
   const [image, setImage] = useState('');
-  console.log(checked);
+  console.log(isActive);
 
   const handleCreateProductClick = async (e) => {
     e.preventDefault();
@@ -50,6 +50,7 @@ const NewProductPage = () => {
         image,
         category,
         description,
+        isActive
       })
     );
     // const data = new FormData();
@@ -178,8 +179,6 @@ const NewProductPage = () => {
                     </Button>
                   </label>
                 </Avatar>
-
-                <Switch />
               </Grid>
               <Grid item xs={6}>
                 <Stack spacing={3}>
@@ -225,9 +224,8 @@ const NewProductPage = () => {
                   />
 
                   <FormControlLabel
-                    checked={checked}
-                    value={checked}
-                    onChange={(e) => setChecked(e.target.checked)}
+                    checked={isActive}
+                    onChange={(e) => setIsActive(e.target.checked)}
                     label="isActive?"
                     control={<Switch />}
                   />

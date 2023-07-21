@@ -14,6 +14,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Cart from '../cart/cart.component';
 import Payment from '../payment/payment.component';
 import ReviewOrder from '../review-order/review-order.component';
+import Header from '../header/header.component';
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
@@ -60,7 +61,8 @@ const Checkout = () => {
         }}
       >
       </AppBar> */}
-      <Container component="main" sx={{ mb: 4 }}>
+      <Header/>
+      <Container component="main" sx={{ mb: 4, mt: 10 }}>
         {/* <Paper variant="outlined" sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}> */}
         <Typography component="h1" variant="h4" align="center">
           Checkout

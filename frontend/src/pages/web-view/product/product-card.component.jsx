@@ -7,7 +7,7 @@ import { toast } from 'react-toastify';
 import { useDispatch } from 'react-redux';
 import { addToCart } from '../../../actions/cart.action';
 // utils
-import { fCurrency } from '../../../utils/formatNumber';
+// import { fCurrency } from '../../../utils/formatNumber';
 // components
 import Label from '../../../components/label';
 
@@ -81,7 +81,7 @@ export default function ProductCard({ product }) {
             +
           </Button>
           <Typography variant="subtitle1">
-            <Typography
+            {/* <Typography
               component="span"
               variant="body1"
               sx={{
@@ -90,9 +90,9 @@ export default function ProductCard({ product }) {
               }}
             >
               {price && fCurrency(price)}
-            </Typography>
+            </Typography> */}
             &nbsp;
-            {fCurrency(price)}
+            {price}(GHS)
           </Typography>
         </Stack>
       </Stack>

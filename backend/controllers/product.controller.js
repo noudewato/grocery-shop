@@ -1,9 +1,8 @@
-import productModel from "../models/product.model.js";
-import categoryModel from "../models/category.model.js";
+import Product from "../models/product.model.js";
+import category from "../models/category.model.js";
 import fs from "fs";
 import { type } from "os";
 import slugify from "slugify";
-
 
 export const createProductController = async (req, res) => {
   try {
@@ -38,7 +37,7 @@ export const createProductController = async (req, res) => {
     //     });
     // }
 
-    // const product = productModel.create({
+    // const product = Product.create({
     //   user,
     //   name,
     //   description,
@@ -93,7 +92,7 @@ export const createProductController = async (req, res) => {
         });
     }
 
-    const newProduct = new productModel({ ...req.body, slug: slugify(name) });
+    const newProduct = new Product({ ...req.body, slug: slugify(name) });
     const product = await newProduct.save();
 
     if (product) {
@@ -111,10 +110,9 @@ export const createProductController = async (req, res) => {
 
 export const getAllProductsController = async (req, res) => {
   try {
-    const products = await productModel
-      .find({})
-      .populate("category")
+    const products = await Product.find({})
       .populate("user")
+      .populate("category")
       .sort({ createdAt: -1 });
 
     res.status(200).json(products);
@@ -130,8 +128,7 @@ export const getAllProductsController = async (req, res) => {
 
 export const getSingleProductController = async (req, res) => {
   try {
-    const product = await productModel.findById(req.params.id).populate("category");
-
+    const product = await Product.findById(req.params.id);
     res.status(200).json(product);
   } catch (error) {
     console.log(error);
@@ -145,7 +142,7 @@ export const getSingleProductController = async (req, res) => {
 
 export const updateProductController = async (req, res) => {
   try {
-    const { name, description, price, category, image } = req.body
+    const { name, description, price, category, image } = req.body;
 
     switch (true) {
       case !name:
@@ -172,14 +169,14 @@ export const updateProductController = async (req, res) => {
         });
     }
 
-    const product = await productModel.findByIdAndUpdate(
+    const product = await Product.findByIdAndUpdate(
       req.params.id,
       { ...req.body, slug: slugify(name) },
       { new: true }
     );
 
     await product.save();
-    res.status(200).json(product)
+    res.status(200).json(product);
   } catch (error) {
     console.log(error);
     res.status(500).json({
@@ -192,7 +189,7 @@ export const updateProductController = async (req, res) => {
 
 export const deleteProductController = async (req, res) => {
   try {
-    await productModel.findByIdAndDelete(req.params.id);
+    await Product.findByIdAndDelete(req.params.id);
     res.status(200).json({
       success: true,
       msg: "Good job, Product deleted successfully",
@@ -209,7 +206,7 @@ export const deleteProductController = async (req, res) => {
 
 export const getProductPhotoController = async (req, res) => {
   try {
-    const product = await productModel.findById(req.params.id).select("photo");
+    const product = await Product.findById(req.params.id).select("photo");
     if (product.photo.data) {
       res.set("Content-type", product.photo.contentType);
       return res.status(200).send(product.photo.data);
@@ -224,11 +221,28 @@ export const getProductPhotoController = async (req, res) => {
   }
 };
 
-export const productsCategory = async(req, res) => {
+export const productsCategory = async (req, res) => {
   try {
-    const category = req.query.category
-    const productsCategory = await productModel.find({category})
+    const keyword = req.query.keyword
+      ? {
+          category: {
+            $regex: req.query.keyword,
+            $options: "i",
+          },
+        }
+      : {};
+
+    const productsCategory = await Product.find({ ...keyword }).populate(
+      "category"
+    );
+
+    res.status(201).json(productsCategory);
   } catch (error) {
-    console.log(error)
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      error,
+      msg: "Error while get product image",
+    });
   }
-}
+};

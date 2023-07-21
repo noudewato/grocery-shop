@@ -20,22 +20,11 @@ import {
 
 const PRODUCT_URL = '/api/product';
 
-export const productListAction = () => async (dispatch, getState) => {
+export const productListAction = () => async (dispatch) => {
   try {
     dispatch({
       type: PRODUCT_LIST_REQUEST,
     });
-
-    // const {
-    //   userLogin: { userInfo },
-    // } = getState();
-
-    // const config = {
-    //   headers: {
-    //     'content-type': 'application/json',
-    //     Authorization: `Bearer ${userInfo?.user?.token}`,
-    //   },
-    // };
 
     const response = await axios.get(`${PRODUCT_URL}/get-products`);
 

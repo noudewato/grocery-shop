@@ -10,7 +10,12 @@ export const userLoginReducer = (state={}, action) => {
       case USER_LOGIN_FAILED:
         return { loading: false, error: action.payload };
       case USER_LOGOUT:
-        return null;
+        return {
+          userInfo: null,
+          cart: {
+            cartItems: []
+          },
+        };
       default:
         return state;
     }

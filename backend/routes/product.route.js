@@ -5,6 +5,7 @@ import {
   getAllProductsController,
   getProductPhotoController,
   getSingleProductController,
+  productsCategory,
   updateProductController,
 } from "../controllers/product.controller.js";
 import { protect, isAdmin } from "../utils/authMiddleware.js";
@@ -21,6 +22,8 @@ productRouter.post(
 
 //get products
 productRouter.get("/get-products", getAllProductsController);
+
+productRouter.get("/get-product-category", productsCategory);
 
 //single product
 productRouter.get(

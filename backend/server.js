@@ -9,6 +9,7 @@ import categoryRouter from "./routes/category.route.js";
 import productRouter from "./routes/product.route.js";
 import uploadRouter from "./routes/upload.route.js";
 import orderRouter from "./routes/order.route.js";
+import filterRouter from "./routes/filter.route.js"
 dotenv.config();
 connectDB()
 const Port = process.env.PORT || 8081;
@@ -38,6 +39,7 @@ app.use("/api/category", categoryRouter);
 app.use("/api/product", productRouter);
 app.use("/api/upload", uploadRouter);
 app.use("/api/order", orderRouter);
+app.use("/api/filter", filterRouter);
 app.use("/api/auth", (req, res) => {
   res.send("Hello server is running on port 8080");
 });

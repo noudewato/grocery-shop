@@ -3,9 +3,12 @@ import { useState } from 'react';
 import { alpha } from '@mui/material/styles';
 import { Box, Divider, Typography, Stack, MenuItem, Avatar, IconButton, Popover } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
-import { USER_LOGOUT } from '../../../constants/auth.constant';
+import { Link } from 'react-router-dom';
+import { logout } from '../../../actions/auth.action';
+
 // mocks_
 import account from '../../../_mock/account';
+
 // import {us}
 
 // ----------------------------------------------------------------------
@@ -34,7 +37,7 @@ export default function AccountPopover() {
     setOpen(null);
   };
 
-   const logout = () => {
+   const logoutHandler = () => {
      dispatch(logout());
    };
 
@@ -105,12 +108,14 @@ export default function AccountPopover() {
         <Divider sx={{ borderStyle: 'dashed' }} />
 
         {userInfo ? (
-          <MenuItem onClick={logout} sx={{ m: 1 }}>
+          <MenuItem onClick={logoutHandler} sx={{ m: 1 }}>
             Logout
           </MenuItem>
         ) : (
           <MenuItem>
-            Login
+            <Link style={{ color: 'black', textDecoration: 'none' }} to={'/login-user'}>
+              Login
+            </Link>
           </MenuItem>
         )}
       </Popover>
