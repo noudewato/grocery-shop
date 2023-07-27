@@ -57,17 +57,16 @@ export const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    if (!email || !password) {
-      return res.json({
-        success: false,
-        msg: "Please email and password are required",
-      });
+    if (!email, !password) {
+       return res
+         .status(200)
+         .json({ success: false, msg: "email and password are required!" });
     }
 
     const user = await userModel.findOne({ email });
 
     if (!user) {
-      res.status(200).json({ success: false, msg: "email is not register" });
+      return res.status(200).json({ success: false, msg: "email is not register" });
     }
 
     if (user && !(await user.matchPassword(password))) {
@@ -78,8 +77,9 @@ export const loginUser = async (req, res) => {
       res.status(200).json({
         user: {
           _id: user._id,
-          name: user.name,
+          username: user.username,
           email: user.email,
+          phonenumber: user.phonenumber,
           image: user.image,
           password: user.password,
           isAdmin: user.isAdmin,
@@ -100,7 +100,7 @@ export const loginUser = async (req, res) => {
 export const getAllUsers = async (req, res) => {
   try {
     const allUsers = await userModel
-      .find({}).populate("orders")
+      .find({})
       .sort({ username: "ascending" })
       .limit(12);
 

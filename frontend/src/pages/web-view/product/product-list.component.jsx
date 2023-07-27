@@ -16,6 +16,7 @@ import {
 import { styled } from '@mui/material/styles';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
+import ReactPaginate from 'react-paginate';
 import { productListAction } from '../../../actions/product.action';
 import { categoryListAction } from '../../../actions/category.action';
 import { productFilterAction } from '../../../actions/filter.action';
@@ -81,6 +82,24 @@ export default function ProductList() {
     dispatch(productFilterAction({ type: 'category', query: updatedCategoryIds }));
   };
 
+
+   const [currentItems, setCurrentItems] = useState(products);
+  const [pageCount, setPageCount] = useState(0);
+  const [itemOffset, setItemOffset] = useState(0);
+  const itemsPerPage = 20;
+
+  useEffect(() => {
+    const endOffset = itemOffset + itemsPerPage;
+
+    setCurrentItems(products.slice(itemOffset, endOffset));
+    setPageCount(Math.ceil(products.length / itemsPerPage));
+  }, [itemOffset, itemsPerPage, products]);
+
+  const handlePageClick = (event) => {
+    const newOffset = (event.selected * itemsPerPage) % products.length;
+    setItemOffset(newOffset);
+  };
+
   const imagesFromWeb = [
     {
       name: 'image1',
@@ -137,14 +156,30 @@ export default function ProductList() {
           ))}
         </Grid>
         <Grid xs={12} sm={12} md={10} container spacing={2}>
-          {products &&
-            products.map((product) => (
+          {currentItems &&
+            currentItems.map((product) => (
               <Grid key={product.id} item xs={6} sm={6} md={2.4}>
                 <ProductCard product={product} />
               </Grid>
             ))}
         </Grid>
         <Stack spacing={2} sx={{ margin: 'auto', textAlign: 'center' }}>
+           <div className="text-center d-flex justify-content-center m-4">
+                  <ReactPaginate
+                    breakLabel="..."
+                    nextLabel="Next"
+                    onPageChange={handlePageClick}
+                    pageRangeDisplayed={3}
+                    pageCount={pageCount}
+                    previousLabel="Prev"
+                    renderOnZeroPageCount={null}
+                    containerClassName="pagination"
+                    pageLinkClassName="page-num"
+                    previousLinkClassName="page-num"
+                    nextLinkClassName="page-num"
+                    activeLinkClassName="activePage"
+                  />
+                </div>
           <Pagination count={products.lenght} color="primary" hidePrevButton hideNextButton />
         </Stack>
       </Grid>

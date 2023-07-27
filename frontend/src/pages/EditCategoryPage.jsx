@@ -23,21 +23,39 @@ const EditCategoryPage = () => {
   const { success: successUpdate, error: errorUpdate } = categoryUpdate;
 
   const [name, setName] = useState('');
+  const [nameError, setnameError] = useState('');
   const [uploading, setUploading] = useState(false);
-  const [checked, setChecked] = useState(false);
+  const [isActive, setIsActive] = useState(true);
   const [image, setImage] = useState('');
+  const [imageError, setimageError] = useState('');
 
   const handleUpdateCategoryClick = async (e) => {
     e.preventDefault();
-    dispatch(
-      categoryUpdateAction({
-        _id: id,
-        name,
-        image,
-        checked,
-      })
-    );
+    if (handleValidation()) {
+      dispatch(
+        categoryUpdateAction({
+          _id: id,
+          name,
+          image,
+          isActive,
+        })
+      );
+    }
   };
+
+   const handleValidation = () => {
+     let formIsValid = true;
+     if (!name) {
+       formIsValid = false;
+       setnameError('category name is required');
+     }
+     if (!image) {
+       formIsValid = false;
+       setimageError('category image is required');
+     }
+
+     return formIsValid;
+   };
 
   const uploadingHandler = async (e) => {
     const file = e.target.files[0];
@@ -66,7 +84,7 @@ const EditCategoryPage = () => {
     if (category) {
       setName(category.name);
       setImage(category.image);
-      setChecked(category.checked);
+      setIsActive(category.isActive);
     }
   }, [category]);
 
@@ -112,26 +130,58 @@ const EditCategoryPage = () => {
         >
           <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
             <Grid item xs={6}>
-              <Avatar
-                alt="Remy Sharp"
-                src="/static/images/avatar/1.jpg"
-                sx={{ width: 300, height: 300, margin: 'auto' }}
+              <Box
+                sx={{
+                  width: 300,
+                  height: 300,
+                  margin: 'auto',
+                  position: 'relative',
+                }}
               >
-                <label htmlFor="image" style={{ margin: 'auto', textAlign: 'center' }}>
+                <Avatar
+                  alt="Remy Sharp"
+                  src={image}
+                  sx={{
+                    width: 300,
+                    height: 300,
+                    margin: 'auto',
+                    position: 'relative',
+                  }}
+                />
+                <label
+                  htmlFor="image"
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    margin: 'auto',
+                    textAlign: 'center',
+                    position: 'absolute',
+                    backgroundColor: 'rgba(0, 0, 0, 0.0)',
+                    borderRadius: '50%',
+                    top: 0,
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                  }}
+                >
                   <input style={{ display: 'none' }} id="image" name="image" onChange={uploadingHandler} type="file" />
 
                   <Button color="secondary" variant="contained" component="span">
-                    {uploading && <Spinner />} Upload Image
+                    {uploading && <>.......</>} Upload Image
                   </Button>
                 </label>
-              </Avatar>
+              </Box>
             </Grid>
             <Grid item xs={6}>
               <Stack spacing={3}>
                 <FormInput
                   text="text"
                   value={name}
+                  required
                   onChange={(e) => setName(e.target.value)}
+                  error={nameError}
+                  helperText={nameError}
                   fullWidth
                   name="name"
                   label="Category Name"
@@ -139,17 +189,19 @@ const EditCategoryPage = () => {
 
                 <FormInput
                   text="text"
+                  required
                   value={image}
                   onChange={(e) => setImage(e.target.value)}
+                  error={imageError}
+                  helperText={imageError}
                   fullWidth
                   name="image"
                   label="Category Image"
                 />
 
                 <FormControlLabel
-                  checked={checked}
-                  value={checked}
-                  onChange={(e) => setChecked(e.target.checked)}
+                  checked={isActive}
+                  onChange={(e) => setIsActive(e.target.checked)}
                   label="isActive?"
                   control={<Switch />}
                 />

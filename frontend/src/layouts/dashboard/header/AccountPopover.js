@@ -82,13 +82,13 @@ export default function AccountPopover() {
           },
         }}
       >
-        {userInfo ? (
+        {userInfo && userInfo.user  ? (
           <Box sx={{ my: 1.5, px: 2.5 }}>
             <Typography variant="subtitle2" noWrap>
-              {userInfo.user.email}
+              {userInfo?.user?.email}
             </Typography>
             <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-              {userInfo.user.email}
+              {userInfo?.user?.email}
             </Typography>
           </Box>
         ) : (
@@ -107,7 +107,7 @@ export default function AccountPopover() {
 
         <Divider sx={{ borderStyle: 'dashed' }} />
 
-        {userInfo ? (
+        {userInfo && userInfo.user ? (
           <MenuItem onClick={logoutHandler} sx={{ m: 1 }}>
             Logout
           </MenuItem>

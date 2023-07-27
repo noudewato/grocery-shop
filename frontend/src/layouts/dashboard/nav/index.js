@@ -4,6 +4,7 @@ import { useLocation } from 'react-router-dom';
 // @mui
 import { styled, alpha } from '@mui/material/styles';
 import { Box, Link, Button, Drawer, Typography, Avatar, Stack } from '@mui/material';
+import { useDispatch, useSelector } from 'react-redux';
 // mock
 import account from '../../../_mock/account';
 // hooks
@@ -14,6 +15,7 @@ import Scrollbar from '../../../components/scrollbar';
 import NavSection from '../../../components/nav-section';
 //
 import navConfig from './config';
+
 
 // ----------------------------------------------------------------------
 
@@ -35,6 +37,9 @@ Nav.propTypes = {
 };
 
 export default function Nav({ openNav, onCloseNav }) {
+  const dispatch = useDispatch()
+  const userLogin = useSelector(state => state.userLogin)
+  const {userInfo} = userLogin
   const { pathname } = useLocation();
 
   const isDesktop = useResponsive('up', 'lg');
@@ -64,11 +69,11 @@ export default function Nav({ openNav, onCloseNav }) {
 
             <Box sx={{ ml: 2 }}>
               <Typography variant="subtitle2" sx={{ color: 'text.primary' }}>
-                {account.displayName}
+                {userInfo.user.email}
               </Typography>
 
               <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                {account.role}
+                {userInfo.user.username}
               </Typography>
             </Box>
           </StyledAccount>

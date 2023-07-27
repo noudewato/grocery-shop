@@ -17,7 +17,7 @@ userRouter.post("/registerUser", registerUser);
 userRouter.post("/loginUser", loginUser);
 userRouter.put("/user-address", protect, createAddress);
 userRouter.post("/forgotpassword", forgotPassword);
-userRouter.get("/get-user", protect, isAdmin, getAllUsers);
+userRouter.get("/get-user", getAllUsers);
 userRouter.get("/user-order", getAllUsersOrder);
 userRouter.get("/:id", getSingleUser);
 userRouter.put("/:id", updateUser);

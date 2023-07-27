@@ -13,8 +13,10 @@ import Container from '@mui/material/Container';
 import { InputAdornment, IconButton } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom';
-
 import { toast } from 'react-toastify';
+import { USER_LOGIN_RESET } from '../../constants/auth.constant';
+
+
 
 // components
 import Iconify from '../form-input/iconify';
@@ -29,12 +31,16 @@ const LoginForm = () => {
   const dispatch = useDispatch();
 
   const userLogin = useSelector((state) => state.userLogin);
-  const { success, loading } = userLogin;
+  const { userInfo, success, loading, msg } = userLogin;
 
   const loginField = {
     email: '',
     password: '',
   };
+
+    // const [error, setError] = useState(null);
+    // const [required, setRequired] = useState(false);
+    // const [helperText, setHelperText] = useState('');
 
   const [formField, setFormField] = useState(loginField);
 
@@ -43,21 +49,59 @@ const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e) => {
+
     const { name, value } = e.target;
 
     setFormField({ ...formField, [name]: value });
+
+    // if (email !== "") {
+    //   setError(false)
+    //   setHelpedText('')
+    // } else {
+    //    setError(true)
+    //   setHelpedText('')
+    // }
   };
+
+  // const handleValidation = (e) => {
+  //   let formIsValid = true;
+
+  //   if (!email.match(/^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/)) {
+  //     formIsValid = false;
+  //     setemailError('Email Not Valid');
+  //     return false;
+  //   }
+
+  //   if (!password.match(/^[a-zA-Z]{6,22}$/)) {
+  //     formIsValid = false;
+  //     setpasswordError('length must be min 6 Chracters');
+  //     return false;
+  //   } 
+
+  //   return formIsValid;
+  // };
 
   const handleClick = () => {
+    if(!email && !password){
+      toast.error("email and password are required")
+    } 
+
     dispatch(userLoginAction(email, password));
+    // handleValidation()
   };
 
-  useEffect(() => {
-    if (success) {
-      toast.success('success');
-      navigate('/', { replace: true });
-    }
-  }, [success, navigate]);
+  // useEffect(() => {
+  //   if (userInfo?.success === false) {
+  //     toast.error(userInfo?.msg);
+  //     dispatch({
+  //     type: USER_LOGIN_RESET
+  //     })
+  //   }else 
+  //   if (userInfo?.user) {
+  //     toast.success('user Loggin successfully');
+  //     navigate('/GroceryShop/home')
+  //   }
+  // }, [dispatch, navigate, userInfo]);
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -68,6 +112,8 @@ const LoginForm = () => {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
+          boxShadow: 2,
+          padding: '1rem'
         }}
       >
         <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
@@ -88,6 +134,8 @@ const LoginForm = () => {
             autoFocus
             onChange={handleChange}
             value={email}
+            error={email !== '' && !email.match(/^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/)}
+            helperText={email !== '' && !email.match(/^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/) ? "email is not valid" : " "}
           />
           <TextField
             margin="normal"
@@ -100,6 +148,10 @@ const LoginForm = () => {
             autoComplete="current-password"
             onChange={handleChange}
             value={password}
+            error={password !== '' && !password.match(/^[a-zA-Z]{6,22}$/)}
+            helperText={
+              password !== '' && !password.match(/^[a-zA-Z]{6,22}$/) ? 'password length must be min 6 Chracters' : ' '
+            }
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">

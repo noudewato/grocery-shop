@@ -192,7 +192,7 @@ export default function UserPage() {
           <UserListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} />
 
           <Scrollbar>
-            <TableContainer sx={{ minWidth: 800 }}>
+            <TableContainer sx={{ minWidth: 1000 }}>
               <Table>
                 <UserListHead
                   order={order}
@@ -205,13 +205,13 @@ export default function UserPage() {
                 />
                 <TableBody>
                   {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { _id, name, image, createdAt, updatedAt, checked, user } = row;
+                    const { _id, name, image, createdAt, updatedAt, isActive, user } = row;
                     const selectedUser = selected.indexOf(name) !== -1;
 
                     return (
                       <TableRow hover key={_id} tabIndex={-1}>
                         {/* <TableCell padding="checkbox">
-                          <Checkbox checked={selectedUser} onChange={(event) => handleClick(event, name)} />
+                          <Checkbox isActive={selectedUser} onChange={(event) => handleClick(event, name)} />
                         </TableCell> */}
                         <TableCell component="th" scope="row" padding="2px">
                           <Stack direction="row" alignItems="center" spacing={2}>
@@ -221,10 +221,12 @@ export default function UserPage() {
                             </Typography>
                           </Stack>
                         </TableCell>
-                        <TableCell align="left">{moment(createdAt).format(`YYYY-MM-DD  hh-mm-ss`)}</TableCell>
-                        <TableCell align="left">{moment(updatedAt).format('YYYY-MM-DD  hh-mm-ss')}</TableCell>
-                        <TableCell align="center">
-                          {checked ? <Label color="success">Yes</Label> : <Label color="error">No</Label>}
+                        <TableCell align="left">{moment(createdAt).format(`Do MMMM YYYY, h:mm:ss a`)}</TableCell>
+                        <TableCell align="left">
+                          {moment(updatedAt).format(`Do MMMM YYYY, h:mm:ss a`)}
+                        </TableCell>
+                        <TableCell align="left">
+                          {isActive ? <Label color="success">Yes</Label> : <Label color="error">No</Label>}
                         </TableCell>
 
                         <TableCell align="left">{user?.username}</TableCell>
@@ -238,7 +240,14 @@ export default function UserPage() {
                               Edit
                             </Link>
                           </Button>
-                          <Button variant="outlined" color="error" onClick={() => { setOpen(true); setSelectCategory(row)}}>
+                          <Button
+                            variant="outlined"
+                            color="error"
+                            onClick={() => {
+                              setOpen(true);
+                              setSelectCategory(row);
+                            }}
+                          >
                             Delete
                           </Button>
                         </TableCell>

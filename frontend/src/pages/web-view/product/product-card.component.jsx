@@ -26,7 +26,7 @@ ProductCard.propTypes = {
   product: PropTypes.object,
 };
 export default function ProductCard({ product }) {
-  const { name, image, isActive, price } = product;
+  const { name, image, isActive, price, status } = product;
   const dispatch = useDispatch();
 
   const handleClick = () => {
@@ -36,21 +36,7 @@ export default function ProductCard({ product }) {
   return (
     <Card>
       <Box sx={{ pt: '100%', position: 'relative' }}>
-        {isActive ? (
-          <Label
-            variant="filled"
-            color="info"
-            sx={{
-              zIndex: 9,
-              top: 16,
-              right: 16,
-              position: 'absolute',
-              textTransform: 'uppercase',
-            }}
-          >
-            In Stock
-          </Label>
-        ) : (
+        {status === 'New' ? (
           <Label
             variant="filled"
             color="error"
@@ -62,8 +48,38 @@ export default function ProductCard({ product }) {
               textTransform: 'uppercase',
             }}
           >
-            Out Stock
+            New
           </Label>
+        ) : status === 'On Sale' ? (
+          <Label
+            variant="filled"
+            color="success"
+            sx={{
+              zIndex: 9,
+              top: 16,
+              right: 16,
+              position: 'absolute',
+              textTransform: 'uppercase',
+            }}
+          >
+            On Sale
+          </Label>
+        ) : status === 'Hot' ? (
+          <Label
+            variant="filled"
+            color="secondary"
+            sx={{
+              zIndex: 9,
+              top: 16,
+              right: 16,
+              position: 'absolute',
+              textTransform: 'uppercase',
+            }}
+          >
+            Hot
+          </Label>
+        ) : (
+          ''
         )}
         <StyledProductImg alt={name} src={image} />
       </Box>

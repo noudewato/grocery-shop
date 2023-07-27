@@ -2,6 +2,7 @@ import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
 import { sentenceCase } from 'change-case';
 import React, { useState, useEffect } from 'react';
+import moment from 'moment';
 
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -53,8 +54,10 @@ const TABLE_HEAD = [
   { id: 'name', label: 'Name', alignRight: false },
   { id: 'category', label: 'Category', alignRight: false },
   { id: 'price', label: 'Price', alignRight: false },
+  { id: 'active', label: 'Active', alignRight: false },
   { id: 'createdBy', label: 'createdBy', alignRight: false },
   { id: 'CreatedAt', label: 'CreatedAt', alignRight: false },
+  { id: 'updatedAt', label: 'updatedAt', alignRight: false },
   { id: 'status', label: 'Status', alignRight: false },
   { id: 'action', label: 'Action', alignRight: false },
 
@@ -219,7 +222,7 @@ const ProductsPage = () => {
             <UserListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} />
 
             <Scrollbar>
-              <TableContainer sx={{ minWidth: 1000 }}>
+              <TableContainer sx={{ minWidth: 1250 }}>
                 <Table>
                   <UserListHead
                     order={order}
@@ -239,6 +242,8 @@ const ProductsPage = () => {
                         price,
                         image,
                         createdAt,
+                        updatedAt,
+                        status,
                         user,
                         isActive /* role, status, company, isVerified */,
                       } = row;
@@ -259,13 +264,35 @@ const ProductsPage = () => {
                           </TableCell>
                           <TableCell align="left">{category?.name}</TableCell>
                           <TableCell align="left">
-                            <Typography>₵</Typography>
+                            <span style={{ color: 'tomato' }}>GHC</span>
                             {price}
                           </TableCell>
-                          <TableCell align="left">{user?.username}</TableCell>
-                          <TableCell align="left">{createdAt}</TableCell>
                           <TableCell align="left">
                             {isActive ? <Label color="success">Yes</Label> : <Label color="error">No</Label>}
+                            {/* <Label color={(status === 'banned' && 'error') || 'success'}>{sentenceCase(status)}</Label> */}
+                          </TableCell>
+                          <TableCell align="left">{user?.username}</TableCell>
+
+                          <TableCell align="left">
+                            {moment(createdAt).format(`Do MMMM YYYY, `)}
+                            <br />
+                            {moment(createdAt).format(`h:mm:ss a`)}
+                          </TableCell>
+                          <TableCell align="left">
+                            {moment(updatedAt).format(`Do MMMM YYYY, `)}
+                            <br />
+                            {moment(updatedAt).format(`h:mm:ss a`)}
+                          </TableCell>
+                          <TableCell align="left">
+                            {status === 'New' ? (
+                              <Label color="error">New</Label>
+                            ) : status === 'On Sale' ? (
+                              <Label color="success">On Sale</Label>
+                            ) : status === 'Hot' ? (
+                              <Label color="warning">Hot</Label>
+                            ) : (
+                              <Label color="secondary">No</Label>
+                            )}
                             {/* <Label color={(status === 'banned' && 'error') || 'success'}>{sentenceCase(status)}</Label> */}
                           </TableCell>
                           <TableCell style={{ display: 'flex' }}>

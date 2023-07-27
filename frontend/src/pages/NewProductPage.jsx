@@ -33,26 +33,37 @@ const NewProductPage = () => {
   const { success, product, error } = productCreate;
 
   const [name, setName] = useState('');
+  const [nameError, setnameError] = useState('');
   const [category, setCategory] = useState('');
+  const [categoryError, setcategoryError] = useState('');
   const [price, setPrice] = useState('');
+  const [priceError, setpriceError] = useState('');
   const [description, setDescription] = useState('');
+  const [descriptionError, setdescriptionError] = useState('');
+  const [status, setStatus] = useState('');
+  const [statusError, setstatusError] = useState('');
   const [uploading, setUploading] = useState(false);
   const [isActive, setIsActive] = useState(true);
   const [image, setImage] = useState('');
+  const [imageError, setimageError] = useState('');
   console.log(isActive);
 
   const handleCreateProductClick = async (e) => {
     e.preventDefault();
-    dispatch(
-      productCreateAction({
-        name,
-        price,
-        image,
-        category,
-        description,
-        isActive
-      })
-    );
+    if (handleValidation()) {
+      dispatch(
+        productCreateAction({
+          name,
+          price,
+          image,
+          category,
+          description,
+          status,
+          isActive,
+        })
+      );
+    }
+
     // const data = new FormData();
     // data.append('file', file);
     // data.append('upload_preset', 'uploads');
@@ -112,6 +123,40 @@ const NewProductPage = () => {
     }
   };
 
+  const handleValidation = () => {
+    let formIsValid = true;
+    if (!name) {
+      formIsValid = false;
+      setnameError('product name is required');
+    }
+    if (!category) {
+      formIsValid = false;
+      setcategoryError('please select category');
+    }
+    if (!price) {
+      formIsValid = false;
+      setpriceError('product price is required');
+    }
+    if (!description) {
+      formIsValid = false;
+      setpriceError('product description is required');
+    }
+    if (!image) {
+      formIsValid = false;
+      setimageError('product image is required');
+    }
+    if (!status) {
+      formIsValid = false;
+      setstatusError('please select status');
+    }
+     if (!description) {
+       formIsValid = false;
+       setdescriptionError('description is required');
+     }
+
+    return formIsValid;
+  };
+
   useEffect(() => {
     dispatch(categoryListAction());
   }, [dispatch]);
@@ -119,19 +164,21 @@ const NewProductPage = () => {
   useEffect(() => {
     if (success) {
       toast.success(`${product.name} is created successfully`);
-       setName('');
-       setDescription('');
-       setImage('');
-       setCategory('');
+      setName('');
+      setDescription('');
+      setImage('');
+      setCategory('');
       setPrice('');
       dispatch({
-        type: PRODUCT_CREATE_RESET
-      })
+        type: PRODUCT_CREATE_RESET,
+      });
       navigate('/dashboard/products');
     } else {
       toast.error(error);
     }
   }, [success, product, error]);
+
+  const statusContent = ['New', 'On Sale', 'Hot'];
 
   return (
     <div className="new-pr">
@@ -160,12 +207,41 @@ const NewProductPage = () => {
           >
             <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
               <Grid item xs={6}>
-                <Avatar
-                  alt="Remy Sharp"
-                  src="/static/images/avatar/1.jpg"
-                  sx={{ width: 300, height: 300, margin: 'auto' }}
+                <Box
+                  sx={{
+                    width: 300,
+                    height: 300,
+                    margin: 'auto',
+                    position: 'relative',
+                  }}
                 >
-                  <label htmlFor="image" style={{ margin: 'auto', textAlign: 'center' }}>
+                  <Avatar
+                    alt="Remy Sharp"
+                    src={image}
+                    sx={{
+                      width: 300,
+                      height: 300,
+                      margin: 'auto',
+                      position: 'relative',
+                    }}
+                  />
+                  <label
+                    htmlFor="image"
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      margin: 'auto',
+                      textAlign: 'center',
+                      position: 'absolute',
+                      backgroundColor: 'rgba(0, 0, 0, 0.0)',
+                      borderRadius: '50%',
+                      top: 0,
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                    }}
+                  >
                     <input
                       style={{ display: 'none' }}
                       id="image"
@@ -175,10 +251,10 @@ const NewProductPage = () => {
                     />
 
                     <Button color="secondary" variant="contained" component="span">
-                      {uploading && <Spinner />} Upload Image
+                      {uploading && <>.......</>} Upload Image
                     </Button>
                   </label>
-                </Avatar>
+                </Box>
               </Grid>
               <Grid item xs={6}>
                 <Stack spacing={3}>
@@ -189,6 +265,8 @@ const NewProductPage = () => {
                     fullWidth
                     name="name"
                     label="Product Name"
+                    error={nameError}
+                    helperText={nameError}
                   />
                   <FormInput
                     text="text"
@@ -198,6 +276,8 @@ const NewProductPage = () => {
                     fullWidth
                     name="category"
                     label="Product Category"
+                    error={categoryError}
+                    helperText={categoryError}
                   >
                     {categories.map((c) => (
                       <MenuItem key={c._id} value={c._id}>
@@ -205,6 +285,25 @@ const NewProductPage = () => {
                       </MenuItem>
                     ))}
                   </FormInput>
+
+                  <FormInput
+                    text="text"
+                    value={status}
+                    onChange={(e) => setStatus(e.target.value)}
+                    select
+                    fullWidth
+                    name="status"
+                    label="Product Status"
+                    error={statusError}
+                    helperText={statusError}
+                  >
+                    {statusContent.map((s, index) => (
+                      <MenuItem key={index} value={s}>
+                        {s}
+                      </MenuItem>
+                    ))}
+                  </FormInput>
+
                   <FormInput
                     text="text"
                     value={price}
@@ -212,6 +311,8 @@ const NewProductPage = () => {
                     fullWidth
                     name="price"
                     label="Product Price"
+                    error={priceError}
+                    helperText={priceError}
                   />
 
                   <FormInput
@@ -221,6 +322,8 @@ const NewProductPage = () => {
                     fullWidth
                     name="image"
                     label="Product Image"
+                    error={imageError}
+                    helperText={imageError}
                   />
 
                   <FormControlLabel
@@ -239,6 +342,8 @@ const NewProductPage = () => {
                     label="Content"
                     rows={4}
                     multiline
+                    error={descriptionError}
+                    helperText={descriptionError}
                   />
 
                   <LoadingButton
@@ -248,7 +353,7 @@ const NewProductPage = () => {
                     variant="contained"
                     onClick={handleCreateProductClick}
                   >
-                    create Product
+                    Create Product
                   </LoadingButton>
                 </Stack>
               </Grid>

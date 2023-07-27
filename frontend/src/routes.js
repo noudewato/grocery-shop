@@ -17,10 +17,12 @@ import NewCategoryPage from './pages/NewCategoryPage';
 import OrderPage from './pages/OrderPage';
 import UserLoginPage from './pages/web-view/auth/UserLoginPage';
 import RegisterLoginPage from './pages/web-view/auth/UserRegisterPage';
-import ProductList from './pages/web-view/product/product-list.component';
+import ProductList from './pages/web-view/product/product-list.component'
 import Home from './pages/web-view/Home';
 import Cart from './pages/web-view/cart/cart.component';
 import Checkout from './pages/web-view/checkout/checkout.component';
+import FormValidation from './components/web/form-validation.component';
+import Form from './pages/web-view/productService';
 
 // ----------------------------------------------------------------------
 
@@ -41,6 +43,7 @@ export default function Router() {
         { path: 'order', element: <OrderPage /> },
         { path: 'user', element: <BlogPage /> },
         { path: 'old-product', element: <OldProductsPage /> },
+        { path: 'form', element: <Form/> },
       ],
     },
     {
@@ -66,6 +69,10 @@ export default function Router() {
     {
       path: '/GroceryShop/checkout',
       element: <Checkout />,
+    },
+    {
+      path: '/GroceryShop/form',
+      element: <FormValidation />,
     },
     {
       element: <SimpleLayout />,
