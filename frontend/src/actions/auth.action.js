@@ -94,19 +94,26 @@ export const userUpdateAction = (username, email, phonenumber, password) => asyn
   }
 };
 
-export const userListAction = () => async (dispatch) => {
+export const userListAction = () => async (dispatch, getState) => {
   try {
     dispatch({
       type: USER_LIST_REQUEST,
     });
 
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
     const config = {
       headers: {
         'content-type': 'application/json',
+        Authorization: `Bearer ${userInfo?.user?.token}`,
       },
     };
 
-    const { data } = await axios.post('/api/auth/registerUser', { username, email, phonenumber, password }, config);
+    
+
+    const { data } = await axios.get('/api/auth/get-user',  config);
 
     dispatch({
       type: USER_LIST_SUCCESS,

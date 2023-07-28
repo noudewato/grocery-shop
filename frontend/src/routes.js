@@ -3,7 +3,7 @@ import { Navigate, useRoutes } from 'react-router-dom';
 import DashboardLayout from './layouts/dashboard';
 import SimpleLayout from './layouts/simple';
 //
-import BlogPage from './pages/BlogPage';
+import UserPage from './pages/UserPage';
 import CategoryPage from './pages/CategoryPage';
 import LoginPage from './pages/LoginPage';
 import Page404 from './pages/Page404';
@@ -23,6 +23,7 @@ import Cart from './pages/web-view/cart/cart.component';
 import Checkout from './pages/web-view/checkout/checkout.component';
 import FormValidation from './components/web/form-validation.component';
 import Form from './pages/web-view/productService';
+import OrderDetailsPage from './pages/OrderDetailsPage';
 
 // ----------------------------------------------------------------------
 
@@ -41,9 +42,10 @@ export default function Router() {
         { path: 'new-product', element: <NewProductPage /> },
         { path: 'edit-product/:id', element: <EditProductPage /> },
         { path: 'order', element: <OrderPage /> },
-        { path: 'user', element: <BlogPage /> },
+        { path: 'order-detail/:id', element: <OrderDetailsPage /> },
+        { path: 'user', element: <UserPage /> },
         { path: 'old-product', element: <OldProductsPage /> },
-        { path: 'form', element: <Form/> },
+        { path: 'form', element: <Form /> },
       ],
     },
     {

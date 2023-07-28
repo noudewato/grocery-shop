@@ -20,7 +20,17 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(morgan("dev"));
 // app.use(originalUrlMiddleware)
-app.use(statusCodeMiddleware);
+// app.use(statusCodeMiddleware());
+
+app.use((err, req, res, next) => {
+  const statusCode = res.statusCode === 200 ? 404 : res.statusCode;
+
+  res.status(statusCode);
+  res.json({
+    message: err.message,
+    stack: process.env.NODE_ENV === "production" ? null : err.stack,
+  });
+});
 
 // app.get((req, res, next) => {
 //   const error = new Error(`Not Found - ${req.originalUrl}`);

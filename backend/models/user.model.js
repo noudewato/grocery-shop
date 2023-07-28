@@ -58,6 +58,12 @@ const userSchema = new schema({
     type: Date,
     default: Date.now(),
   },
+  orders: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Order",
+    },
+  ],
 
   resetPasswordToken: String,
   resetPasswordExpire: Date,
@@ -78,7 +84,7 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
-userSchema.methods.getResetPasswordToken = function(){
+userSchema.methods.getResetPasswordToken = function () {
   const resetToken = crypto.randomBytes(20).toString("hex");
 
   this.resetPasswordToken = crypto

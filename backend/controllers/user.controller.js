@@ -23,7 +23,7 @@ export const registerUser = async (req, res) => {
 
     const user = new userModel(req.body);
 
-    await user.save()
+    await user.save();
 
     if (user) {
       res.status(201);
@@ -57,16 +57,18 @@ export const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    if (!email, !password) {
-       return res
-         .status(200)
-         .json({ success: false, msg: "email and password are required!" });
+    if ((!email, !password)) {
+      return res
+        .status(200)
+        .json({ success: false, msg: "email and password are required!" });
     }
 
     const user = await userModel.findOne({ email });
 
     if (!user) {
-      return res.status(200).json({ success: false, msg: "email is not register" });
+      return res
+        .status(200)
+        .json({ success: false, msg: "email is not register" });
     }
 
     if (user && !(await user.matchPassword(password))) {
@@ -99,17 +101,12 @@ export const loginUser = async (req, res) => {
 
 export const getAllUsers = async (req, res) => {
   try {
-    const allUsers = await userModel
-      .find({})
-      .sort({ username: "ascending" })
-      .limit(12);
+    const users = await userModel
+      .find().populate('orders', '_id')
+      .sort({ created: -1 })
 
-    if (allUsers) {
-      res.status(200).json({
-        success: true,
-        msg: "Done, get all users successfully",
-        allUsers,
-      });
+    if (users) {
+      res.status(200).json(users);
     } else {
       res.status(404).json({
         success: false,

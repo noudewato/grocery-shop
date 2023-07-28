@@ -34,10 +34,7 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 
 import { Link } from 'react-router-dom';
-
-import { toast } from 'react-toastify';
-
-import { PRODUCT_DELETE_RESET } from '../constants/product.constant';
+import moment from 'moment';
 
 import Spinner from '../components/spinner/spinner.component';
 
@@ -55,6 +52,7 @@ import DialogBox from '../components/dialog-box/dialog.component';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
+  { id: '', label: '', alignRight: false },
   { id: 'order', label: 'order', alignRight: false },
   { id: 'customer', label: 'Customer', alignRight: false },
   { id: 'date', label: 'Date', alignRight: false },
@@ -260,9 +258,9 @@ const OrderPage = () => {
                             <IconButton
                               aria-label="expand row"
                               size="small"
-                              onClick={() => setOpenTable(!opentable)}
+                              onClick={() => setOpenTable(opentable === row ? -1 : row)}
                             >
-                              {opentable ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                              {opentable === row ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
                             </IconButton>
                           </TableCell>
                           <TableCell padding="2px">{_id.slice(0, 7)}</TableCell>
@@ -276,15 +274,17 @@ const OrderPage = () => {
                               </Typography>
                             </Stack>
                           </TableCell>
-                          <TableCell align="left">{createdAt}</TableCell>
+                          <TableCell align="left">
+                            {moment(createdAt).format(`Do MMMM YYYY, `)}
+                            <br />
+                            {moment(createdAt).format(`h:mm:ss a`)}
+                          </TableCell>
                           {/* <TableCell align="left">
                             <Typography></Typography>
                             {totalPrice}
                           </TableCell> */}
 
-                          <TableCell align="left">
-                            {orderItems.reduce((acc, item) => acc + item.qty, 0)}
-                          </TableCell>
+                          <TableCell align="left">{orderItems.reduce((acc, item) => acc + item.qty, 0)}</TableCell>
                           <TableCell align="left">₵{totalPrice}</TableCell>
                           <TableCell align="left">
                             {status === 'pending' ? (
@@ -299,7 +299,7 @@ const OrderPage = () => {
                             <Button style={{ marginRight: '.5rem' }} variant="outlined" color="success">
                               <Link
                                 style={{ color: 'green', listStyle: 'none', textDecoration: 'none' }}
-                                to={`/dashboard/edit-product/${_id}`}
+                                to={`/dashboard/order-detail/${_id}`}
                               >
                                 Edit
                               </Link>
@@ -311,9 +311,9 @@ const OrderPage = () => {
 
                           <TableRow>
                             <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
-                              <Collapse in={opentable} timeout="auto" unmountOnExit>
+                              <Collapse in={opentable === row} timeout="auto" unmountOnExit>
                                 <Box sx={{ margin: 1 }}>
-                                  <Typography variant="h3" gutterBottom component="div">
+                                  <Typography variant="h4" gutterBottom component="div">
                                     OrderItems
                                   </Typography>
                                   <Table size="small" aria-label="purchases">
@@ -321,21 +321,30 @@ const OrderPage = () => {
                                       <TableRow>
                                         <TableCell>Image</TableCell>
                                         <TableCell>Name</TableCell>
-                                        <TableCell align="right">Price</TableCell>
-                                        <TableCell align="right">Qty</TableCell>
+                                        <TableCell>Price</TableCell>
+                                        <TableCell>Qty</TableCell>
+                                        <TableCell>Total</TableCell>
                                       </TableRow>
                                     </TableHead>
                                     <TableBody>
                                       {row.orderItems.map((item) => (
                                         <TableRow key={item.name}>
                                           <TableCell component="th" scope="row">
-                                            <img src={item.image} alt={item.name} />
+                                            <img
+                                              src={item.image}
+                                              alt={item.name}
+                                              style={{
+                                                width: '80px',
+                                                height: '80px',
+                                                border: '3px solid grey',
+                                                borderRadius: '1rem',
+                                              }}
+                                            />
                                           </TableCell>
                                           <TableCell>{item.name}</TableCell>
-                                          <TableCell align="right">{item.amount}</TableCell>
-                                          <TableCell align="right">
-                                            {Math.round(item.amount * row.price * 100) / 100}
-                                          </TableCell>
+                                          <TableCell align="left">{item.price}</TableCell>
+                                          <TableCell align="left">{item.qty}</TableCell>
+                                          <TableCell align="left">{item.qty * item.price}</TableCell>
                                         </TableRow>
                                       ))}
                                     </TableBody>

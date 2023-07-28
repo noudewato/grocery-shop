@@ -45,7 +45,7 @@ export const addOrder = (order) => async (dispatch, getState) => {
   }
 };
 
-export const getOrderDetails = (id) => async (dispatch, getState) => {
+export const getOrderDetailsAction = (id) => async (dispatch, getState) => {
   try {
     dispatch({
       type: ORDER_DETAILS_REQUEST,
@@ -62,7 +62,7 @@ export const getOrderDetails = (id) => async (dispatch, getState) => {
       },
     };
 
-    const { data } = await axios.get(`/api/orders/${id}`, config);
+    const { data } = await axios.get(`/api/order/get-order/${id}`, config);
 
     dispatch({
       type: ORDER_DETAILS_SUCCESS,
@@ -89,7 +89,7 @@ export const orderListAction = () => async (dispatch, getState) => {
     const config = {
       headers: {
         'content-type': 'application/json',
-        Authorization: `Bearer ${userInfo.token}`,
+        Authorization: `Bearer ${userInfo.user.token}`,
       },
     };
 

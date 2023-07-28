@@ -40,23 +40,30 @@ export const addOrderItems = async (req, res) => {
     res.status(500).json({
       success: false,
       error,
-      msg: "Error while getting product lists",
+      message: "Error while getting product lists",
     });
   }
 };
 
-// const getOrderById = asyncHandler(async (req, res) => {
-//   const order = await Order.findById(req.params.id).populate(
-//     "user",
-//     "name email"
-//   );
-//   if (order) {
-//     res.json(order);
-//   } else {
-//     res.status(404);
-//     throw new Error("Order Not found");
-//   }
-// });
+export const getOrderById = async (req, res) => {
+  try {
+    const order = await orderModel
+      .findById(req.params.id)
+      .populate("user", "name email");
+    if (order) {
+      res.json(order);
+    } else {
+      res.status(404).json({ message: "Order Not found" });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      error,
+      message: "Error while getting product lists",
+    });
+  }
+};
 
 // const updateOrderToPaid = asyncHandler(async (req, res) => {
 //   const order = await Order.findById(req.params.id);
@@ -90,17 +97,27 @@ export const addOrderItems = async (req, res) => {
 //   }
 // });
 
-// const updateOrderStatus = asyncHandler(async (req, res) => {
-//   const order = await Order.findById(req.params.id);
-//   if (order) {
-//     order.status = order.status + 1;
-//     const updatedOrderStatus = await order.save();
-//     res.json({ updatedOrderStatus, success: true, msg: "your order is ready" });
-//   } else {
-//     res.status(404);
-//     throw new Error("Order Not found");
-//   }
-// });
+export const updateOrderStatus = async (req, res) => {
+  try {
+    const order = await orderModel.findById(req.params.id);
+    if (order) {
+      order.status = order.status + 1;
+      const updatedOrderStatus = await order.save();
+      res.status(200).json({
+        updatedOrderStatus,
+        message: "status updated successfully",
+      });
+    } 
+  } catch (error) {
+      console.log(error);
+      res.status(500).json({
+        success: false,
+        error,
+        message: "Error while getting product lists",
+      });
+  }
+  
+};
 
 // const GetMyOrders = asyncHandler(async (req, res) => {
 //   const orders = await Order.find({ user: req.user._id });
@@ -108,8 +125,11 @@ export const addOrderItems = async (req, res) => {
 // });
 
 export const GetOrders = async (req, res) => {
-  const orders = await orderModel.find().populate("user").sort({createdAt: -1})
-  const count = orders.length
+  const orders = await orderModel
+    .find()
+    .populate("user")
+    .sort({ createdAt: -1 });
+  const count = orders.length;
   res.json({ count, orders });
 };
 

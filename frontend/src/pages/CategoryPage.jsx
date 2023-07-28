@@ -84,7 +84,7 @@ function applySortFilter(array, comparator, query) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-export default function UserPage() {
+export default function CategoryPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const categoryList = useSelector((state) => state.categoryList);

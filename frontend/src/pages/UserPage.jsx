@@ -79,16 +79,17 @@ function applySortFilter(array, comparator, query) {
     return a[1] - b[1];
   });
   if (query) {
-    return filter(array, (_user) => _user.name.toLowerCase().indexOf(query.toLowerCase()) !== -1);
+    return filter(array, (_user) => _user.username.toLowerCase().indexOf(query.toLowerCase()) !== -1);
   }
   return stabilizedThis.map((el) => el[0]);
 }
+
 
 export default function UserPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const userList = useSelector((state) => state.userList);
-  const { users } = userList;
+  const { customer } = userList;
 
   useEffect(() => {
     dispatch(userListAction());
@@ -102,9 +103,9 @@ export default function UserPage() {
 
   const [selected, setSelected] = useState([]);
 
-  const [orderBy, setOrderBy] = useState('name');
+  const [orderBy, setOrderBy] = useState('username');
 
-  const [filterName, setFilterName] = useState('');
+  const [filterusername, setFilterusername] = useState('');
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
@@ -124,18 +125,18 @@ export default function UserPage() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = categories.map((n) => n.name);
+      const newSelecteds = customer.map((n) => n.username);
       setSelected(newSelecteds);
       return;
     }
     setSelected([]);
   };
 
-  const handleClick = (event, name) => {
-    const selectedIndex = selected.indexOf(name);
+  const handleClick = (event, username) => {
+    const selectedIndex = selected.indexOf(username);
     let newSelected = [];
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
+      newSelected = newSelected.concat(selected, username);
     } else if (selectedIndex === 0) {
       newSelected = newSelected.concat(selected.slice(1));
     } else if (selectedIndex === selected.length - 1) {
@@ -155,19 +156,19 @@ export default function UserPage() {
     setRowsPerPage(parseInt(event.target.value, 10));
   };
 
-  const handleFilterByName = (event) => {
+  const handleFilterByusername = (event) => {
     setPage(0);
-    setFilterName(event.target.value);
+    setFilterusername(event.target.value);
   };
 
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - categories.length) : 0;
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - customer.length) : 0;
 
-  const filteredUsers = applySortFilter(categories, getComparator(order, orderBy), filterName);
+  const filteredcustomer = applySortFilter(customer, getComparator(order, orderBy), filterusername);
 
-  const isNotFound = !filteredUsers.length && !!filterName;
+  const isNotFound = !filteredcustomer.length && !!filterusername;
 
   const [open, setOpen] = useState(false);
-  const [selectCategory, setSelectCategory] = useState({});
+  const [selectUser, setSelectUser] = useState({});
 
   return (
     <>
@@ -178,12 +179,12 @@ export default function UserPage() {
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            USERS
+            customer
           </Typography>
         </Stack>
 
         <Card>
-          <UserListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} />
+          <UserListToolbar numSelected={selected.length} filterusername={filterusername} onFilterusername={handleFilterByusername} />
 
           <Scrollbar>
             <TableContainer sx={{ minWidth: 1000 }}>
@@ -192,33 +193,34 @@ export default function UserPage() {
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
-                  rowCount={categories.length}
+                  rowCount={customer.length}
                   numSelected={selected.length}
                   onRequestSort={handleRequestSort}
                   // onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
-                  {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { _id, username, email, image, phonenumber, createdAt, updatedAt, isActive } = row;
-                    const selectedUser = selected.indexOf(name) !== -1;
+                  {filteredcustomer.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                    const { _id, userusername, email, image, phonenumber, createdAt, updatedAt, isActive } = row;
+                    // const selectedUser = selected.indexOf(username) !== -1;
 
                     return (
                       <TableRow hover key={_id} tabIndex={-1}>
                         {/* <TableCell padding="checkbox">
-                          <Checkbox isActive={selectedUser} onChange={(event) => handleClick(event, name)} />
+                          <Checkbox isActive={selectedUser} onChange={(event) => handleClick(event, username)} />
                         </TableCell> */}
                         <TableCell component="th" scope="row" padding="2px">
                           <Stack direction="row" alignItems="center" spacing={2}>
-                            <Avatar alt={username} src={image} />
+                            <Avatar alt={userusername} src={image} />
                             <Typography variant="subtitle2" noWrap>
-                              {username}
+                              {userusername}
                             </Typography>
                           </Stack>
                         </TableCell>
                         <TableCell align="left">
                           <Typography variant="subtitle2" noWrap>
-                            {email} <br />
                             {phonenumber}
+                            <br />
+                            {email}
                           </Typography>
                         </TableCell>
                         <TableCell align="left">
@@ -245,7 +247,7 @@ export default function UserPage() {
                             color="error"
                             onClick={() => {
                               setOpen(true);
-                              setSelectCategory(row);
+                              setSelectUser(row);
                             }}
                           >
                             Delete
@@ -276,7 +278,7 @@ export default function UserPage() {
 
                           <Typography variant="body2">
                             No results found for &nbsp;
-                            <strong>&quot;{filterName}&quot;</strong>.
+                            <strong>&quot;{filterusername}&quot;</strong>.
                             <br /> Try checking for typos or using complete words.
                           </Typography>
                         </Paper>
@@ -291,7 +293,7 @@ export default function UserPage() {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={categories.length}
+            count={customer.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}
@@ -331,9 +333,9 @@ export default function UserPage() {
 
       <DialogBox
         open={open}
-        title={selectCategory?.name}
+        title={selectUser?.userusername}
         deleteFunction={() => {
-          dispatch(categoryDeleteAction(selectCategory?._id));
+          dispatch(userDeleteAction(selectUser?._id));
           setOpen(false);
         }}
         onClose={() => setOpen(false)}
