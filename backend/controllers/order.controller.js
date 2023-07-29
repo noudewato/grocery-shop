@@ -49,12 +49,13 @@ export const getOrderById = async (req, res) => {
   try {
     const order = await orderModel
       .findById(req.params.id)
-      .populate("user", "name email");
-    if (order) {
-      res.json(order);
-    } else {
-      res.status(404).json({ message: "Order Not found" });
-    }
+      .populate("user");
+    res.status(200).json(order)
+    // if (order) {
+    //   res.status(200).json(order);
+    // } else {
+    //   res.status(404).json({ message: "Order Not found" });
+    // }
   } catch (error) {
     console.log(error);
     res.status(500).json({

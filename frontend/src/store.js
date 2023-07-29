@@ -36,7 +36,7 @@ const reducers = combineReducers({
   productDelete: productDeleteReducer,
   orderCreate: createOrderReducer,
   orderList: orderListReducer,
-  orderDetails: orderDetailsReducer,
+  orderDetails: orderDetailsReducer
 });
 
 const userInfo = localStorage.getItem('userInfo') ? JSON.parse(localStorage.getItem('userInfo')) : null;

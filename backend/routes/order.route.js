@@ -5,7 +5,7 @@ const orderRouter = express.Router()
 
 orderRouter.post("/addOrderItems", protect, addOrderItems)
 orderRouter.get("/get-order",protect, isAdmin, GetOrders)
-orderRouter.get("/get-order/:id", getOrderById);
+orderRouter.get("/single-order/:id",protect, getOrderById);
 orderRouter.put("/update-order/:id", protect, isAdmin, updateOrderStatus);
 
 export default orderRouter
