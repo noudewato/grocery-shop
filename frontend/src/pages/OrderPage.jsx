@@ -224,7 +224,7 @@ const OrderPage = () => {
             <UserListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} />
 
             <Scrollbar>
-              <TableContainer sx={{ minWidth: 1000 }}>
+              <TableContainer sx={{ minWidth: 1250 }}>
                 <Table>
                   <UserListHead
                     order={order}
@@ -266,7 +266,7 @@ const OrderPage = () => {
                           <TableCell padding="2px">{_id.slice(0, 7)}</TableCell>
                           <TableCell component="th" scope="row" padding="2px">
                             <Stack direction="row" alignItems="center" spacing={2}>
-                              <Avatar alt={user?.username} src={user?.username} />
+                              <Avatar alt={user?.username} src={user?.image} />
                               <Typography variant="subtitle2" noWrap>
                                 {user?.username} <br />
                                 {user?.email} <br />
@@ -277,7 +277,7 @@ const OrderPage = () => {
                           <TableCell align="left">
                             {moment(createdAt).format(`Do MMMM YYYY, `)}
                             <br />
-                            {moment(createdAt).format(`h:mm:ss a`)}
+                            {moment(createdAt).format(`h:mm A`)}
                           </TableCell>
                           {/* <TableCell align="left">
                             <Typography></Typography>

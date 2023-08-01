@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 // @mui
 import { styled, alpha } from '@mui/material/styles';
 import { Box, Link, Button, Drawer, Typography, Avatar, Stack } from '@mui/material';
@@ -38,6 +38,7 @@ Nav.propTypes = {
 
 export default function Nav({ openNav, onCloseNav }) {
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   const userLogin = useSelector(state => state.userLogin)
   const {userInfo} = userLogin
   const { pathname } = useLocation();
@@ -50,6 +51,13 @@ export default function Nav({ openNav, onCloseNav }) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
+
+  useEffect(() => {
+    if (userInfo && !userInfo?.user?.isAdmin) {
+      Navigate('/login')
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [navigate]);
 
   const renderContent = (
     <Scrollbar
@@ -65,15 +73,15 @@ export default function Nav({ openNav, onCloseNav }) {
       <Box sx={{ mb: 5, mx: 2.5 }}>
         <Link underline="none">
           <StyledAccount>
-            <Avatar src={account.photoURL} alt="photoURL" />
+            <Avatar src={userInfo && userInfo?.user?.image} alt="photoURL" />
 
             <Box sx={{ ml: 2 }}>
               <Typography variant="subtitle2" sx={{ color: 'text.primary' }}>
-                {userInfo.user.email}
+                {userInfo && userInfo?.user?.username}
               </Typography>
 
               <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                {userInfo.user.username}
+                {userInfo && (userInfo?.user?.email).slice(0, 17).concat("...")}
               </Typography>
             </Box>
           </StyledAccount>

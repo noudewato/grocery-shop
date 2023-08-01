@@ -16,7 +16,7 @@ const NewCategoryPage = () => {
   const navigate = useNavigate();
 
   const categoryCreate = useSelector((state) => state.categoryCreate);
-  const { success, category, error } = categoryCreate;
+  const { success, category, error, loading } = categoryCreate;
 
   const [name, setName] = useState('');
   const [nameError, setnameError] = useState('');
@@ -217,7 +217,7 @@ const NewCategoryPage = () => {
                     variant="contained"
                     onClick={handleCreateCategoryClick}
                   >
-                    Create Category
+                   {loading && <>...</>} Create Category
                   </LoadingButton>
                 </Stack>
               </Grid>

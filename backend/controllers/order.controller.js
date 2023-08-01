@@ -50,12 +50,11 @@ export const getOrderById = async (req, res) => {
     const order = await orderModel
       .findById(req.params.id)
       .populate("user");
-    res.status(200).json(order)
-    // if (order) {
-    //   res.status(200).json(order);
-    // } else {
-    //   res.status(404).json({ message: "Order Not found" });
-    // }
+    if (order) {
+      res.status(200).json(order);
+    } else {
+      res.status(404).json({ message: "Order Not found" });
+    }
   } catch (error) {
     console.log(error);
     res.status(500).json({
@@ -99,25 +98,19 @@ export const getOrderById = async (req, res) => {
 // });
 
 export const updateOrderStatus = async (req, res) => {
-  try {
-    const order = await orderModel.findById(req.params.id);
-    if (order) {
-      order.status = order.status + 1;
-      const updatedOrderStatus = await order.save();
-      res.status(200).json({
-        updatedOrderStatus,
-        message: "status updated successfully",
-      });
-    } 
-  } catch (error) {
-      console.log(error);
-      res.status(500).json({
-        success: false,
-        error,
-        message: "Error while getting product lists",
-      });
-  }
-  
+  const { id } = req.params;
+    const { status } = req.body;
+
+    const update = await orderModel.findByIdAndUpdate(
+      id,
+      {
+        status
+      },
+      { new: true }
+    );
+
+    res.status(200);
+    res.json(update);
 };
 
 // const GetMyOrders = asyncHandler(async (req, res) => {

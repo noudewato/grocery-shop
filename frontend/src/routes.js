@@ -4,6 +4,7 @@ import DashboardLayout from './layouts/dashboard';
 import SimpleLayout from './layouts/simple';
 //
 import UserPage from './pages/UserPage';
+import EditUserPage from './pages/EditUserPage';
 import CategoryPage from './pages/CategoryPage';
 import LoginPage from './pages/LoginPage';
 import Page404 from './pages/Page404';
@@ -44,6 +45,7 @@ export default function Router() {
         { path: 'order', element: <OrderPage /> },
         { path: 'order-detail/:id', element: <OrderDetailsPage /> },
         { path: 'user', element: <UserPage /> },
+        { path: 'edit-user/:id', element: <EditUserPage /> },
         { path: 'old-product', element: <OldProductsPage /> },
         { path: 'form', element: <Form /> },
       ],

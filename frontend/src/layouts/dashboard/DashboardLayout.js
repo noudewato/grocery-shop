@@ -5,10 +5,11 @@ import { styled } from '@mui/material/styles';
 
 import { useSelector } from 'react-redux';
 
-
+import Spinner from '../../components/spinner/spinner.component';
 //
 import Header from './header';
 import Nav from './nav';
+
 
 // ----------------------------------------------------------------------
 
@@ -46,11 +47,23 @@ export default function DashboardLayout() {
   const { userInfo } = userLogin
   
   useEffect(() => {
-    if (!userInfo?.user?.isAdmin) {
+    if (!userInfo) {
       navigate("/login")
     }
   }, [navigate, userInfo])
   const [open, setOpen] = useState(false);
+
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const setTimmer = setTimeout(() => {
+      if (isLoading) {
+        setIsLoading(false);
+      }
+    }, 2500);
+
+    return () => clearTimeout(setTimmer);
+  }, [isLoading]);
 
   return (
     <StyledRoot>
@@ -58,9 +71,13 @@ export default function DashboardLayout() {
 
       <Nav openNav={open} onCloseNav={() => setOpen(false)} />
 
-      <Main>
-        <Outlet />
-      </Main>
+      {isLoading ? (
+        <Spinner />
+      ) : (
+        <Main>
+          <Outlet />
+        </Main>
+      )}
     </StyledRoot>
   );
 }

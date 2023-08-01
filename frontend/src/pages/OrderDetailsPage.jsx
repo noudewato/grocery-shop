@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
@@ -16,14 +16,15 @@ import {
   Paper,
   Divider,
   Avatar,
+  MenuItem,
+  Menu,
 } from '@mui/material';
+import axios from 'axios';
 import { Helmet } from 'react-helmet-async';
 import moment from 'moment';
 import Spinner from '../components/spinner/spinner.component';
 import Label from '../components/label';
-import { getOrderDetailsAction } from '../actions/order.action';
-
-
+import { getOrderDetailsAction, orderStatusUpdate } from '../actions/order.action';
 
 const OrderDetailsPage = () => {
   const { id } = useParams();
@@ -32,9 +33,44 @@ const OrderDetailsPage = () => {
   const orderDetails = useSelector((state) => state.orderDetails);
   const { order, loading } = orderDetails;
 
+  const [status, setStatus] = useState(["pending", "approved", "completed", "cancel"]);
+
   useEffect(() => {
     dispatch(getOrderDetailsAction(id));
   }, [id, dispatch]);
+
+  // const onChangeHandler = (orderId, e) => {
+  //   dispatch(orderStatusUpdate({ orderId, status: e.target.value }));
+  //   console.log();
+  // };
+  // console.log(onChangeHandler);
+
+  const handleChange = async (orderId, value) => {
+    try {
+      // const {
+      //   userLogin: { userInfo },
+      // } = getState();
+
+      // const config = {
+      //   headers: {
+      //     Authorization: `Bearer ${userInfo.token}`,
+      //   },
+      // };
+      const { data } = await axios.put(`/api/order/update-order/${orderId}`, { status: value });
+      
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // const shortText =(n)=> {
+  //   if(text){
+  //     return const shortedText = slice(0, n)
+  //   }
+
+  //   return shortedText
+  // }
+
   return (
     <div>
       {loading ? (
@@ -44,24 +80,29 @@ const OrderDetailsPage = () => {
           <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
             <Box>
               <Typography variant="h4" gutterBottom>
-                Order #{order._id.slice(0, 7)}
+                Order #{order?._id.slice(0, 7)}
               </Typography>
               <Typography variant="p" component="div" gutterBottom>
-                {moment(order.createdAt).format('DD MMMM YYYY, hh:mm A')}
+                {moment(order?.createdAt).format('DD MMMM YYYY, hh:mm A')}
               </Typography>
               <Stack direction="row" alignItems="center">
                 <Typography>Status</Typography>
 
-                {order.status === 'pending' ? <Label color="success">pending</Label> : <Label color="error">No</Label>}
+                {order?.status === 'pending' ? <Label color="success">pending</Label> : <Label color="error">No</Label>}
               </Stack>
             </Box>
             <Box>
-              <Button variant="contained" color="success" sx={{ mr: '.5rem' }}>
-                Approved
-              </Button>
-              <Button variant="contained" color="secondary" sx={{ mr: '.5rem' }}>
-                Completed
-              </Button>
+              <select
+                defaultValue={order?.status}
+                onChange={(value) => handleChange(order._id, value)}
+                style={{ marginRight: '1rem', padding: '.5rem', borderRadius: '1rem', border: '.5px solid grey' }}
+              >
+                {status.map((s, i) => (
+                  <option key={i} value={s} style={{ padding: '.5rem', border: 'none' }}>
+                    {s}
+                  </option>
+                ))}
+              </select>
               <Button variant="contained">Print</Button>
             </Box>
           </Stack>
@@ -79,7 +120,7 @@ const OrderDetailsPage = () => {
                 <TableContainer component={Paper}>
                   <Table sx={{ minWidth: 500 }} aria-label="spanning table">
                     <TableBody>
-                      {order.orderItems.map((orderItem) => (
+                      {order?.orderItems?.map((orderItem) => (
                         <TableRow key={orderItem._id}>
                           <TableCell>
                             <Stack direction="row" alignItems="center" spacing={2}>
@@ -115,25 +156,25 @@ const OrderDetailsPage = () => {
                         <TableCell rowSpan={4} />
                         <TableCell colSpan={2}>Subtotal</TableCell>
                         <TableCell align="center">
-                          {order.orderItems
-                            .reduce((acc, orderItem) => acc + orderItem.qty * orderItem.price, 0)
+                          {order?.orderItems
+                            ?.reduce((acc, orderItem) => acc + orderItem.qty * orderItem.price, 0)
                             .toFixed(2)}
                           (GHC)
                         </TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell colSpan={2}>TaxPrice</TableCell>
-                        <TableCell align="center">{order.taxPrice}(GHC)</TableCell>
+                        <TableCell align="center">{order?.taxPrice}(GHC)</TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell colSpan={2}>DeliveryPrice</TableCell>
                         <TableCell align="center">
-                          {order.deliveryPrice === 0 ? <>Free</> : order.deliveryPrice}
+                          {order?.deliveryPrice === 0 ? <>Free</> : order?.deliveryPrice}
                         </TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell colSpan={2}>Total</TableCell>
-                        <TableCell align="center">{order.totalPrice}(GHC)</TableCell>
+                        <TableCell align="center">{order?.totalPrice}(GHC)</TableCell>
                       </TableRow>
                     </TableBody>
                   </Table>
@@ -169,8 +210,8 @@ const OrderDetailsPage = () => {
                 <Stack sx={{ mb: '1rem' }}>
                   <Box>
                     <Typography variant="body2" component="div" noWrap>
-                      <span>City:</span> {order?.deliverAddress.city} <br />
-                      Location: {order?.deliverAddress.location}
+                      <span>City:</span> {order?.deliverAddress?.city} <br />
+                      Location: {order?.deliverAddress?.location}
                     </Typography>
                   </Box>
                 </Stack>

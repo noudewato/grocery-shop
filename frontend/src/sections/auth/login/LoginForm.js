@@ -19,7 +19,7 @@ export default function LoginForm() {
   const dispatch = useDispatch();
 
   const userLogin = useSelector((state) => state.userLogin);
-  const { success, loading } = userLogin;
+  const { success, loading, userInfo } = userLogin;
 
   const loginField = {
     email: '',
@@ -30,6 +30,9 @@ export default function LoginForm() {
 
   const { email, password } = formField;
 
+  const [emailError, setemailError] = useState('');
+  const [passwordError, setpasswordError] = useState('');
+
   const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e) => {
@@ -38,27 +41,54 @@ export default function LoginForm() {
     setFormField({ ...formField, [name]: value });
   };
 
+  const handleValidation = () => {
+    let formIsValid = true;
+    if (!email) {
+      formIsValid = false;
+      setemailError('email is required');
+    }
+    if (!password) {
+      formIsValid = false;
+      setpasswordError('password is required');
+    }
+    return formIsValid;
+  };
+
   const handleClick = () => {
-    dispatch(userLoginAction(email, password));
+    if (handleValidation()) {
+      dispatch(userLoginAction(email, password));
+    }
   };
 
   useEffect(() => {
     if (success) {
       toast.success('success');
       navigate('/dashboard/app', { replace: true });
-    }
-  }, [success, navigate]);
+    } 
+  }, [success, navigate, userInfo]);
 
   return (
     <>
       <Stack spacing={3} component="form">
-        <TextField value={email} onChange={handleChange}  name="email" label="Email address" />
+        <TextField
+          type="email"
+          required
+          value={email}
+          onChange={handleChange}
+          error={emailError}
+          helperText={emailError}
+          name="email"
+          label="Email address"
+        />
 
         <TextField
           name="password"
           label="Password"
           value={password}
           onChange={handleChange}
+          required
+          error={passwordError}
+          helperText={passwordError}
           type={showPassword ? 'text' : 'password'}
           InputProps={{
             endAdornment: (

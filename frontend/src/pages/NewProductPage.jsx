@@ -30,7 +30,7 @@ const NewProductPage = () => {
   const { categories } = categoryList;
 
   const productCreate = useSelector((state) => state.productCreate);
-  const { success, product, error } = productCreate;
+  const { success, product, error, loading } = productCreate;
 
   const [name, setName] = useState('');
   const [nameError, setnameError] = useState('');
@@ -353,7 +353,7 @@ const NewProductPage = () => {
                     variant="contained"
                     onClick={handleCreateProductClick}
                   >
-                    Create Product
+                   {loading && <>...</>} Create Product
                   </LoadingButton>
                 </Stack>
               </Grid>

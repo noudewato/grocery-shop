@@ -8,6 +8,7 @@ import { logout } from '../../../actions/auth.action';
 
 // mocks_
 import account from '../../../_mock/account';
+import Spinner from '../../../components/spinner/spinner.component';
 
 // import {us}
 
@@ -37,12 +38,16 @@ export default function AccountPopover() {
     setOpen(null);
   };
 
+  const [isLoading, setIsLaoding] = useState(false) 
+
    const logoutHandler = () => {
      dispatch(logout());
+     setIsLaoding(true)
    };
 
   return (
     <>
+      {isLoading ? <Spinner/> : null}
       <IconButton
         onClick={handleOpen}
         sx={{
@@ -60,7 +65,7 @@ export default function AccountPopover() {
           }),
         }}
       >
-        <Avatar src={account.photoURL} alt="photoURL" />
+        <Avatar src={userInfo && userInfo.user.image} alt="photoURL" />
       </IconButton>
 
       <Popover

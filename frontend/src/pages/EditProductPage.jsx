@@ -22,7 +22,6 @@ import { PRODUCT_UPDATE_RESET } from '../constants/product.constant';
 import { productDetailsAction, productUpdateAction } from '../actions/product.action';
 import { categoryListAction } from '../actions/category.action';
 import FormInput from '../components/form-input/form-input.component';
-import Iconify from '../components/form-input/iconify';
 
 const EditProductPage = () => {
   const dispatch = useDispatch();
@@ -36,7 +35,7 @@ const EditProductPage = () => {
   const { product, error } = productDetails;
 
   const productUpdate = useSelector((state) => state.productUpdate);
-  const { success: successUpdate, error: errorUpdate } = productUpdate;
+  const { success: successUpdate, error: errorUpdate, loading: loadingUpdate } = productUpdate;
 
   const statusContent = ['New', 'On Sale', 'Hot'];
 
@@ -70,18 +69,24 @@ const EditProductPage = () => {
     if (successUpdate) {
       toast.success('updated successfully');
       navigate('/dashboard/products');
+      setName('');
+      setCategory('');
+      setPrice('');
+      setImage('');
+      setDescription('');
       dispatch({
         type: PRODUCT_UPDATE_RESET,
       });
     } else {
       toast.error(errorUpdate);
     }
-  }, [successUpdate, error]);
+  }, [successUpdate, error, dispatch, navigate, errorUpdate]);
 
   useEffect(() => {
     if (product) {
       setName(product.name);
-      setCategory(product?.category?._id);
+      setCategory(product.category);
+      setStatus(product.status);
       setPrice(product.price);
       setImage(product.image);
       setDescription(product.description);
@@ -99,7 +104,7 @@ const EditProductPage = () => {
     }, 2500);
 
     return () => clearTimeout(setTimmer);
-  }, []);
+  }, [isLoading]);
 
   const handleValidation = () => {
     let formIsValid = true;
@@ -115,10 +120,10 @@ const EditProductPage = () => {
       formIsValid = false;
       setpriceError('product price is required');
     }
-    if (!description) {
-      formIsValid = false;
-      setpriceError('product description is required');
-    }
+    // else if (!price.match('^[0-9]+$')) {
+    //    formIsValid = false;
+    //    setpriceError('product price must contain only number');
+    // }
     if (!image) {
       formIsValid = false;
       setimageError('product image is required');
@@ -152,12 +157,6 @@ const EditProductPage = () => {
         })
       );
     }
-
-    setName('');
-    setCategory('');
-    setPrice('');
-    setImage('');
-    setDescription('');
   };
 
   const uploadingHandler = async (e) => {
@@ -355,7 +354,7 @@ const EditProductPage = () => {
                     variant="contained"
                     onClick={handleEditProductClick}
                   >
-                    Edit Product
+                    {loadingUpdate && <>...</>} Edit Product
                   </LoadingButton>
                 </Stack>
               </Grid>

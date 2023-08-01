@@ -9,6 +9,7 @@ import {
   updateUser,
   createAddress,
   getAllUsersOrder,
+  updateUserProfile,
 } from "../controllers/user.controller.js";
 const userRouter = express.Router();
 import { isAdmin, protect } from "../utils/authMiddleware.js";
@@ -21,6 +22,7 @@ userRouter.get("/get-user", protect, isAdmin, getAllUsers);
 userRouter.get("/user-order", getAllUsersOrder);
 userRouter.get("/:id", getSingleUser);
 userRouter.put("/:id", updateUser);
+userRouter.put("/user-profile", protect, isAdmin, updateUserProfile);
 userRouter.delete("/:id", deleteUser);
 
 export default userRouter;

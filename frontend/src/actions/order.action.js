@@ -107,7 +107,7 @@ export const orderListAction = () => async (dispatch, getState) => {
   }
 };
 
-export const orderStatusUpdate = (order) => async (dispatch, getState) => {
+export const orderStatusUpdate = (orderData) => async (dispatch, getState) => {
   try {
     dispatch({
       type: ORDER_UPDATE_STATUS_REQUEST,
@@ -123,7 +123,7 @@ export const orderStatusUpdate = (order) => async (dispatch, getState) => {
       },
     };
 
-    const { data } = await axios.put(`/api/orders/${order._id}/status`, {}, config);
+    const { data } = await axios.put(`/api/order/update-order/${orderData._id}`, orderData, config);
 
     dispatch({
       type: ORDER_UPDATE_STATUS_SUCCESS,

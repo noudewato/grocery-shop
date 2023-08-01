@@ -4,13 +4,7 @@ import { sendEmail } from "../utils/sendEmail.js";
 
 export const registerUser = async (req, res) => {
   try {
-    // const address = {
-    //   city,
-    //   location
-    // }
-
-    // const { username, email, phonenumber, password } = req.body;
-
+    const {username, email, phonenumber, password} = req.body
     if (!username || !email || !phonenumber || !password) {
       return res.send("Please all field are required");
     }
@@ -68,7 +62,7 @@ export const loginUser = async (req, res) => {
     if (!user) {
       return res
         .status(200)
-        .json({ success: false, msg: "email is not register" });
+        .json({ success: false, message: "email is not register" });
     }
 
     if (user && !(await user.matchPassword(password))) {
@@ -129,11 +123,7 @@ export const getSingleUser = async (req, res) => {
 
     if (user) {
       res.status(200);
-      res.json({
-        success: true,
-        msg: "Good job, user found successfully",
-        user,
-      });
+      res.json(user);
     } else
       res.status(400).json({
         success: true,
@@ -149,7 +139,7 @@ export const getSingleUser = async (req, res) => {
   }
 };
 
-export const updateUser = async (req, res) => {
+export const updateUserProfile = async (req, res) => {
   try {
     const { id } = req.params;
     const { username, email, phonenumber, image, isAdmin } = req.body;
@@ -172,6 +162,30 @@ export const updateUser = async (req, res) => {
       msg: "Good job, user updated successfully",
       update,
     });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      eroor: error,
+      msg: "bad request",
+    });
+  }
+};
+
+export const updateUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { isAdmin } = req.body;
+
+    const update = await userModel.findByIdAndUpdate(
+      id,
+      {
+        isAdmin,
+      },
+      { new: true }
+    );
+
+    res.status(200);
+    res.json(update);
   } catch (error) {
     res.status(500).json({
       success: false,
