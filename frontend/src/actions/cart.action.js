@@ -1,7 +1,7 @@
 // import axios from "axios"
 // import {CART_ADD_ITEM} from "../constants/cartConstants"
 
-import { CART_ADD_ITEM, CART_DECREMENT_ITEM, CART_REMOVE_ITEM, CART_SAVE_PAYMENT_METHOD, CART_SAVE_SHIPPING_ADDRESS } from "../constants/cart.constant";
+import { CART_ADD_ITEM, CART_DECREMENT_ITEM, CART_REMOVE_ITEM, CART_SAVE_PAYMENT_METHOD, CART_SAVE_SHIPPING_ADDRESS, CLEAR_CART } from "../constants/cart.constant";
 
 export const addToCart = (item) => (dispatch, getState) => {
     // const { data } = await axios.get(
@@ -60,3 +60,10 @@ export const savePaymentMethod = (data) => (dispatch) => {
 
   localStorage.setItem("paymentMethod", JSON.stringify(data));
 };
+
+export const clearCart = () => (dispatch) => {
+  dispatch({
+    type: CLEAR_CART
+  });
+};
+

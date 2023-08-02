@@ -95,6 +95,10 @@ export default function Router() {
       element: <Home />,
     },
     {
+      path: '/GroceryShop/user-profile',
+      element: <Home />,
+    },
+    {
       path: '*',
       element: <Navigate to="/404" replace />,
     },

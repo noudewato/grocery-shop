@@ -22,7 +22,7 @@ userRouter.get("/get-user", protect, isAdmin, getAllUsers);
 userRouter.get("/user-order", getAllUsersOrder);
 userRouter.get("/:id", getSingleUser);
 userRouter.put("/:id", updateUser);
-userRouter.put("/user-profile", protect, isAdmin, updateUserProfile);
+userRouter.put("/user-profile", updateUserProfile);
 userRouter.delete("/:id", deleteUser);
 
 export default userRouter;

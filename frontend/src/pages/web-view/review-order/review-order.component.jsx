@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Typography, Stack, Box, Button, Grid, ListItem, ListItemText, Avatar } from '@mui/material';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
+import { toast } from 'react-toastify';
+import { CLEAR_CART } from '../../../constants/cart.constant';
 import { addOrder } from '../../../actions/order.action';
+import { ORDER_CREATE_RESET } from '../../../constants/order.constant';
 
 const ReviewOrder = () => {
   const dispatch = useDispatch();
@@ -15,20 +18,18 @@ const ReviewOrder = () => {
   const { userInfo } = userLogin;
 
   const orderCreate = useSelector((state) => state.orderCreate);
-  const { error, success, createdOrder } = orderCreate;
+  const { error, success, createdOrder, loading } = orderCreate;
 
   const addRoundedNumber = (num) => Math.round(num * 100 + Number.EPSILON) / 100;
 
-   cartItems.itemsPrice = addRoundedNumber(cartItems.reduce((acc, item) => acc + item.qty * item.price, 0));
+  cartItems.itemsPrice = addRoundedNumber(cartItems.reduce((acc, item) => acc + item.qty * item.price, 0));
 
   cartItems.taxPrice = addRoundedNumber(0.12 * cartItems.itemsPrice);
 
   cartItems.deliveryPrice =
     cartItems.itemsPrice > 100 ? addRoundedNumber(0.2 * cartItems.itemsPrice) : addRoundedNumber(0);
-  
-  cartItems.totalPrice = addRoundedNumber(
-    cartItems.itemsPrice + cartItems.taxPrice
-  );
+
+  cartItems.totalPrice = addRoundedNumber(cartItems.itemsPrice + cartItems.taxPrice);
 
   const placeOrder = () => {
     dispatch(
@@ -43,9 +44,32 @@ const ReviewOrder = () => {
         isPaid: true,
       })
     );
-  }
+  };
 
-  const orthers = [{name: 'SubTotal', price: cartItems.itemsPrice}, {name: 'TaxPrice', price: cartItems.taxPrice }, {name:'DeliveryPrice', price: cartItems.deliveryPrice  === 0 ? 'Free' : cartItems.deliveryPrice}];
+  useEffect(() => {
+    if (success) {
+      localStorage.removeItem('cartItems');
+      dispatch({
+        type: CLEAR_CART,
+      });
+      toast.success(`order No.${(createdOrder?._id).slice(0, 8)} created successfully`);
+      navigate('/GroceryShop/home');
+
+       dispatch({
+         type: ORDER_CREATE_RESET,
+       });
+    }
+
+    if (error) {
+      toast.error('error');
+    }
+  }, [navigate, success, error, createdOrder, dispatch]);
+
+  const orthers = [
+    { name: 'SubTotal', price: cartItems.itemsPrice },
+    { name: 'TaxPrice', price: cartItems.taxPrice },
+    { name: 'DeliveryPrice', price: cartItems.deliveryPrice === 0 ? 'Free' : cartItems.deliveryPrice },
+  ];
   return (
     <Stack sx={{ margin: '1rem' }}>
       <Grid container spacing={3}>
@@ -123,7 +147,7 @@ const ReviewOrder = () => {
           </Box>
 
           <Button variant="contained" color="success" fullWidth sx={{ color: 'white' }} onClick={placeOrder}>
-            Place Order
+            {loading && <>...</>} Place Order
           </Button>
         </Grid>
       </Grid>

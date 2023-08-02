@@ -47,8 +47,7 @@ export const cartReducer = (state = { cartItems: [], deliverAddress: {}, payment
 
     case CLEAR_CART:
       return {
-        cartItems: [],
-        deliverAddress: {},
+        cartItems: []
       };
 
     case CART_DECREMENT_ITEM: 

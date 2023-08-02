@@ -6,11 +6,9 @@ import {
   Card,
   ListItem,
   ListItemText,
-  ListItemButton,
   Stack,
   Pagination,
   TextField,
-  ListItemIcon,
   Checkbox,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
@@ -82,11 +80,10 @@ export default function ProductList() {
     dispatch(productFilterAction({ type: 'category', query: updatedCategoryIds }));
   };
 
-
-   const [currentItems, setCurrentItems] = useState(products);
+  const [currentItems, setCurrentItems] = useState(products);
   const [pageCount, setPageCount] = useState(0);
   const [itemOffset, setItemOffset] = useState(0);
-  const itemsPerPage = 20;
+  const itemsPerPage = 15;
 
   useEffect(() => {
     const endOffset = itemOffset + itemsPerPage;
@@ -115,6 +112,9 @@ export default function ProductList() {
     },
   ];
 
+  const [page, setPage] = useState(1)
+  const [itemperpage, setItemperpage] = useState('')
+
   return (
     <>
       <h4 style={{ textAlign: 'center', margin: '1rem 0 2rem 0' }}>Best seller grocery near you</h4>
@@ -125,7 +125,7 @@ export default function ProductList() {
 
       <Grid container>
         <Grid xs={12} sm={12} md={2} item>
-          <Box component="form" sx={{ width: { sx: '100%', lg: '150px' } }} noValidate autoComplete="off">
+          <Box component="form" sx={{ width: { sx: '100%', lg: '180px' } }} noValidate autoComplete="off">
             <TextField
               id="search"
               name="search"
@@ -141,16 +141,8 @@ export default function ProductList() {
           {categories.map((category) => (
             <Grid key={category._id} item>
               <ListItem>
-                <ListItemButton>
-                  <ListItemIcon>
-                    <Checkbox
-                      value={category._id}
-                      checked={categoryIds.includes(category._id)}
-                      onChange={handleCategory}
-                    />
-                  </ListItemIcon>
-                  <ListItemText secondary={category.name} />
-                </ListItemButton>
+                <Checkbox value={category._id} checked={categoryIds.includes(category._id)} onChange={handleCategory} />
+                <ListItemText secondary={category.name} />
               </ListItem>
             </Grid>
           ))}
@@ -164,33 +156,26 @@ export default function ProductList() {
             ))}
         </Grid>
         <Stack spacing={2} sx={{ margin: 'auto', textAlign: 'center' }}>
-           <div className="text-center d-flex justify-content-center m-4">
-                  <ReactPaginate
-                    breakLabel="..."
-                    nextLabel="Next"
-                    onPageChange={handlePageClick}
-                    pageRangeDisplayed={3}
-                    pageCount={pageCount}
-                    previousLabel="Prev"
-                    renderOnZeroPageCount={null}
-                    containerClassName="pagination"
-                    pageLinkClassName="page-num"
-                    previousLinkClassName="page-num"
-                    nextLinkClassName="page-num"
-                    activeLinkClassName="activePage"
-                  />
-                </div>
-          <Pagination count={products.lenght} color="primary" hidePrevButton hideNextButton />
+          <div className="text-center d-flex justify-content-center m-4">
+            <ReactPaginate
+              breakLabel="..."
+              nextLabel="Next"
+              onPageChange={handlePageClick}
+              pageRangeDisplayed={3}
+              pageCount={pageCount}
+              previousLabel="Prev"
+              renderOnZeroPageCount={null}
+              containerClassName="pagination"
+              pageLinkClassName="page-num"
+              previousLinkClassName="page-num"
+              nextLinkClassName="page-num"
+              activeLinkClassName="activePage"
+            />
+          </div>
         </Stack>
       </Grid>
 
-      <Box sx={{ textAlign: 'center', margin: '2rem auto' }}>
-        <Button variant="outlined" sx={{ textAlign: 'center', margin: '2rem auto' }}>
-          Load More
-        </Button>
-      </Box>
-
-      <Box>
+      <Box sx={{my:'2rem'}}>
         <Grid container spacing={3}>
           {imagesFromWeb.map((imageView, i) => (
             <Grid item xs={12} key={i} sm={12} md={4}>

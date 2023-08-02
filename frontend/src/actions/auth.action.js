@@ -19,6 +19,10 @@ import {
   USER_UPDATE_FAILED,
   USER_UPDATE_REQUEST,
   USER_UPDATE_SUCCESS,
+  USER_PROFILE_FAILED,
+  USER_PROFILE_REQUEST,
+  USER_PROFILE_RESET,
+  USER_PROFILE_SUCCESS,
 } from '../constants/auth.constant';
 import { CLEAR_CART } from '../constants/cart.constant';
 
@@ -102,6 +106,37 @@ export const userUpdateAction = (userData) => async (dispatch, getState) => {
   } catch (error) {
     dispatch({
       type: USER_UPDATE_FAILED,
+      payload: error.response && error.response.data.message ? error.response.data.message : error.message,
+    });
+  }
+};
+
+export const userProfileUpdateAction = (userData) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: USER_PROFILE_REQUEST,
+    });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        'content-type': 'application/json',
+        Authorization: `Baerer ${userInfo?.user?.token}`,
+      },
+    };
+
+    const { data } = await axios.put(`/api/auth/user-profile${userData._id}`, userData , config);
+
+    dispatch({
+      type: USER_PROFILE_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: USER_PROFILE_FAILED,
       payload: error.response && error.response.data.message ? error.response.data.message : error.message,
     });
   }

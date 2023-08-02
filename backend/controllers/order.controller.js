@@ -113,10 +113,10 @@ export const updateOrderStatus = async (req, res) => {
     res.json(update);
 };
 
-// const GetMyOrders = asyncHandler(async (req, res) => {
-//   const orders = await Order.find({ user: req.user._id });
-//   res.json(orders);
-// });
+export const getMyOrders = async (req, res) => {
+  const orders = await orderModel.find({ user: req.user._id });
+  res.json(orders);
+};
 
 export const GetOrders = async (req, res) => {
   const orders = await orderModel

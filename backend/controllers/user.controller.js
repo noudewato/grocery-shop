@@ -141,11 +141,10 @@ export const getSingleUser = async (req, res) => {
 
 export const updateUserProfile = async (req, res) => {
   try {
-    const { id } = req.params;
+    req.body.user = req.user.id
     const { username, email, phonenumber, image, isAdmin } = req.body;
 
     const update = await userModel.findByIdAndUpdate(
-      id,
       {
         username,
         email,

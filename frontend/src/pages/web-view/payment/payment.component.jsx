@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { saveDeliverAddress, savePaymentMethod } from '../../../actions/cart.action';
 import FormInput from '../../../components/form-input/form-input.component';
 
-const Payment = ({handleNext}) => {
+const Payment = () => {
   const dispatch = useDispatch();
   const cart = useSelector((state) => state.cart);
   const { cartItems, paymentMethod, deliverAddress } = cart;
@@ -133,9 +133,9 @@ const Payment = ({handleNext}) => {
             </Stack>
           </Box>
 
-          <Button variant="contained" color="success" fullWidth sx={{ color: 'white' }} onClick={handleNext}>
+          {/* <Button variant="contained" color="success" fullWidth sx={{ color: 'white' }} onClick={handleNext}>
             Continue
-          </Button>
+          </Button> */}
         </Grid>
       </Grid>
     </Stack>

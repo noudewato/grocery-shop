@@ -11,6 +11,7 @@ import Button from '@mui/material/Button';
 import Link from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { useSelector } from 'react-redux';
 import Cart from '../cart/cart.component';
 import Payment from '../payment/payment.component';
 import ReviewOrder from '../review-order/review-order.component';
@@ -20,6 +21,12 @@ import Header from '../header/header.component';
 const defaultTheme = createTheme();
 
 const Checkout = () => {
+
+  const userLogin = useSelector(state => state.userLogin)
+  const {userInfo} = userLogin
+
+  const cart = useSelector((state) => state.cart);
+  const { cartItems } = cart;
   
   const [activeStep, setActiveStep] = React.useState(0);
 
@@ -61,7 +68,7 @@ const Checkout = () => {
         }}
       >
       </AppBar> */}
-      <Header/>
+      <Header />
       <Container component="main" sx={{ mb: 4, mt: 10 }}>
         {/* <Paper variant="outlined" sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}> */}
         <Typography component="h1" variant="h4" align="center">
@@ -89,13 +96,18 @@ const Checkout = () => {
             {getStepContent(activeStep)}
             <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
               {activeStep !== 0 && (
-                <Button onClick={handleBack} sx={{ mt: 3, ml: 1 }}>
+                <Button onClick={handleBack} sx={{ mt: 3, ml: 1 }} variant="outlined">
                   Back
                 </Button>
               )}
 
-              <Button variant="contained" onClick={handleNext} sx={{ mt: 3, ml: 1 }}>
-                {activeStep === steps.length - 1 ? 'Place order' : 'Next'}
+              <Button
+                variant="contained"
+                onClick={handleNext}
+                sx={{ mt: 3, ml: 1, mr: 2 }}
+                disabled={!userInfo?.user?.username || cartItems.length === 0 || activeStep === steps.length - 1}
+              >
+                {activeStep === steps.length - 1 ? 'End' : 'Next'}
               </Button>
             </Box>
           </>
