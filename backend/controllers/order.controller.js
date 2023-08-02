@@ -124,7 +124,7 @@ export const GetOrders = async (req, res) => {
     .populate("user")
     .sort({ createdAt: -1 });
   const count = orders.length;
-  res.json({ count, orders });
+  res.json(orders);
 };
 
 // export default det = {

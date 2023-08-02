@@ -7,7 +7,8 @@ import {
   userLoginReducer,
   userRegisterReducer,
   userUpdateReducer,
-  userDetailsReducer
+  userDetailsReducer,
+  userProfileUpdateReducer
 } from './reducers/auth.reducer';
 import {
   categoryCreateReducer,
@@ -23,7 +24,7 @@ import {
   productListReducer,
   productUpdateReducer,
 } from './reducers/product.reducer';
-import { createOrderReducer, orderDetailsReducer, orderListReducer } from './reducers/order.reducer';
+import { createOrderReducer, orderDetailsReducer, orderListMyReducer, orderListReducer } from './reducers/order.reducer';
 import { cartReducer } from './reducers/cart.reducer';
 
 const reducers = combineReducers({
@@ -33,6 +34,7 @@ const reducers = combineReducers({
   userList: userListReducer,
   userDetails: userDetailsReducer,
   userUpdate: userUpdateReducer,
+  userProfileUpdate: userProfileUpdateReducer,
   userDelete: userDeleteReducer,
   categoryList: categoryListReducer,
   categoryDetails: categoryDetailsReducer,
@@ -46,6 +48,7 @@ const reducers = combineReducers({
   productDelete: productDeleteReducer,
   orderCreate: createOrderReducer,
   orderList: orderListReducer,
+  orderListMy: orderListMyReducer,
   orderDetails: orderDetailsReducer,
 });
 

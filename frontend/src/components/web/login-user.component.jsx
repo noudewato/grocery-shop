@@ -10,19 +10,20 @@ import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
+import Stack from '@mui/material/Stack'
 import { InputAdornment, IconButton } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { LoadingButton } from '@mui/lab';
 import { USER_LOGIN_RESET } from '../../constants/auth.constant';
-
-
 
 // components
 import Iconify from '../form-input/iconify';
 
 import { userLoginAction } from '../../actions/auth.action';
-import Header from "../../pages/web-view/header/header.component"
+import Header from '../../pages/web-view/header/header.component';
+
 
 // TODO remove, this demo shouldn't need to reset the theme.
 
@@ -31,77 +32,53 @@ const LoginForm = () => {
   const dispatch = useDispatch();
 
   const userLogin = useSelector((state) => state.userLogin);
-  const { userInfo, success, loading, msg } = userLogin;
+  const { success, loading, userInfo } = userLogin;
 
   const loginField = {
     email: '',
     password: '',
   };
 
-    // const [error, setError] = useState(null);
-    // const [required, setRequired] = useState(false);
-    // const [helperText, setHelperText] = useState('');
-
   const [formField, setFormField] = useState(loginField);
 
   const { email, password } = formField;
 
+  const [emailError, setemailError] = useState('');
+  const [passwordError, setpasswordError] = useState('');
+
   const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e) => {
-
     const { name, value } = e.target;
 
     setFormField({ ...formField, [name]: value });
-
-    // if (email !== "") {
-    //   setError(false)
-    //   setHelpedText('')
-    // } else {
-    //    setError(true)
-    //   setHelpedText('')
-    // }
   };
 
-  // const handleValidation = (e) => {
-  //   let formIsValid = true;
-
-  //   if (!email.match(/^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/)) {
-  //     formIsValid = false;
-  //     setemailError('Email Not Valid');
-  //     return false;
-  //   }
-
-  //   if (!password.match(/^[a-zA-Z]{6,22}$/)) {
-  //     formIsValid = false;
-  //     setpasswordError('length must be min 6 Chracters');
-  //     return false;
-  //   } 
-
-  //   return formIsValid;
-  // };
+  const handleValidation = () => {
+    let formIsValid = true;
+    if (!email) {
+      formIsValid = false;
+      setemailError('email is required');
+    }
+    if (!password) {
+      formIsValid = false;
+      setpasswordError('password is required');
+    }
+    return formIsValid;
+  };
 
   const handleClick = () => {
-    if(!email && !password){
-      toast.error("email and password are required")
-    } 
-
-    dispatch(userLoginAction(email, password));
-    // handleValidation()
+    if (handleValidation()) {
+      dispatch(userLoginAction(email, password));
+    }
   };
 
-  // useEffect(() => {
-  //   if (userInfo?.success === false) {
-  //     toast.error(userInfo?.msg);
-  //     dispatch({
-  //     type: USER_LOGIN_RESET
-  //     })
-  //   }else 
-  //   if (userInfo?.user) {
-  //     toast.success('user Loggin successfully');
-  //     navigate('/GroceryShop/home')
-  //   }
-  // }, [dispatch, navigate, userInfo]);
+  useEffect(() => {
+    if (success) {
+      toast.success('success');
+      navigate('/GroceryShop/home', { replace: true });
+    }
+  }, [success, navigate, userInfo]);
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -112,8 +89,8 @@ const LoginForm = () => {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          boxShadow: 2,
-          padding: '1rem'
+          boxShadow: 4,
+          padding: '1rem',
         }}
       >
         <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
@@ -122,36 +99,31 @@ const LoginForm = () => {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
-        <Box component="form" onSubmit={handleClick} noValidate sx={{ mt: 1 }}>
+        <Box spacing={3} component="form">
           <TextField
-            margin="normal"
+            sx={{ my: 3 }}
+            type="email"
             required
             fullWidth
-            id="email"
-            label="Email Address"
-            name="email"
-            autoComplete="email"
-            autoFocus
-            onChange={handleChange}
             value={email}
-            error={email !== '' && !email.match(/^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/)}
-            helperText={email !== '' && !email.match(/^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/) ? "email is not valid" : " "}
+            onChange={handleChange}
+            error={emailError}
+            helperText={emailError}
+            name="email"
+            label="Email address"
           />
+
           <TextField
-            margin="normal"
-            required
-            fullWidth
+            sx={{ mb: 3 }}
             name="password"
             label="Password"
-            type="password"
-            id="password"
-            autoComplete="current-password"
-            onChange={handleChange}
+            fullWidth
             value={password}
-            error={password !== '' && !password.match(/^[a-zA-Z]{6,22}$/)}
-            helperText={
-              password !== '' && !password.match(/^[a-zA-Z]{6,22}$/) ? 'password length must be min 6 Chracters' : ' '
-            }
+            onChange={handleChange}
+            required
+            error={passwordError}
+            helperText={passwordError}
+            type={showPassword ? 'text' : 'password'}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
@@ -162,23 +134,11 @@ const LoginForm = () => {
               ),
             }}
           />
-          <FormControlLabel control={<Checkbox value="remember" color="primary" />} label="Remember me" />
-          <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
-            Sign In
-          </Button>
-          <Grid container>
-            <Grid item xs>
-              <Link style={{ color: 'black', textDecoration: 'none' }} to={'/register-user'}>
-                Forgot password?
-              </Link>
-            </Grid>
-            <Grid item>
-              <Link style={{ color: 'black', textDecoration: 'none' }} to={'/register-user'}>
-                Don't have an account? Sign Up
-              </Link>
-            </Grid>
-          </Grid>
         </Box>
+
+        <LoadingButton fullWidth size="large" type="submit" variant="contained" onClick={handleClick}>
+          {loading && <>.....</>} Login
+        </LoadingButton>
       </Box>
     </Container>
   );

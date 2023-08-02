@@ -25,6 +25,7 @@ import Checkout from './pages/web-view/checkout/checkout.component';
 import FormValidation from './components/web/form-validation.component';
 import Form from './pages/web-view/productService';
 import OrderDetailsPage from './pages/OrderDetailsPage';
+import UserProfile from './pages/web-view/user-profile';
 
 // ----------------------------------------------------------------------
 
@@ -96,7 +97,7 @@ export default function Router() {
     },
     {
       path: '/GroceryShop/user-profile',
-      element: <Home />,
+      element: <UserProfile />,
     },
     {
       path: '*',

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 // @mui
 import { alpha } from '@mui/material/styles';
-import { Box, Divider, Typography, Stack, MenuItem, Avatar, IconButton, Popover } from '@mui/material';
+import { Box, Divider, Typography, MenuItem, Avatar, IconButton, Popover } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { logout } from '../../../actions/auth.action';
@@ -96,7 +96,11 @@ export default function AccountPopover() {
                 {userInfo?.user?.email}
               </Typography>
             </Box>
-            <MenuItem>User Profile</MenuItem>
+            <MenuItem>
+              <Link style={{ color: 'black', textDecoration: 'none' }} to={'/GroceryShop/user-profile'}>
+                User Profile
+              </Link>
+            </MenuItem>
           </>
         ) : (
           <MenuItem>User</MenuItem>
