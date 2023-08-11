@@ -8,7 +8,8 @@ import {
   userRegisterReducer,
   userUpdateReducer,
   userDetailsReducer,
-  userProfileUpdateReducer
+  userProfileUpdateReducer,
+  userProfileDetailsReducer
 } from './reducers/auth.reducer';
 import {
   categoryCreateReducer,
@@ -36,6 +37,7 @@ const reducers = combineReducers({
   userUpdate: userUpdateReducer,
   userProfileUpdate: userProfileUpdateReducer,
   userDelete: userDeleteReducer,
+  userProfileDetails: userProfileDetailsReducer,
   categoryList: categoryListReducer,
   categoryDetails: categoryDetailsReducer,
   categoryCreate: categoryCreateReducer,

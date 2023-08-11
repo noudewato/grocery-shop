@@ -96,7 +96,7 @@ const Payment = () => {
                   label="Enter your location"
                 />
               </Stack>
-              <Button variant="outlined" onClick={onSubmitAddress}>
+              <Button variant="outlined" onClick={onSubmitAddress} disabled={city.length === 0 || location.length === 0}>
                 save changes
               </Button>
             </Box>

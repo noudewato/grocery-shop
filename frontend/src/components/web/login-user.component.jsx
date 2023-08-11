@@ -1,19 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import Stack from '@mui/material/Stack'
 import { InputAdornment, IconButton } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { LoadingButton } from '@mui/lab';
 import { USER_LOGIN_RESET } from '../../constants/auth.constant';
@@ -24,7 +19,6 @@ import Iconify from '../form-input/iconify';
 import { userLoginAction } from '../../actions/auth.action';
 import Header from '../../pages/web-view/header/header.component';
 
-
 // TODO remove, this demo shouldn't need to reset the theme.
 
 const LoginForm = () => {
@@ -32,7 +26,7 @@ const LoginForm = () => {
   const dispatch = useDispatch();
 
   const userLogin = useSelector((state) => state.userLogin);
-  const { success, loading, userInfo } = userLogin;
+  const {  loading, userInfo } = userLogin;
 
   const loginField = {
     email: '',
@@ -60,6 +54,12 @@ const LoginForm = () => {
       formIsValid = false;
       setemailError('email is required');
     }
+
+    if (email && !email.match(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/)) {
+      formIsValid = false;
+      setemailError('email not valid');
+    }
+
     if (!password) {
       formIsValid = false;
       setpasswordError('password is required');
@@ -74,18 +74,27 @@ const LoginForm = () => {
   };
 
   useEffect(() => {
-    if (success) {
-      toast.success('success');
+    if (userInfo && userInfo?.success) {
+      toast.success(`${userInfo?.message}`);
       navigate('/GroceryShop/home', { replace: true });
     }
-  }, [success, navigate, userInfo]);
+
+    if (userInfo && !userInfo?.success) {
+      toast.error(`${userInfo?.message}`);
+      dispatch({
+        type: USER_LOGIN_RESET,
+      });
+      localStorage.removeItem('userInfo');
+    }
+  }, [navigate, userInfo, dispatch]);
+
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <Header />
       <Box
         sx={{
-          marginTop: 10,
+          marginTop: 20,
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',

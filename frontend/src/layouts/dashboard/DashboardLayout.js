@@ -10,10 +10,7 @@ import Spinner from '../../components/spinner/spinner.component';
 import Header from './header';
 import Nav from './nav';
 
-
 // ----------------------------------------------------------------------
-
-
 
 const APP_BAR_MOBILE = 64;
 const APP_BAR_DESKTOP = 92;
@@ -40,30 +37,17 @@ const Main = styled('div')(({ theme }) => ({
 // ----------------------------------------------------------------------
 
 export default function DashboardLayout() {
+  const navigate = useNavigate();
 
-  const navigate = useNavigate()
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
 
-  const userLogin = useSelector(state => state.userLogin)
-  const { userInfo } = userLogin
-  
   useEffect(() => {
     if (!userInfo) {
-      navigate("/login")
+      navigate('/login');
     }
-  }, [navigate, userInfo])
+  }, [navigate, userInfo]);
   const [open, setOpen] = useState(false);
-
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const setTimmer = setTimeout(() => {
-      if (isLoading) {
-        setIsLoading(false);
-      }
-    }, 2500);
-
-    return () => clearTimeout(setTimmer);
-  }, [isLoading]);
 
   return (
     <StyledRoot>
@@ -71,13 +55,9 @@ export default function DashboardLayout() {
 
       <Nav openNav={open} onCloseNav={() => setOpen(false)} />
 
-      {isLoading ? (
-        <Spinner />
-      ) : (
-        <Main>
-          <Outlet />
-        </Main>
-      )}
+      <Main>
+        <Outlet />
+      </Main>
     </StyledRoot>
   );
 }

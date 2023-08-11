@@ -1,30 +1,42 @@
 import userModel from "../models/user.model.js";
+import expressAsyncHandler from "express-async-handler";
 import { generateToken } from "../utils/generateToken.js";
 import { sendEmail } from "../utils/sendEmail.js";
 
 export const registerUser = async (req, res) => {
   try {
-    const {username, email, phonenumber, password} = req.body
-    if (!username || !email || !phonenumber || !password) {
-      return res.send("Please all field are required");
+    const { username, phonenumber, email, password } = req.body;
+    if (!username || !phonenumber || !email || !password) {
+      return res.status(200).json("Please all field are required");
     }
 
     const existingUser = await userModel.findOne({ email });
+    const checkPhoneNumber = await userModel.findOne({ phonenumber });
 
     if (existingUser) {
-      res.status(200).send("User Already exists please login");
+      return res
+        .status(200)
+        .json({ success: false, message: "User Already exists please login" });
+    }
+
+    if (checkPhoneNumber) {
+      return res.status(200).json({
+        success: false,
+        message: "phonenumber is in use enter a new number",
+      });
     }
 
     const user = new userModel(req.body);
-
     await user.save();
 
     if (user) {
       res.status(201);
       res.json({
+        success: true,
+        message: "user Registered successfully",
         user: {
           _id: user._id,
-          name: user.username,
+          username: user.username,
           email: user.email,
           image: user.image,
           phonenumber: user.phonenumber,
@@ -54,7 +66,7 @@ export const loginUser = async (req, res) => {
     if ((!email, !password)) {
       return res
         .status(200)
-        .json({ success: false, msg: "email and password are required!" });
+        .json({ success: false, message: "email and password are required!" });
     }
 
     const user = await userModel.findOne({ email });
@@ -66,11 +78,13 @@ export const loginUser = async (req, res) => {
     }
 
     if (user && !(await user.matchPassword(password))) {
-      res.status(200).json({ success: false, msg: "invalid password" });
+      res.status(200).json({ success: false, message: "invalid password" });
     }
 
     if (user && (await user.matchPassword(password))) {
       res.status(200).json({
+        success: true,
+        message: "user loggin successfully",
         user: {
           _id: user._id,
           username: user.username,
@@ -87,8 +101,6 @@ export const loginUser = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       success: false,
-      eroor: error,
-      msg: "Your request could not be processed. Please try again.",
     });
   }
 };
@@ -96,15 +108,16 @@ export const loginUser = async (req, res) => {
 export const getAllUsers = async (req, res) => {
   try {
     const users = await userModel
-      .find().populate('orders', '_id')
-      .sort({ created: -1 })
+      .find()
+      .populate("orders", "_id")
+      .sort({ createdAt: -1 });
 
     if (users) {
       res.status(200).json(users);
     } else {
       res.status(404).json({
         success: false,
-        msg: "users list not found",
+        message: "users list not found",
         allUsers,
       });
     }
@@ -127,7 +140,7 @@ export const getSingleUser = async (req, res) => {
     } else
       res.status(400).json({
         success: true,
-        msg: "failed, user not found",
+        message: "failed, user not found",
         allUsers,
       });
   } catch (error) {
@@ -139,33 +152,48 @@ export const getSingleUser = async (req, res) => {
   }
 };
 
+export const userProfile = async (req, res, next) => {
+  // const user = await userModel.findOne(req.user.username)
+
+  // if (user) {
+  // re  res.status(200).json(user)
+  // }
+
+  const me = await userModel.findById(req.user._id);
+
+  return res
+    .status(200)
+    .json({ success: true, message: "get user details successfully", me });
+};
+
 export const updateUserProfile = async (req, res) => {
   try {
-    req.body.user = req.user.id
-    const { username, email, phonenumber, image, isAdmin } = req.body;
+    const user = await userModel.findById(req.user._id);
 
-    const update = await userModel.findByIdAndUpdate(
-      {
-        username,
-        email,
-        phonenumber,
-        image,
-        isAdmin,
-      },
-      { new: true }
-    );
+    if (user) {
+      user.username = req.body.username || user.username;
+      user.phonenumber = req.body.phonenumber || user.phonenumber;
+      user.email = req.body.email || user.email;
+      if (req.body.password) {
+        user.password = req.body.password;
+      }
+      user.image = req.body.image || user.image;
+    }
 
-    res.status(200);
-    res.json({
-      success: true,
-      msg: "Good job, user updated successfully",
-      update,
-    });
+    const updatedUser = await user.save();
+
+    if (updatedUser) {
+      res
+        .status(200)
+        .json({
+          success: true,
+          message: "updated user profile successfully",
+          updatedUser,
+        });
+    }
   } catch (error) {
     res.status(500).json({
       success: false,
-      eroor: error,
-      msg: "bad request",
     });
   }
 };
@@ -188,8 +216,6 @@ export const updateUser = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       success: false,
-      eroor: error,
-      msg: "bad request",
     });
   }
 };
@@ -199,21 +225,18 @@ export const deleteUser = async (req, res) => {
     const user = await userModel.findByIdAndDelete(req.params.id);
 
     if (user) {
-      res.status(200).json({
-        success: true,
-        msg: "Good job, user deleted successfully",
-      });
+      res.status(200).json(user);
     } else {
       res.status(400).json({
         success: false,
-        msg: "user not found",
+        message: "user not found",
       });
     }
   } catch (error) {
     res.status(500).json({
       success: false,
       error: error,
-      msg: "Your request could not be processed. Please try again.",
+      message: "Your request could not be processed. Please try again.",
     });
   }
 };
@@ -226,7 +249,7 @@ export const forgotPassword = async (req, res) => {
     if (!user) {
       res.status(400).json({
         success: false,
-        msg: "Could not sent email, Please try again",
+        message: "Could not sent email, Please try again",
       });
     }
 
@@ -250,7 +273,7 @@ export const forgotPassword = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      msg: "Email sent",
+      message: "Email sent",
     });
     // try {
     //  await sendEmail({
@@ -261,7 +284,7 @@ export const forgotPassword = async (req, res) => {
 
     //    res.status(200).json({
     //      success: true,
-    //      msg: "Email sent",
+    //      message: "Email sent",
     //    });
     // } catch (error) {
     //   user.resetPasswordToken = undefined
@@ -272,14 +295,14 @@ export const forgotPassword = async (req, res) => {
     //    res.status(500).json({
     //      success: false,
     //      error: error,
-    //      msg: "could not reset password. Please try again.",
+    //      message: "could not reset password. Please try again.",
     //    });
     // }
   } catch (error) {
     res.status(500).json({
       success: false,
       error: error,
-      msg: "Your request could not be processed. Please try again.",
+      message: "Your request could not be processed. Please try again.",
     });
   }
 };
@@ -289,7 +312,7 @@ export const createAddress = async (req, res) => {
     const { address } = req.body;
 
     if (!address) {
-      return res.status(400).json({ msg: "error" });
+      return res.status(400).json({ message: "error" });
     }
 
     const update = await userModel.findByIdAndUpdate(
@@ -306,7 +329,7 @@ export const createAddress = async (req, res) => {
     res.status(500).json({
       success: false,
       eroor: error,
-      msg: "bad request",
+      message: "bad request",
     });
   }
 };
@@ -322,13 +345,13 @@ export const getAllUsersOrder = async (req, res) => {
     if (allUsers) {
       res.status(200).json({
         success: true,
-        msg: "Done, get all users successfully",
+        message: "Done, get all users successfully",
         allUsers,
       });
     } else {
       res.status(404).json({
         success: false,
-        msg: "users list not found",
+        message: "users list not found",
         allUsers,
       });
     }

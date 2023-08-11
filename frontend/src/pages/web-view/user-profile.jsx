@@ -5,7 +5,8 @@ import { LoadingButton } from '@mui/lab';
 import axios from 'axios';
 import moment from 'moment';
 import { toast } from 'react-toastify';
-import { userProfileUpdateAction } from '../../actions/auth.action';
+import { useNavigate } from 'react-router-dom';
+import { getUserProfileAction, userProfileUpdateAction } from '../../actions/auth.action';
 import { orderListMyAction } from '../../actions/order.action';
 import FormInput from '../../components/form-input/form-input.component';
 import Header from './header/header.component';
@@ -13,11 +14,15 @@ import Label from '../../components/label/Label';
 
 const UserProfile = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
+   const userProfileDetails = useSelector((state) => state.userProfileDetails);
+   const { user } = userProfileDetails;
+
   const userProfileUpdate = useSelector((state) => state.userProfileUpdate);
-  const { loading } = userProfileUpdate;
+  const { loading, user:userUpdated } = userProfileUpdate;
 
   const orderListMy = useSelector((state) => state.orderListMy);
   const { orders } = orderListMy;
@@ -32,16 +37,11 @@ const UserProfile = () => {
   const [image, setImage] = useState('');
   const [uploading, setUploading] = useState(false);
 
-  // useEffect(() => {
-  //   if (successUpdate) {
-  //     toast.success('updated successfully');
-  //     setUsername('');
-  //     setEmail('');
-  //     setPassword('');
-  //     setImage('');
-  //     setPhonenumber('');
-  //   }
-  // }, [successUpdate]);
+  useEffect(() => {
+    if (!userInfo?.user) {
+      navigate('/GroceryShop/home');
+    }
+  }, [userInfo, navigate]);
 
   const handleValidation = () => {
     let formIsValid = true;
@@ -60,7 +60,8 @@ const UserProfile = () => {
     return formIsValid;
   };
 
-  const handleEditProfileClick = () => {
+  const handleEditProfileClick = (e) => {
+    e.preventDefault()
     if (handleValidation()) {
       dispatch(
         userProfileUpdateAction({
@@ -75,18 +76,25 @@ const UserProfile = () => {
   };
 
   useEffect(() => {
-    if (userInfo) {
-      setUsername(userInfo?.user?.username);
-      setEmail(userInfo?.user?.email);
-      setPassword(userInfo?.user?.password);
-      setPhonenumber(userInfo?.user?.phonenumber);
-      setImage(userInfo?.user?.image);
+    if (user) {
+      setUsername(user?.me?.username);
+      setEmail(user?.me?.email);
+      setPhonenumber(user?.me?.phonenumber);
+      setImage(user?.me?.image);
     }
-  }, [userInfo]);
+  }, [user]);
 
   useEffect(() => {
     dispatch(orderListMyAction());
+    dispatch(getUserProfileAction());
+
   }, [dispatch]);
+
+   useEffect(() => {
+     if (userUpdated) {
+       toast.success(userUpdated.message)
+     }
+   }, [userUpdated]);
 
   const uploadingHandler = async (e) => {
     const file = e.target.files[0];
@@ -204,6 +212,15 @@ const UserProfile = () => {
                   helperText={phonenumberError}
                 />
 
+                <FormInput
+                  text="text"
+                  value={image}
+                  onChange={(e) => setImage(e.target.value)}
+                  fullWidth
+                  name="image"
+                  label="image"
+                />
+
                 <LoadingButton
                   fullWidth
                   size="large"
@@ -230,6 +247,7 @@ const UserProfile = () => {
                   display: 'flex',
                   justifyContent: 'space-between',
                   alignItems: 'center',
+                  flexWrap: 'wrap',
                 }}
               >
                 <Box>

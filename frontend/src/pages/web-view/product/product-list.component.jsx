@@ -159,11 +159,11 @@ export default function ProductList() {
           <div className="text-center d-flex justify-content-center m-4">
             <ReactPaginate
               breakLabel="..."
-              nextLabel="Next"
+              nextLabel=""
               onPageChange={handlePageClick}
               pageRangeDisplayed={3}
               pageCount={pageCount}
-              previousLabel="Prev"
+              previousLabel={null}
               renderOnZeroPageCount={null}
               containerClassName="pagination"
               pageLinkClassName="page-num"

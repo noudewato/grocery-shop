@@ -27,8 +27,10 @@ import {
 
 import { Link } from 'react-router-dom';
 
-import Spinner from '../components/spinner/spinner.component';
 
+import { toast } from 'react-toastify';
+import { CATEGORY_DELETE_RESET } from '../constants/category.constant';
+import Spinner from '../components/spinner/spinner.component';
 import DialogBox from '../components/dialog-box/dialog.component';
 
 import { categoryDeleteAction,  categoryListAction } from '../actions/category.action';
@@ -86,11 +88,25 @@ export default function CategoryPage() {
   const dispatch = useDispatch();
   const categoryList = useSelector((state) => state.categoryList);
   const { categories, loading } = categoryList;
-  console.log(categories);
+  
+
+  const categoryDelete = useSelector((state) => state.categoryDelete);
+  const { success, loading: loadingDelete } = categoryDelete;
+
 
   useEffect(() => {
     dispatch(categoryListAction());
   }, [dispatch]);
+
+   useEffect(() => {
+     if (success) {
+       toast.success('category deleted successfully');
+        dispatch({
+          type: CATEGORY_DELETE_RESET,
+        });
+       dispatch(categoryListAction());
+     }
+   }, [dispatch, success]);
 
   const [openm, setOpenm] = useState(null);
 

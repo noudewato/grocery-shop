@@ -20,17 +20,14 @@ import Header from '../header/header.component';
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
-const Checkout = () => {
-
-  const userLogin = useSelector(state => state.userLogin)
-  const {userInfo} = userLogin
+const Checkout = ({city, location}) => {
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
 
   const cart = useSelector((state) => state.cart);
   const { cartItems } = cart;
-  
-  const [activeStep, setActiveStep] = React.useState(0);
 
-  
+  const [activeStep, setActiveStep] = React.useState(0);
 
   const handleNext = () => {
     setActiveStep(activeStep + 1);
@@ -45,9 +42,9 @@ const Checkout = () => {
   function getStepContent(step) {
     switch (step) {
       case 0:
-        return <Cart handleNext={handleNext} />;
+        return <Cart />;
       case 1:
-        return <Payment handleNext={handleNext}/>;
+        return <Payment />;
       case 2:
         return <ReviewOrder />;
       default:
@@ -105,7 +102,12 @@ const Checkout = () => {
                 variant="contained"
                 onClick={handleNext}
                 sx={{ mt: 3, ml: 1, mr: 2 }}
-                disabled={!userInfo?.user?.username || cartItems.length === 0 || activeStep === steps.length - 1}
+                disabled={
+                  !userInfo?.user?.username ||
+                  cartItems.length === 0 ||
+                  activeStep === steps.length - 1 || 
+                  city.length === 0
+                }
               >
                 {activeStep === steps.length - 1 ? 'End' : 'Next'}
               </Button>

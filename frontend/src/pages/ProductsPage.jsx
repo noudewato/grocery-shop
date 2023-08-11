@@ -43,8 +43,6 @@ import Iconify from '../components/form-input/iconify';
 import Scrollbar from '../components/scrollbar';
 // sections
 import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
-// mock
-import USERLIST from '../_mock/user';
 
 import DialogBox from '../components/dialog-box/dialog.component';
 
@@ -101,8 +99,18 @@ const ProductsPage = () => {
   const { products, loading } = productList;
 
   const productDelete = useSelector((state) => state.productDelete);
-  const { success, loading: deleteLoading } = productDelete;
-  console.log(products);
+  const { success } = productDelete;
+  
+
+  useEffect(() => {
+    if (success) {
+      toast.success('product deleted successfully');
+      dispatch({
+        type: PRODUCT_DELETE_RESET,
+      });
+      dispatch(productListAction());
+    }
+  }, [dispatch, success]);
 
   useEffect(() => {
     if (success) {
@@ -203,7 +211,7 @@ const ProductsPage = () => {
       <Helmet>
         <title> Grocery Shop | Dashbord | Product </title>
       </Helmet>
-      {loading || deleteLoading ? (
+      {loading ? (
         <Spinner />
       ) : (
         <Container>
@@ -222,7 +230,7 @@ const ProductsPage = () => {
             <UserListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} />
 
             <Scrollbar>
-              <TableContainer sx={{ minWidth: 1250 }}>
+              <TableContainer sx={{ minWidth: 1500 }}>
                 <Table>
                   <UserListHead
                     order={order}
@@ -274,14 +282,14 @@ const ProductsPage = () => {
                           <TableCell align="left">{user?.username}</TableCell>
 
                           <TableCell align="left">
-                            {moment(createdAt).format(`Do MMMM YYYY, `)}
+                            {moment(createdAt).format(`Do MMMM YYYY`)}
                             <br />
-                            {moment(createdAt).format(`h:mm:ss a`)}
+                            {moment(createdAt).format(`h:mm A`)}
                           </TableCell>
                           <TableCell align="left">
-                            {moment(updatedAt).format(`Do MMMM YYYY, `)}
+                            {moment(updatedAt).format(`Do MMMM YYYY `)}
                             <br />
-                            {moment(updatedAt).format(`h:mm:ss a`)}
+                            {moment(updatedAt).format(`h:mm A`)}
                           </TableCell>
                           <TableCell align="left">
                             {status === 'New' ? (

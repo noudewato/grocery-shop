@@ -23,6 +23,9 @@ import {
   USER_PROFILE_REQUEST,
   USER_PROFILE_RESET,
   USER_PROFILE_SUCCESS,
+  USER_PROFILE_DETAILS_REQUEST,
+  USER_PROFILE_DETAILS_SUCCESS,
+  USER_PROFILE_DETAILS_FAILED,
 } from '../constants/auth.constant';
 import { CLEAR_CART } from '../constants/cart.constant';
 
@@ -66,12 +69,19 @@ export const userRegisterAction = (username, email, phonenumber, password) => as
       },
     };
 
-    const { data } = await axios.post('/api/auth/registerUser', { username, email, phonenumber, password }, config);
+    const { data } = await axios.post('/api/auth/registerUser', { username, phonenumber, email, password }, config);
 
     dispatch({
       type: USER_REGISTER_SUCCESS,
       payload: data,
     });
+
+    dispatch({
+      type: USER_LOGIN_SUCCESS,
+      payload: data,
+    });
+
+    localStorage.setItem('userInfo', JSON.stringify(data));
   } catch (error) {
     dispatch({
       type: USER_REGISTER_FAILED,
@@ -97,7 +107,7 @@ export const userUpdateAction = (userData) => async (dispatch, getState) => {
     //   },
     // };
 
-    const { data } = await axios.put(`/api/auth/${userData._id}`, userData, /* config */);
+    const { data } = await axios.put(`/api/auth/${userData._id}`, userData /* config */);
 
     dispatch({
       type: USER_UPDATE_SUCCESS,
@@ -111,10 +121,10 @@ export const userUpdateAction = (userData) => async (dispatch, getState) => {
   }
 };
 
-export const userProfileUpdateAction = (userData) => async (dispatch, getState) => {
+export const getUserProfileAction = () => async (dispatch, getState) => {
   try {
     dispatch({
-      type: USER_PROFILE_REQUEST,
+      type: USER_PROFILE_DETAILS_REQUEST,
     });
 
     const {
@@ -124,16 +134,61 @@ export const userProfileUpdateAction = (userData) => async (dispatch, getState) 
     const config = {
       headers: {
         'content-type': 'application/json',
+        Authorization: `Bearer ${userInfo?.user?.token}`,
+      },
+    };
+
+    const { data } = await axios.get('/api/auth/me/s', config);
+
+    dispatch({
+      type: USER_PROFILE_DETAILS_SUCCESS,
+      payload: data,
+    });
+
+    // dispatch({
+    //   type: USER_LOGIN_SUCCESS,
+    //   payload: data,
+    // });
+
+    // localStorage.setItem('userInfo', JSON.stringify(data));
+  } catch (error) {
+    dispatch({
+      type: USER_PROFILE_DETAILS_FAILED,
+      payload: error.response && error.response.data.message ? error.response.data.message : error.message,
+    });
+  }
+};
+
+export const userProfileUpdateAction = (userData) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: USER_PROFILE_REQUEST,
+    });
+
+    const {
+      userLogin: {userInfo},
+    } = getState();
+
+    const config = {
+      headers: {
+        'content-type': 'application/json',
         Authorization: `Baerer ${userInfo?.user?.token}`,
       },
     };
 
-    const { data } = await axios.put(`/api/auth/user-profile${userData._id}`, userData , config);
+    const { data } = await axios.put('/api/auth/me/e', userData, config);
 
     dispatch({
       type: USER_PROFILE_SUCCESS,
       payload: data,
     });
+
+    dispatch({
+      type: USER_LOGIN_SUCCESS,
+      payload: data,
+    });
+
+    localStorage.setItem('userInfo', JSON.stringify(data));
   } catch (error) {
     dispatch({
       type: USER_PROFILE_FAILED,
@@ -210,18 +265,18 @@ export const userDeleteAction = (id) => async (dispatch, getState) => {
       type: USER_DELETE_REQUEST,
     });
 
-    const {
-      userLogin: { userInfo },
-    } = getState();
+    // const {
+    //   userLogin: { userInfo },
+    // } = getState();
 
-    const config = {
-      headers: {
-        'content-type': 'application/json',
-        Authorization: `Baerer ${userInfo?.user?.token}`,
-      },
-    };
+    // const config = {
+    //   headers: {
+    //     'content-type': 'application/json',
+    //     Authorization: `Baerer ${userInfo.user.token}`,
+    //   },
+    // };
 
-    const { data } = await axios.put(`/api/auth/${id}`, config);
+    const { data } = await axios.delete(`/api/auth/${id}`);
 
     dispatch({
       type: USER_DELETE_SUCCESS,

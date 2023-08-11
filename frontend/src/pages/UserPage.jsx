@@ -27,7 +27,9 @@ import {
   Switch,
 } from '@mui/material';
 
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { USER_DELETE_RESET } from '../constants/auth.constant';
 
 import DialogBox from '../components/dialog-box/dialog.component';
 
@@ -83,18 +85,36 @@ function applySortFilter(array, comparator, query) {
   return stabilizedThis?.map((el) => el[0]);
 }
 
-
 export default function UserPage() {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const userList = useSelector((state) => state.userList);
   const { users, loading } = userList;
 
+  const userDelete = useSelector((state) => state.userDelete);
+  const { success } = userDelete;
 
   useEffect(() => {
     dispatch(userListAction());
   }, [dispatch]);
 
+  useEffect(() => {
+    if (success) {
+      toast.success('user deleted successfully');
+      dispatch({
+        type: USER_DELETE_RESET,
+      });
+      dispatch(userListAction());
+    }
+  }, [dispatch, success]);
+
+  useEffect(() => {
+    if (success) {
+      toast.success('user Deleted Successfully');
+      dispatch({
+        type: USER_DELETE_RESET,
+      });
+    }
+  }, [success, dispatch]);
 
   const [openm, setOpenm] = useState(null);
 
@@ -110,10 +130,6 @@ export default function UserPage() {
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  const handleOpenMenu = (event) => {
-    setOpenm(event.currentTarget);
-  };
-
   const handleCloseMenu = () => {
     setOpenm(null);
   };
@@ -122,30 +138,6 @@ export default function UserPage() {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
-  };
-
-  const handleSelectAllClick = (event) => {
-    if (event.target.checked) {
-      const newSelecteds = users.map((n) => n.username);
-      setSelected(newSelecteds);
-      return;
-    }
-    setSelected([]);
-  };
-
-  const handleClick = (event, username) => {
-    const selectedIndex = selected.indexOf(username);
-    let newSelected = [];
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, username);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1));
-    }
-    setSelected(newSelected);
   };
 
   const handleChangePage = (event, newPage) => {

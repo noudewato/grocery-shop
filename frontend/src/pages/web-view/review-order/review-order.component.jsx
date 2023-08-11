@@ -52,7 +52,7 @@ const ReviewOrder = () => {
       dispatch({
         type: CLEAR_CART,
       });
-      toast.success(`order No.${(createdOrder?._id).slice(0, 8)} created successfully`);
+      toast.success(`order created successfully`);
       navigate('/GroceryShop/home');
 
        dispatch({

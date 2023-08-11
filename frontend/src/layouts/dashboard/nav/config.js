@@ -31,23 +31,6 @@ const navConfig = [
     path: '/dashboard/order',
     icon: icon('ic_cart'),
   },
-
-  // {
-  //   title: 'old-product',
-  //   path: '/dashboard/old-product',
-  //   icon: icon('ic_cart'),
-  // },
-
-  {
-    title: 'report',
-    path: '/report',
-    icon: icon('ic_lock'),
-  },
-  // {
-  //   title: 'Not found',
-  //   path: '/404',
-  //   icon: icon('ic_disabled'),
-  // },
 ];
 
 export default navConfig;

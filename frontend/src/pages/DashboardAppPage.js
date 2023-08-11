@@ -1,57 +1,98 @@
+import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { faker } from '@faker-js/faker';
 // @mui
 import { useTheme } from '@mui/material/styles';
 import { Grid, Container, Typography } from '@mui/material';
+import { useSelector, useDispatch } from 'react-redux';
+import Spinner from '../components/spinner/spinner.component';
 // components
 import Iconify from '../components/form-input/iconify';
+import { userListAction } from '../actions/auth.action';
+import { orderListAction } from '../actions/order.action';
+import { productListAction } from '../actions/product.action';
+import { categoryListAction } from '../actions/category.action';
 // sections
 import {
-  AppTasks,
-  AppNewsUpdate,
-  AppOrderTimeline,
-  AppCurrentVisits,
-  AppWebsiteVisits,
-  AppTrafficBySite,
+  // AppTasks,
+  // AppNewsUpdate,
+  // AppOrderTimeline,
+  // AppCurrentVisits,
+  // AppWebsiteVisits,
+  // AppTrafficBySite,
   AppWidgetSummary,
-  AppCurrentSubject,
-  AppConversionRates,
+  // AppCurrentSubject,
+  // AppConversionRates,
 } from '../sections/@dashboard/app';
+
 
 // ----------------------------------------------------------------------
 
 export default function DashboardAppPage() {
   const theme = useTheme();
+  const dispatch = useDispatch()
+  const userList = useSelector((state) => state.userList);
+  const { users } = userList;
+
+  const productList = useSelector((state) => state.productList);
+  const { products } = productList;
+
+  const categoryList = useSelector((state) => state.categoryList);
+  const { categories } = categoryList;
+
+  const orderList = useSelector((state) => state.orderList);
+  const { orders } = orderList;
+
+  useEffect(() => {
+    dispatch(userListAction())
+    dispatch(orderListAction());
+    dispatch(productListAction());
+    dispatch(categoryListAction());
+  },[dispatch]);
+
+
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const setTimmer = setTimeout(() => {
+      if (isLoading) {
+        setIsLoading(false);
+      }
+    }, 2500);
+
+    return () => clearTimeout(setTimmer);
+  }, [isLoading]);
+
 
   return (
     <>
       <Helmet>
-        <title> Dashboard | Minimal UI </title>
+        <title> Dashboard | Grocery Shop </title>
       </Helmet>
 
-      <Container maxWidth="xl">
+      {isLoading ? <Spinner/> : (<Container maxWidth="xl">
         <Typography variant="h4" sx={{ mb: 5 }}>
           Hi, Welcome back
         </Typography>
 
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Weekly Sales" total={714000} icon={'ant-design:android-filled'} />
+            <AppWidgetSummary title="Users" total={users?.length} color="info" icon={'ant-design:apple-filled'} />
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="New Users" total={1352831} color="info" icon={'ant-design:apple-filled'} />
+            <AppWidgetSummary title="Orders" total={orders?.length} color="warning" icon={'ant-design:windows-filled'} />
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Item Orders" total={1723315} color="warning" icon={'ant-design:windows-filled'} />
+            <AppWidgetSummary title="Products" total={products?.length} color="error" icon={'ant-design:bug-filled'} />
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Bug Reports" total={234} color="error" icon={'ant-design:bug-filled'} />
+            <AppWidgetSummary title="Categories" total={categories?.length} icon={'ant-design:android-filled'} />
           </Grid>
 
-          <Grid item xs={12} md={6} lg={8}>
+          {/* <Grid item xs={12} md={6} lg={8}>
             <AppWebsiteVisits
               title="Website Visits"
               subheader="(+43%) than last year"
@@ -211,9 +252,9 @@ export default function DashboardAppPage() {
                 { id: '5', label: 'Sprint Showcase' },
               ]}
             />
-          </Grid>
+          </Grid> */}
         </Grid>
-      </Container>
+        </Container>)}
     </>
   );
 }

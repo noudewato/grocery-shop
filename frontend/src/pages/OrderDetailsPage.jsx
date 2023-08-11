@@ -33,31 +33,18 @@ const OrderDetailsPage = () => {
   const orderDetails = useSelector((state) => state.orderDetails);
   const { order, loading } = orderDetails;
 
-  const [status, setStatus] = useState(["pending", "approved", "completed", "cancel"]);
+  const status = ["pending", "approved", "completed", "cancel"];
 
   useEffect(() => {
     dispatch(getOrderDetailsAction(id));
   }, [id, dispatch]);
 
-  // const onChangeHandler = (orderId, e) => {
-  //   dispatch(orderStatusUpdate({ orderId, status: e.target.value }));
-  //   console.log();
-  // };
-  // console.log(onChangeHandler);
 
   const handleChange = async (orderId, value) => {
     try {
-      // const {
-      //   userLogin: { userInfo },
-      // } = getState();
 
-      // const config = {
-      //   headers: {
-      //     Authorization: `Bearer ${userInfo.token}`,
-      //   },
-      // };
-      const { data } = await axios.put(`/api/order/update-order/${orderId}`, { status: value });
-      
+      const { data } = await axios.put(`/api/order/update-order/${orderId}`, { status: "Approved" });
+      console.log(data);
     } catch (error) {
       console.log(error);
     }
@@ -94,7 +81,7 @@ const OrderDetailsPage = () => {
             <Box>
               <select
                 defaultValue={order?.status}
-                onChange={(value) => handleChange(order._id, value)}
+                onChange={(value) => handleChange(order._id, JSON.stringify(value))}
                 style={{ marginRight: '1rem', padding: '.5rem', borderRadius: '1rem', border: '.5px solid grey' }}
               >
                 {status.map((s, i) => (

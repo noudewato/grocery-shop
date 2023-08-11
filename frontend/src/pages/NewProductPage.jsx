@@ -305,7 +305,7 @@ const NewProductPage = () => {
                   </FormInput>
 
                   <FormInput
-                    text="text"
+                    text="number"
                     value={price}
                     onChange={(e) => setPrice(e.target.value)}
                     fullWidth

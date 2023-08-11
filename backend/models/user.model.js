@@ -10,7 +10,7 @@ var validateEmail = function (email) {
 
 var validatePhoneNumber = function (phonenumber) {
   var matchPhoneNumber = /^[0-9]+$/;
-  return matchPhoneNumber.test(phonenumber);
+  return matchPhoneNumber.test(phonenumber)
 };
 
 const userSchema = new schema({
@@ -18,6 +18,16 @@ const userSchema = new schema({
     type: String,
     required: [true, "username is required"],
   },
+
+  phonenumber: {
+    type: String,
+    required: [true, "phonenumber is required"],
+    trim: true,
+    unique: true,
+    validate: [validatePhoneNumber, "only number is required"],
+    match: /^[0-9]+$/,
+  },
+
   email: {
     type: String,
     required: [true, "email address is required"],
@@ -30,14 +40,7 @@ const userSchema = new schema({
       "Please fill a valid email address",
     ],
   },
-  phonenumber: {
-    type: String,
-    required: [true, "phonenumber is required"],
-    trim: true,
-    unique: true,
-    validate: [validatePhoneNumber, "only number is required"],
-    match: /^[0-9]+$/,
-  },
+
   password: {
     type: String,
     required: [true, "password is required"],

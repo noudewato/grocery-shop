@@ -64,7 +64,7 @@ export default function AccountPopover() {
           }),
         }}
       >
-        <Avatar src={userInfo && userInfo.user.image} alt="photoURL" />
+        <Avatar src={userInfo && userInfo?.user?.image} alt="photoURL" />
       </IconButton>
 
       <Popover
@@ -86,7 +86,7 @@ export default function AccountPopover() {
           },
         }}
       >
-        {userInfo && userInfo.user ? (
+        {userInfo && userInfo?.user?.isAdmin === false ? (
           <>
             <Box sx={{ my: 1.5, px: 2.5 }}>
               <Typography variant="subtitle2" noWrap>
@@ -102,13 +102,22 @@ export default function AccountPopover() {
               </Link>
             </MenuItem>
           </>
+        ) : userInfo && userInfo?.user?.isAdmin ? (
+            <Box sx={{ my: 1.5, px: 2.5 }}>
+              <Typography variant="subtitle2" noWrap>
+                {userInfo?.user?.email}
+              </Typography>
+              <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
+                {userInfo?.user?.email}
+              </Typography>
+            </Box>
         ) : (
           <MenuItem>User</MenuItem>
         )}
 
         <Divider sx={{ borderStyle: 'dashed' }} />
 
-        {userInfo && userInfo.user ? (
+        {userInfo && userInfo?.user ? (
           <MenuItem sx={{ display: 'none' }}>
             <Link style={{ color: 'black', textDecoration: 'none', display: 'none' }} to={'/login-user'}>
               Login

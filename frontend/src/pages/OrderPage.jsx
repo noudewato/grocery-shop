@@ -13,7 +13,6 @@ import {
   Avatar,
   Button,
   Popover,
-  Checkbox,
   TableRow,
   MenuItem,
   TableHead,
@@ -25,9 +24,7 @@ import {
   TableContainer,
   TablePagination,
   Collapse,
-  Box,
-  CardMedia,
-  CardActionArea,
+  Box
 } from '@mui/material';
 
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -38,7 +35,7 @@ import moment from 'moment';
 
 import Spinner from '../components/spinner/spinner.component';
 
-import { orderListAction, orderDeleteAction } from '../actions/order.action';
+import { orderListAction } from '../actions/order.action';
 
 // components
 import Label from '../components/label';
@@ -100,28 +97,9 @@ const OrderPage = () => {
   const orderList = useSelector((state) => state.orderList);
   const { orders, loading } = orderList;
 
-  //   const productDelete = useSelector((state) => state.productDelete);
-  //   const { success, loading: deleteLoading } = productDelete;
-  //   console.log(products);
-
-  //   useEffect(() => {
-  //     if (success) {
-  //       toast.success('Pruduct Deleted Successfully');
-  //       dispatch({
-  //         type: PRODUCT_DELETE_RESET,
-  //       });
-  //     }
-  //   }, [success, dispatch]);
-
   useEffect(() => {
     dispatch(orderListAction());
   }, [dispatch]);
-
-  const shortText = (n) => {
-    const shortedText = slice(0, n);
-
-    return shortedText;
-  };
 
   const [openm, setOpenm] = useState(null);
 
@@ -136,10 +114,6 @@ const OrderPage = () => {
   const [filterName, setFilterName] = useState('');
 
   const [rowsPerPage, setRowsPerPage] = useState(10);
-
-  const handleOpenMenu = (event) => {
-    setOpenm(event.currentTarget);
-  };
 
   const handleCloseMenu = () => {
     setOpenm(null);
@@ -158,21 +132,6 @@ const OrderPage = () => {
       return;
     }
     setSelected([]);
-  };
-
-  const handleClick = (event, name) => {
-    const selectedIndex = selected.indexOf(name);
-    let newSelected = [];
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1));
-    }
-    setSelected(newSelected);
   };
 
   const handleChangePage = (event, newPage) => {
@@ -197,13 +156,7 @@ const OrderPage = () => {
 
   const [open, setOpen] = useState(false);
   const [opentable, setOpenTable] = useState(false);
-  const [deleteData, setDeleteData] = useState({});
-  console.log(open);
 
-  const handleDialogClickOpen = (row) => {
-    setOpen(true);
-    setDeleteData(row);
-  };
 
   return (
     <>
@@ -296,16 +249,13 @@ const OrderPage = () => {
                           </TableCell>
 
                           <TableCell style={{ display: 'flex' }}>
-                            <Button style={{ marginRight: '.5rem' }} variant="outlined" color="success">
+                            <Button style={{ marginRight: '.5rem' }} variant="outlined" color="primary">
                               <Link
-                                style={{ color: 'green', listStyle: 'none', textDecoration: 'none' }}
+                                style={{ color: 'blue', listStyle: 'none', textDecoration: 'none' }}
                                 to={`/dashboard/order-detail/${_id}`}
                               >
-                                Edit
+                                View
                               </Link>
-                            </Button>
-                            <Button variant="outlined" color="error" onClick={() => handleDialogClickOpen(row)}>
-                              Delete
                             </Button>
                           </TableCell>
 
@@ -431,16 +381,6 @@ const OrderPage = () => {
           Delete
         </MenuItem>
       </Popover>
-
-      <DialogBox
-        open={open}
-        title={deleteData?.name}
-        deleteFunction={() => {
-          // dispatch(productDeleteAction(deleteData?._id));
-          setOpen(false);
-        }}
-        onClose={() => setOpen(false)}
-      />
     </>
   );
 };
