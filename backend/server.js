@@ -2,6 +2,7 @@ import path from "path"
 import express from "express";
 import dotenv from "dotenv";
 import morgan from "morgan";
+import cors from "cors";
 import connectDB from "./config/db.js";
 import { statusCodeMiddleware } from "./utils/middleware.js";
 import userRouter from "./routes/user.route.js";
@@ -21,6 +22,12 @@ app.use(express.urlencoded({ extended: false }));
 app.use(morgan("dev"));
 // app.use(originalUrlMiddleware)
 // app.use(statusCodeMiddleware());
+const corsOrigin = {
+  origin: "http://localhost:3001", 
+  credentials: true,
+  optionSuccessStatus: 200,
+};
+app.use(cors(corsOrigin));
 
 app.use((err, req, res, next) => {
   const statusCode = res.statusCode === 200 ? 404 : res.statusCode;

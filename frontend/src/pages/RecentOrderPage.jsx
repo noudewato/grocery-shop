@@ -88,15 +88,16 @@ function applySortFilter(array, comparator, query) {
     return a[1] - b[1];
   });
   if (query) {
-    return filter(array, (_user) => _user.status.toLowerCase().indexOf(query.toLowerCase()) !== -1);
+    return filter(array, (_user) => _user.pending.toLowerCase().indexOf(query.toLowerCase()) !== -1);
   }
   return stabilizedThis.map((el) => el[0]);
 }
 
-const OrderPage = () => {
+const RecentOrderPage = () => {
   const dispatch = useDispatch();
   const orderList = useSelector((state) => state.orderList);
   const { orders, loading } = orderList;
+  const recentOrders = orders.slice(0, 10)
   const primary = grey[900];
 
   useEffect(() => {
@@ -150,9 +151,9 @@ const OrderPage = () => {
     setFilterName(event.target.value);
   };
 
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - orders.length) : 0;
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - recentOrders.length) : 0;
 
-  const filteredUsers = applySortFilter(orders, getComparator(order, orderBy), filterName);
+  const filteredUsers = applySortFilter(recentOrders, getComparator(order, orderBy), filterName);
 
   const isNotFound = !filteredUsers.length && !!filterName;
 
@@ -161,24 +162,19 @@ const OrderPage = () => {
 
   return (
     <>
-      <Helmet>
-        <title> Grocery Shop | Dashbord | Order </title>
-      </Helmet>
       {loading ? (
         <Spinner />
       ) : (
-        <Container>
-          <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-            <Typography variant="h4" gutterBottom>
-              Order
+        <>
+          <Stack direction="row" alignItems="center" justifyContent="space-between" mb={2}>
+            <Typography variant="h6" gutterBottom>
+              Recent Orders
             </Typography>
           </Stack>
 
           <Card>
-            <UserListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} />
-
             <Scrollbar>
-              <TableContainer sx={{ minWidth: 1250 }}>
+              <TableContainer sx={{ minWidth: 1000 }}>
                 <Table>
                   <UserListHead
                     order={order}
@@ -244,11 +240,11 @@ const OrderPage = () => {
                             {status === 'pending' ? (
                               <Label color="success">Pending</Label>
                             ) : status === 'Processing' ? (
-                              <Label color='secondary'>Processing</Label>
+                              <Label color="secondary">Processing</Label>
                             ) : status === 'Completed' ? (
                               <Label color="warning">Completed</Label>
                             ) : (
-                              <Label color='error'>Cancel</Label>
+                              <Label color="error">Cancel</Label>
                             )}
                             {/* <Label color={(status === 'banned' && 'error') || 'success'}>{sentenceCase(status)}</Label> */}
                           </TableCell>
@@ -345,17 +341,17 @@ const OrderPage = () => {
               </TableContainer>
             </Scrollbar>
 
-            <TablePagination
-              rowsPerPageOptions={[10, 25]}
+           {/* <TablePagination
+              rowsPerPageOptions={[10]}
               component="div"
-              count={orders.length}
+              // count={orders.length}
               rowsPerPage={rowsPerPage}
               page={page}
               onPageChange={handleChangePage}
               onRowsPerPageChange={handleChangeRowsPerPage}
-            />
+            /> */}
           </Card>
-        </Container>
+        </>
       )}
 
       <Popover
@@ -390,4 +386,4 @@ const OrderPage = () => {
   );
 };
 
-export default OrderPage;
+export default RecentOrderPage;

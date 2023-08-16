@@ -1,6 +1,6 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useNavigate, useParams } from 'react-router-dom';
+import {  useParams } from 'react-router-dom';
 import {
   Box,
   Button,
@@ -16,51 +16,92 @@ import {
   Paper,
   Divider,
   Avatar,
-  MenuItem,
-  Menu,
 } from '@mui/material';
 import axios from 'axios';
 import { Helmet } from 'react-helmet-async';
 import moment from 'moment';
+import {useReactToPrint} from 'react-to-print';
+import { ORDER_DETAILS_RESET } from '../constants/order.constant';
 import Spinner from '../components/spinner/spinner.component';
+import { ComponentToPrint } from './ComponentToPrint';
 import Label from '../components/label';
-import { getOrderDetailsAction, orderStatusUpdate } from '../actions/order.action';
+import { getOrderDetailsAction } from '../actions/order.action';
 
 const OrderDetailsPage = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const orderDetails = useSelector((state) => state.orderDetails);
   const { order, loading } = orderDetails;
 
-  const status = ["pending", "approved", "completed", "cancel"];
+   const componentRef = useRef();
+   const handlePrint = useReactToPrint({
+     content: () => componentRef.current,
+   });
 
   useEffect(() => {
     dispatch(getOrderDetailsAction(id));
   }, [id, dispatch]);
 
-
-  const handleChange = async (orderId, value) => {
+  const processing = async () => {
     try {
-
-      const { data } = await axios.put(`/api/order/update-order/${orderId}`, { status: "Approved" });
-      console.log(data);
+      const res = await axios.put(`/api/order/update-order/${id}`, { status: 'Processing' });
+      if (res.status) {
+        dispatch({
+          type: ORDER_DETAILS_RESET,
+        });
+        setIsLoading(true);
+        dispatch(getOrderDetailsAction(id));
+      }
     } catch (error) {
       console.log(error);
     }
   };
 
-  // const shortText =(n)=> {
-  //   if(text){
-  //     return const shortedText = slice(0, n)
-  //   }
+  const completed = async () => {
+    try {
+      const res = await axios.put(`/api/order/update-order/${id}`, { status: 'Completed' });
+      if (res.status) {
+        dispatch({
+          type: ORDER_DETAILS_RESET,
+        });
+        setIsLoading(true);
+        dispatch(getOrderDetailsAction(id));
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-  //   return shortedText
-  // }
+  const cancel = async () => {
+    try {
+      const res = await axios.put(`/api/order/update-order/${id}`, { status: 'Cancel' });
+      if (res.status) {
+        dispatch({
+          type: ORDER_DETAILS_RESET,
+        });
+        setIsLoading(true);
+        dispatch(getOrderDetailsAction(id));
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const setTimmer = setTimeout(() => {
+      if (isLoading) {
+        setIsLoading(false);
+      }
+    }, 2500);
+
+    return () => clearTimeout(setTimmer);
+  }, [isLoading]);
 
   return (
     <div>
-      {loading ? (
+      {loading || isLoading ? (
         <Spinner />
       ) : (
         <Container>
@@ -75,22 +116,30 @@ const OrderDetailsPage = () => {
               <Stack direction="row" alignItems="center">
                 <Typography>Status</Typography>
 
-                {order?.status === 'pending' ? <Label color="success">pending</Label> : <Label color="error">No</Label>}
+                {order?.status === 'pending' ? (
+                  <Label color="success">Pending</Label>
+                ) : order?.status === 'Processing' ? (
+                  <Label color="secondary">Proccessing</Label>
+                ) : order?.status === 'Completed' ? (
+                  <Label color="warning">Completed</Label>
+                ) : (
+                  <Label color="error">Cancel</Label>
+                )}
               </Stack>
             </Box>
             <Box>
-              <select
-                defaultValue={order?.status}
-                onChange={(value) => handleChange(order._id, JSON.stringify(value))}
-                style={{ marginRight: '1rem', padding: '.5rem', borderRadius: '1rem', border: '.5px solid grey' }}
-              >
-                {status.map((s, i) => (
-                  <option key={i} value={s} style={{ padding: '.5rem', border: 'none' }}>
-                    {s}
-                  </option>
-                ))}
-              </select>
-              <Button variant="contained">Print</Button>
+              <Button variant="outlined" color="secondary" sx={{ ml: 1 }} onClick={processing}>
+                Processing
+              </Button>
+              <Button variant="outlined" color="warning" sx={{ ml: 1 }} onClick={completed}>
+                Completed
+              </Button>
+              <Button variant="outlined" color="error" sx={{ ml: 1 }} onClick={cancel}>
+                Cancel
+              </Button>
+              <Button variant="contained" color="warning" sx={{ ml: 1 }} onClick={handlePrint}>
+                Print
+              </Button>
             </Box>
           </Stack>
           <Grid spacing={3} container>
@@ -222,6 +271,19 @@ const OrderDetailsPage = () => {
       <Helmet>
         <title> Grocery Shop | Dashbord | Order </title>
       </Helmet>
+
+      <div
+        style={{ display: 'none' }} // This make ComponentToPrint show   only while printing
+      >
+        <ComponentToPrint
+          ref={componentRef}
+          _id={order?._id}
+          deliveryPrice={order?.deliveryPrice}
+          totalPrice={order?.totalPrice}
+          taxPrice={order?.taxPrice}
+          order={order}
+        />
+      </div>
     </div>
   );
 };

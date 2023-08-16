@@ -76,7 +76,7 @@ const Cart = () => {
       ) : (
         <></>
       )}
-      {cartItems.length === 0 ? (
+      {cartItems?.length === 0 ? (
         <Grid>
           <Box sx={{ p: 4, backgroundColor: 'white', borderRadius: '10px', boxShadow: 3 }}>
             <Typography variant="h6">

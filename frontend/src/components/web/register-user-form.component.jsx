@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import Avatar from '@mui/material/Avatar';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
@@ -6,6 +7,7 @@ import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
+import Button from "@mui/material/Button"
 import { InputAdornment, IconButton, Grid } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -35,11 +37,13 @@ const LoginForm = () => {
   const [phonenumber, setPhonenumber] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [image, setImage] = useState('');
+  const [uploading, setUploading] = useState(false);
 
   const submitHandler = (e) => {
     e.preventDefault();
     if (handleValidation()) {
-      dispatch(userRegisterAction(username, phonenumber, email, password));
+      dispatch(userRegisterAction(username, phonenumber, email, password, image));
     }
   };
 
@@ -66,7 +70,7 @@ const LoginForm = () => {
       setemailError('number is too long');
     }
 
-    if (email && !email.match(/^[0-9]+$/) ) {
+    if (email && !email.match(/^[0-9]+$/)) {
       formIsValid = false;
       setemailError('only letter is required');
     }
@@ -86,6 +90,29 @@ const LoginForm = () => {
       setpasswordError('password is required');
     }
     return formIsValid;
+  };
+
+  const uploadingHandler = async (e) => {
+    const file = e.target.files[0];
+    const formData = new FormData();
+    formData.append('image', file);
+    setUploading(true);
+
+    try {
+      const config = {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      };
+
+      const { data } = await axios.post('/api/upload/upload-images', formData, config);
+
+      setImage(data);
+      setUploading(false);
+    } catch (error) {
+      console.error(error);
+      setUploading(false);
+    }
   };
 
   useEffect(() => {
@@ -132,6 +159,51 @@ const LoginForm = () => {
         </Typography>
         <Box spacing={3} component="form">
           <Grid container>
+            <Grid item xs={12} md={12}>
+              <Box
+                sx={{
+                  width: 150,
+                  height: 150,
+                  margin: 'auto',
+                  position: 'relative',
+                  mb: 2
+                }}
+              >
+                <Avatar
+                  alt="Remy Sharp"
+                  src={image}
+                  sx={{
+                    width: 150,
+                    height: 150,
+                    margin: 'auto',
+                    position: 'relative',
+                  }}
+                />
+                <label
+                  htmlFor="image"
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    margin: 'auto',
+                    textAlign: 'center',
+                    position: 'absolute',
+                    backgroundColor: 'rgba(0, 0, 0, 0.0)',
+                    borderRadius: '50%',
+                    top: 0,
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                  }}
+                >
+                  <input style={{ display: 'none' }} id="image" name="image" onChange={uploadingHandler} type="file" />
+
+                  <Button color="secondary" variant="contained" component="span">
+                    {uploading && <>.......</>} pic
+                  </Button>
+                </label>
+              </Box>
+            </Grid>
             <Grid xs={12} sm={12} md={6}>
               <TextField
                 sx={{ mr: '5px', my: 1 }}
@@ -150,7 +222,6 @@ const LoginForm = () => {
             <Grid xs={12} sm={12} md={6}>
               <TextField
                 sx={{ ml: '5px', my: 1 }}
-                type="email"
                 required
                 fullWidth
                 value={email}

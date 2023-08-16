@@ -3,13 +3,18 @@ import { Helmet } from 'react-helmet-async';
 import { faker } from '@faker-js/faker';
 // @mui
 import { useTheme } from '@mui/material/styles';
-import { Grid, Container, Typography } from '@mui/material';
+import { Grid, Container, Typography, Box, Stack } from '@mui/material';
+import LoopIcon from '@mui/icons-material/Loop';
+import LocalShippingIcon from '@mui/icons-material/LocalShipping';
+import DoneIcon from '@mui/icons-material/Done';
+import CancelIcon from '@mui/icons-material/Cancel';
 import { useSelector, useDispatch } from 'react-redux';
+import { orderListAction, orderStatusAction } from '../actions/order.action';
 import Spinner from '../components/spinner/spinner.component';
+import Label from '../components/label/Label';
 // components
 import Iconify from '../components/form-input/iconify';
 import { userListAction } from '../actions/auth.action';
-import { orderListAction } from '../actions/order.action';
 import { productListAction } from '../actions/product.action';
 import { categoryListAction } from '../actions/category.action';
 // sections
@@ -24,13 +29,13 @@ import {
   // AppCurrentSubject,
   // AppConversionRates,
 } from '../sections/@dashboard/app';
-
+import RecentOrderPage from './RecentOrderPage';
 
 // ----------------------------------------------------------------------
 
 export default function DashboardAppPage() {
   const theme = useTheme();
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const userList = useSelector((state) => state.userList);
   const { users } = userList;
 
@@ -43,13 +48,16 @@ export default function DashboardAppPage() {
   const orderList = useSelector((state) => state.orderList);
   const { orders } = orderList;
 
+  const orderStatus = useSelector((state) => state.orderStatus);
+  const { status } = orderStatus;
+
   useEffect(() => {
-    dispatch(userListAction())
+    dispatch(userListAction());
     dispatch(orderListAction());
     dispatch(productListAction());
     dispatch(categoryListAction());
-  },[dispatch]);
-
+    dispatch(orderStatusAction())
+  }, [dispatch]);
 
   const [isLoading, setIsLoading] = useState(true);
 
@@ -58,11 +66,10 @@ export default function DashboardAppPage() {
       if (isLoading) {
         setIsLoading(false);
       }
-    }, 2500);
+    }, 3500);
 
     return () => clearTimeout(setTimmer);
   }, [isLoading]);
-
 
   return (
     <>
@@ -70,29 +77,109 @@ export default function DashboardAppPage() {
         <title> Dashboard | Grocery Shop </title>
       </Helmet>
 
-      {isLoading ? <Spinner/> : (<Container maxWidth="xl">
-        <Typography variant="h4" sx={{ mb: 5 }}>
-          Hi, Welcome back
-        </Typography>
+      {isLoading ? (
+        <Spinner />
+      ) : (
+        <Container maxWidth="xl">
+          <Typography variant="h4" sx={{ mb: 5 }}>
+            Hi, Welcome back
+          </Typography>
 
-        <Grid container spacing={3}>
-          <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Users" total={users?.length} color="info" icon={'ant-design:apple-filled'} />
-          </Grid>
+          <Grid container spacing={3}>
+            <Grid item xs={12} sm={6} md={3}>
+              <AppWidgetSummary title="Users" total={users?.length} color="info" />
+            </Grid>
 
-          <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Orders" total={orders?.length} color="warning" icon={'ant-design:windows-filled'} />
-          </Grid>
+            <Grid item xs={12} sm={6} md={3}>
+              <AppWidgetSummary
+                title="Orders"
+                total={orders?.length}
+                color="warning"
+                icon={'ant-design:windows-filled'}
+              />
+            </Grid>
 
-          <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Products" total={products?.length} color="error" icon={'ant-design:bug-filled'} />
-          </Grid>
+            <Grid item xs={12} sm={6} md={3}>
+              <AppWidgetSummary
+                title="Products"
+                total={products?.length}
+                color="error"
+                icon={'ant-design:bug-filled'}
+              />
+            </Grid>
 
-          <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Categories" total={categories?.length} icon={'ant-design:android-filled'} />
-          </Grid>
+            <Grid item xs={12} sm={6} md={3}>
+              <AppWidgetSummary title="Categories" total={categories?.length} icon={'ant-design:android-filled'} />
+            </Grid>
 
-          {/* <Grid item xs={12} md={6} lg={8}>
+            <Grid item xs={12} sm={6} md={4}>
+              <Stack
+                direction="row"
+                spacing={2}
+                alignItems="center"
+                sx={{ py: 3, px: 2, borderRadius: 2, backgroundColor: 'whiteSmoke', boxShadow: 4 }}
+              >
+                <LoopIcon sx={{ fontSize: '80px', color: 'purple' }} />
+                <Typography variant="body2" noWrap>
+                  {status.status[1]?._id?.status} <br />
+                  <Typography variant="h6">
+                    {status.status[1]?.count} <br />
+                  </Typography>
+                </Typography>
+              </Stack>
+            </Grid>
+
+            {/* <Grid item xs={12} sm={6} md={4}>
+              <Stack
+                direction="row"
+                spacing={2}
+                alignItems="center"
+                sx={{ py: 3, px: 2, borderRadius: 2, backgroundColor: 'whiteSmoke', boxShadow: 4 }}
+              >
+                <LocalShippingIcon sx={{ fontSize: '80px', color: 'tomato' }} />
+                <Typography variant="body2" noWrap>
+                  {status.status[1]._id} <br />
+                  <Typography variant="h6">
+                    {status.status[1].count} <br />
+                  </Typography>
+                </Typography>
+              </Stack>
+            </Grid>
+
+            <Grid item xs={12} sm={6} md={4}>
+              <Stack
+                direction="row"
+                spacing={2}
+                alignItems="center"
+                sx={{ py: 3, px: 2, borderRadius: 2, backgroundColor: 'whiteSmoke', boxShadow: 4 }}
+              >
+                <DoneIcon sx={{ fontSize: '80px', color: 'green' }} />
+                <Typography variant="body2" noWrap>
+                  {status.status[2]._id} <br />
+                  <Typography variant="h6">
+                    {status.status[2].count} <br />
+                  </Typography>
+                </Typography>
+              </Stack>
+            </Grid> */}
+
+            <Grid item xs={12} sm={12} md={12}>
+              <RecentOrderPage />
+            </Grid>
+
+            {/* <Grid item xs={12} sm={6} md={3}>
+              <Stack direction="row" spacing={3}>
+                <Label color="warning">
+                  <CancelIcon />
+                </Label>
+                <Typography variant="subtitle2" noWrap>
+                  {status.status[3]._id} <br />
+                  {status.status[3].count} <br />
+                </Typography>
+              </Stack>
+            </Grid> */}
+
+            {/* <Grid item xs={12} md={6} lg={8}>
             <AppWebsiteVisits
               title="Website Visits"
               subheader="(+43%) than last year"
@@ -253,8 +340,9 @@ export default function DashboardAppPage() {
               ]}
             />
           </Grid> */}
-        </Grid>
-        </Container>)}
+          </Grid>
+        </Container>
+      )}
     </>
   );
 }

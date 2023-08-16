@@ -4,8 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import { Link, Stack, IconButton, InputAdornment, TextField, Checkbox } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { useSelector, useDispatch } from 'react-redux';
-
 import { toast } from 'react-toastify';
+import { USER_LOGIN_RESET } from '../../../constants/auth.constant';
+
 
 // components
 import Iconify from '../../../components/form-input/iconify';
@@ -41,12 +42,34 @@ export default function LoginForm() {
     setFormField({ ...formField, [name]: value });
   };
 
+  useEffect(() => {
+    if (userInfo && userInfo?.success && userInfo?.user?.isAdmin) {
+      toast.success(`${userInfo?.message}`);
+      navigate('/dashboard/app', { replace: true });
+    }
+
+    if (userInfo && !userInfo?.success) {
+      toast.error(`${userInfo?.message}`);
+      dispatch({
+        type: USER_LOGIN_RESET,
+      });
+      localStorage.removeItem('userInfo');
+    }
+  }, [navigate, userInfo, dispatch]);
+
   const handleValidation = () => {
     let formIsValid = true;
     if (!email) {
       formIsValid = false;
       setemailError('email is required');
     }
+
+     if (email && !email.match(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/)) {
+       formIsValid = false;
+       setemailError('email not valid');
+     }
+    
+    
     if (!password) {
       formIsValid = false;
       setpasswordError('password is required');
@@ -60,12 +83,12 @@ export default function LoginForm() {
     }
   };
 
-  useEffect(() => {
-    if (success) {
-      toast.success('success');
-      navigate('/dashboard/app', { replace: true });
-    } 
-  }, [success, navigate, userInfo]);
+  // useEffect(() => {
+  //   if (success) {
+  //     toast.success('success');
+  //     navigate('/dashboard/app', { replace: true });
+  //   } 
+  // }, [success, navigate, userInfo]);
 
   return (
     <>
@@ -102,14 +125,14 @@ export default function LoginForm() {
         />
       </Stack>
 
-      <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ my: 2 }}>
+      {/* <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ my: 2 }}>
         <Checkbox name="remember" label="Remember me" />
         <Link variant="subtitle2" underline="hover">
           Forgot password?
         </Link>
-      </Stack>
+      </Stack> */}
 
-      <LoadingButton fullWidth size="large" type="submit" variant="contained" onClick={handleClick}>
+      <LoadingButton fullWidth size="large" type="submit" variant="contained" onClick={handleClick} sx={{mt:3}}>
         {loading && <>.....</>} Login
       </LoadingButton>
     </>

@@ -9,7 +9,9 @@ import {
   userUpdateReducer,
   userDetailsReducer,
   userProfileUpdateReducer,
-  userProfileDetailsReducer
+  userProfileDetailsReducer,
+  userProfileUpdatedReducer,
+  allUserListReducer
 } from './reducers/auth.reducer';
 import {
   categoryCreateReducer,
@@ -25,7 +27,7 @@ import {
   productListReducer,
   productUpdateReducer,
 } from './reducers/product.reducer';
-import { createOrderReducer, orderDetailsReducer, orderListMyReducer, orderListReducer } from './reducers/order.reducer';
+import { createOrderReducer, orderDetailsReducer, orderListMyReducer, orderListReducer, orderStatusReducer } from './reducers/order.reducer';
 import { cartReducer } from './reducers/cart.reducer';
 
 const reducers = combineReducers({
@@ -33,9 +35,11 @@ const reducers = combineReducers({
   userLogin: userLoginReducer,
   userRegister: userRegisterReducer,
   userList: userListReducer,
+  allUsers: allUserListReducer,
   userDetails: userDetailsReducer,
   userUpdate: userUpdateReducer,
   userProfileUpdate: userProfileUpdateReducer,
+  userProfileUpdated: userProfileUpdatedReducer,
   userDelete: userDeleteReducer,
   userProfileDetails: userProfileDetailsReducer,
   categoryList: categoryListReducer,
@@ -52,6 +56,7 @@ const reducers = combineReducers({
   orderList: orderListReducer,
   orderListMy: orderListMyReducer,
   orderDetails: orderDetailsReducer,
+  orderStatus: orderStatusReducer
 });
 
 const userInfo = localStorage.getItem('userInfo') ? JSON.parse(localStorage.getItem('userInfo')) : null;

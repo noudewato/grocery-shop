@@ -20,7 +20,7 @@ const EditCategoryPage = () => {
   const { success, category, error } = categoryDetails;
 
   const categoryUpdate = useSelector((state) => state.categoryUpdate);
-  const { success: successUpdate, error: errorUpdate } = categoryUpdate;
+  const { category: categoryUpdated, loading } = categoryUpdate;
 
   const [name, setName] = useState('');
   const [nameError, setnameError] = useState('');
@@ -89,7 +89,7 @@ const EditCategoryPage = () => {
   }, [category]);
 
   useEffect(() => {
-    if (successUpdate) {
+    if (categoryUpdated && categoryUpdated.success) {
       toast.success(`updated successfully`);
       navigate('/dashboard/category');
       dispatch({
@@ -97,10 +97,14 @@ const EditCategoryPage = () => {
       });
       setName('');
       setImage('');
-    } else {
-      toast.error(error);
     }
-  }, [successUpdate, error]);
+    if (categoryUpdated && !categoryUpdated.success){
+      toast.error(categoryUpdated.message);
+        dispatch({
+          type: CATEGORY_UPDATE_RESET,
+        });
+    }
+  }, [dispatch, navigate, categoryUpdated]);
 
   useEffect(() => {
     dispatch(categoryDetailsAction(id));
@@ -213,7 +217,7 @@ const EditCategoryPage = () => {
                   variant="contained"
                   onClick={handleUpdateCategoryClick}
                 >
-                  Save Change
+                {loading && <>....</>}  Save Change
                 </LoadingButton>
               </Stack>
             </Grid>

@@ -35,7 +35,7 @@ const EditProductPage = () => {
   const { product, error } = productDetails;
 
   const productUpdate = useSelector((state) => state.productUpdate);
-  const { success: successUpdate, error: errorUpdate, loading: loadingUpdate } = productUpdate;
+  const { success: successUpdate, error: errorUpdate, loading: loadingUpdate, product: productUpdated } = productUpdate;
 
   const statusContent = ['New', 'On Sale', 'Hot'];
 
@@ -66,7 +66,7 @@ const EditProductPage = () => {
   }, [dispatch, id]);
 
   useEffect(() => {
-    if (successUpdate) {
+    if (productUpdated &&  productUpdated.success) {
       toast.success('updated successfully');
       navigate('/dashboard/products');
       setName('');
@@ -77,10 +77,15 @@ const EditProductPage = () => {
       dispatch({
         type: PRODUCT_UPDATE_RESET,
       });
-    } else {
-      toast.error(errorUpdate);
     }
-  }, [successUpdate, error, dispatch, navigate, errorUpdate]);
+
+      if (productUpdated && !productUpdated.success) {
+        toast.error(productUpdated?.message);
+        dispatch({
+          type: PRODUCT_UPDATE_RESET,
+        });
+      }
+  }, [successUpdate, error, dispatch, navigate, errorUpdate, productUpdated]);
 
   useEffect(() => {
     if (product) {

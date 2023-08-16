@@ -47,9 +47,7 @@ export const addOrderItems = async (req, res) => {
 
 export const getOrderById = async (req, res) => {
   try {
-    const order = await orderModel
-      .findById(req.params.id)
-      .populate("user");
+    const order = await orderModel.findById(req.params.id).populate("user");
     if (order) {
       res.status(200).json(order);
     } else {
@@ -99,18 +97,18 @@ export const getOrderById = async (req, res) => {
 
 export const updateOrderStatus = async (req, res) => {
   const { id } = req.params;
-    const { status } = req.body;
+  const { status } = req.body;
 
-    const update = await orderModel.findByIdAndUpdate(
-      id,
-      {
-        status
-      },
-      { new: true }
-    );
+  const update = await orderModel.findByIdAndUpdate(
+    id,
+    {
+      status,
+    },
+    { new: true }
+  );
 
-    res.status(200);
-    res.json(update);
+  res.status(200);
+  res.json(update);
 };
 
 export const getMyOrders = async (req, res) => {
@@ -123,16 +121,17 @@ export const GetOrders = async (req, res) => {
     .find()
     .populate("user")
     .sort({ createdAt: -1 });
-  const count = orders.length;
   res.json(orders);
 };
 
-// export default det = {
-//   addOrderItems,
-//   getOrderById,
-//   updateOrderToPaid,
-//   GetMyOrders,
-//   GetOrders,
-//   updateOrderToDelivered,
-//   updateOrderStatus,
-// };
+export const getPendingOrder = async (req, res) => {
+  const status = await orderModel.aggregate([
+  {$match: { isPaid: true }},
+    {      
+      $group: { _id: { status: "$status" }, count: { $sum: 1 } },
+    },
+    { $sort: { status: 1 } },
+  ]);
+
+  res.status(200).json({ status });
+};

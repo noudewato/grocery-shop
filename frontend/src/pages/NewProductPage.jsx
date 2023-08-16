@@ -98,7 +98,7 @@ const NewProductPage = () => {
     }, 2500);
 
     return () => clearTimeout(setTimmer);
-  }, []);
+  }, [isLoading]);
 
   const uploadingHandler = async (e) => {
     const file = e.target.files[0];
@@ -162,8 +162,8 @@ const NewProductPage = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    if (success) {
-      toast.success(`${product.name} is created successfully`);
+    if (product && product.success) {
+      toast.success(`${product?.product?.name} is created successfully`);
       setName('');
       setDescription('');
       setImage('');
@@ -173,10 +173,17 @@ const NewProductPage = () => {
         type: PRODUCT_CREATE_RESET,
       });
       navigate('/dashboard/products');
-    } else {
-      toast.error(error);
+    } 
+
+    if (product && !product.success) {
+      toast.error(product?.message)
+       dispatch({
+         type: PRODUCT_CREATE_RESET,
+       });
     }
-  }, [success, product, error]);
+
+  }, [success, product, error,dispatch, navigate]);
+
 
   const statusContent = ['New', 'On Sale', 'Hot'];
 

@@ -43,7 +43,7 @@ export default function AppWidgetSummary({ title, total, icon, color = 'primary'
       }}
       {...other}
     >
-      <StyledIcon
+      {/* <StyledIcon
         sx={{
           color: (theme) => theme.palette[color].dark,
           backgroundImage: (theme) =>
@@ -54,7 +54,7 @@ export default function AppWidgetSummary({ title, total, icon, color = 'primary'
         }}
       >
         <Iconify icon={icon} width={24} height={24} />
-      </StyledIcon>
+      </StyledIcon> */}
 
       <Typography variant="h3">{fShortenNumber(total)}</Typography>
 

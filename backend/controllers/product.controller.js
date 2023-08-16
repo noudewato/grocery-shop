@@ -92,11 +92,19 @@ export const createProductController = async (req, res) => {
         });
     }
 
+    const existingProduct = await Product.findOne({ name });
+
+    if (existingProduct) {
+      return res
+        .status(200)
+        .json({ success: false, message: "Product already exists" });
+    }
+
     const newProduct = new Product({ ...req.body, slug: slugify(name) });
     const product = await newProduct.save();
 
     if (product) {
-      res.status(201).json(product);
+      res.status(201).json({ success: true, product });
     }
   } catch (error) {
     console.log(error);
@@ -169,6 +177,14 @@ export const updateProductController = async (req, res) => {
         });
     }
 
+    const existingProduct = await Product.findOne({ name });
+
+    if (existingProduct) {
+      return res
+        .status(200)
+        .json({ success: false, message: "Product already exists" });
+    }
+
     const product = await Product.findByIdAndUpdate(
       req.params.id,
       { ...req.body, slug: slugify(name) },
@@ -176,13 +192,13 @@ export const updateProductController = async (req, res) => {
     );
 
     await product.save();
-    res.status(200).json(product);
+    res.status(200).json({ success: true, product });
   } catch (error) {
     console.log(error);
     res.status(500).json({
       success: false,
-      error,
-      msg: "Error while updating product",
+      error: error.message,
+      message: "Error while updating product",
     });
   }
 };

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import CssBaseline from '@mui/material/CssBaseline';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -20,7 +20,7 @@ import Header from '../header/header.component';
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
-const Checkout = ({city, location}) => {
+const Checkout = () => {
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
@@ -39,7 +39,9 @@ const Checkout = ({city, location}) => {
 
   const steps = ['Cart', 'Payment and Address', 'Review your order'];
 
+  
   function getStepContent(step) {
+   
     switch (step) {
       case 0:
         return <Cart />;
@@ -105,8 +107,7 @@ const Checkout = ({city, location}) => {
                 disabled={
                   !userInfo?.user?.username ||
                   cartItems.length === 0 ||
-                  activeStep === steps.length - 1 || 
-                  city.length === 0
+                  activeStep === steps.length - 1
                 }
               >
                 {activeStep === steps.length - 1 ? 'End' : 'Next'}

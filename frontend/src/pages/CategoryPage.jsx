@@ -120,7 +120,7 @@ export default function CategoryPage() {
 
   const [filterName, setFilterName] = useState('');
 
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const handleOpenMenu = (event) => {
     setOpenm(event.currentTarget);
@@ -211,7 +211,7 @@ export default function CategoryPage() {
             <UserListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} />
 
             <Scrollbar>
-              <TableContainer sx={{ minWidth: 1000 }}>
+              <TableContainer sx={{ minWidth: 1250 }}>
                 <Table>
                   <UserListHead
                     order={order}
@@ -314,7 +314,7 @@ export default function CategoryPage() {
             </Scrollbar>
 
             <TablePagination
-              rowsPerPageOptions={[5, 10, 25]}
+              rowsPerPageOptions={[10, 25]}
               component="div"
               count={categories.length}
               rowsPerPage={rowsPerPage}

@@ -1,4 +1,7 @@
 import {
+  ALL_USER_LIST_FAILED,
+  ALL_USER_LIST_REQUEST,
+  ALL_USER_LIST_SUCCESS,
   USER_DELETE_FAILED,
   USER_DELETE_REQUEST,
   USER_DELETE_RESET,
@@ -22,6 +25,10 @@ import {
   USER_PROFILE_REQUEST,
   USER_PROFILE_RESET,
   USER_PROFILE_SUCCESS,
+  USER_PROFILE_UPDATE_FAILED,
+  USER_PROFILE_UPDATE_REQUEST,
+  USER_PROFILE_UPDATE_RESET,
+  USER_PROFILE_UPDATE_SUCCESS,
   USER_REGISTER_FAILED,
   USER_REGISTER_REQUEST,
   USER_REGISTER_RESET,
@@ -82,6 +89,19 @@ export const userListReducer = (state = { users: [] }, action) => {
   }
 };
 
+export const allUserListReducer = (state = { myUsers: [] }, action) => {
+  switch (action.type) {
+    case ALL_USER_LIST_REQUEST:
+      return { loading: true };
+    case ALL_USER_LIST_SUCCESS:
+      return { loading: false, success: true, myUsers: action.payload };
+    case ALL_USER_LIST_FAILED:
+      return { loading: false, error: action.payload };
+    default:
+      return state;
+  }
+};
+
 export const userDetailsReducer = (state = {}, action) => {
   switch (action.type) {
     case USER_DETAILS_REQUEST:
@@ -134,6 +154,21 @@ export const userProfileUpdateReducer = (state = {}, action) => {
     case USER_PROFILE_FAILED:
       return { loading: false, error: action.payload };
     case USER_PROFILE_RESET:
+      return {};
+    default:
+      return state;
+  }
+};
+
+export const userProfileUpdatedReducer = (state = {}, action) => {
+  switch (action.type) {
+    case USER_PROFILE_UPDATE_REQUEST:
+      return { loading: true };
+    case USER_PROFILE_UPDATE_SUCCESS:
+      return { loading: false, success: true, user: action.payload };
+    case USER_PROFILE_UPDATE_FAILED:
+      return { loading: false, error: action.payload };
+    case USER_PROFILE_UPDATE_RESET:
       return {};
     default:
       return state;

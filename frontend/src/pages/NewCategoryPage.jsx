@@ -88,17 +88,23 @@ const NewCategoryPage = () => {
   };
 
   useEffect(() => {
-    if (success) {
-      toast.success(`${category.name} is created successfully`);
+    if (category && category.success) {
+      toast.success(`${category?.category.name} is created successfully`);
       navigate('/dashboard/category');
       dispatch({
         type: CATEGORY_CREATE_RESET,
       });
       setName('');
       setImage('');
-    } else {
-      toast.error(error);
     }
+    
+     if (category && !category.success) {
+       toast.error(category?.message);
+       dispatch({
+         type: CATEGORY_CREATE_RESET,
+       });
+     }
+
   }, [dispatch, navigate, success, category, error]);
 
   return (

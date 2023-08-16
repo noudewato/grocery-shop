@@ -130,9 +130,23 @@ export const getAllUsers = async (req, res) => {
   }
 };
 
+export const AllUsers = async (req, res) => {
+  try {
+    const myUsers = await userModel.find().sort({ createdAt: -1 });
+    res.status(200).json({ success: true, myUsers });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Your request could not be processed. Please try again.",
+      error,
+    });
+    ;
+  }
+};
+
 export const getSingleUser = async (req, res) => {
   try {
-    const user = await userModel.findById(req.params.id);
+    const user = await userModel.findById(req.params.id)
 
     if (user) {
       res.status(200);
@@ -167,35 +181,24 @@ export const userProfile = async (req, res, next) => {
 };
 
 export const updateUserProfile = async (req, res) => {
-  try {
-    const user = await userModel.findById(req.user._id);
+  // try {
+  const user = await userModel.findById(req.user._id);
 
-    if (user) {
-      user.username = req.body.username || user.username;
-      user.phonenumber = req.body.phonenumber || user.phonenumber;
-      user.email = req.body.email || user.email;
-      if (req.body.password) {
-        user.password = req.body.password;
-      }
-      user.image = req.body.image || user.image;
-    }
-
-    const updatedUser = await user.save();
-
-    if (updatedUser) {
-      res
-        .status(200)
-        .json({
-          success: true,
-          message: "updated user profile successfully",
-          updatedUser,
-        });
-    }
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-    });
+  if (user) {
+    user.username = req.body.username || user.username;
   }
+
+  const updatedUser = await user.save();
+  res.status(200).json({
+    success: true,
+    message: "updated user profile successfully",
+    updatedUser,
+  });
+  // } catch (error) {
+  //   res.status(500).json({
+  //     success: false,
+  //   });
+  // }
 };
 
 export const updateUser = async (req, res) => {

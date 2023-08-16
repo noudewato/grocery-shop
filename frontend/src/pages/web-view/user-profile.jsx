@@ -6,7 +6,7 @@ import axios from 'axios';
 import moment from 'moment';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
-import { getUserProfileAction, userProfileUpdateAction } from '../../actions/auth.action';
+import { getUserProfileAction, userProfileUpdateAction, userProfileUpdatedAction } from '../../actions/auth.action';
 import { orderListMyAction } from '../../actions/order.action';
 import FormInput from '../../components/form-input/form-input.component';
 import Header from './header/header.component';
@@ -18,11 +18,11 @@ const UserProfile = () => {
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
-   const userProfileDetails = useSelector((state) => state.userProfileDetails);
-   const { user } = userProfileDetails;
+  const userProfileDetails = useSelector((state) => state.userProfileDetails);
+  const { user } = userProfileDetails;
 
   const userProfileUpdate = useSelector((state) => state.userProfileUpdate);
-  const { loading, user:userUpdated } = userProfileUpdate;
+  const { loading, user: userUpdated } = userProfileUpdate;
 
   const orderListMy = useSelector((state) => state.orderListMy);
   const { orders } = orderListMy;
@@ -60,18 +60,18 @@ const UserProfile = () => {
     return formIsValid;
   };
 
-  const handleEditProfileClick = (e) => {
-    e.preventDefault()
+  const handleEditProfileClick = async (e) => {
+    e.preventDefault();
     if (handleValidation()) {
-      dispatch(
-        userProfileUpdateAction({
-          username,
-          email,
-          password,
-          phonenumber,
-          image,
-        })
-      );
+      dispatch(userProfileUpdateAction());
+      dispatch(userProfileUpdatedAction());
+      const url = `http://localhost:8080/api/auth/me/e`;
+      const { data } = await axios.put(url, {
+        headers: {
+          authorization: `Bearer ${localStorage.getItem('userInfo.user.token')}`,
+        },
+      });
+      console.log(data);
     }
   };
 
@@ -87,14 +87,13 @@ const UserProfile = () => {
   useEffect(() => {
     dispatch(orderListMyAction());
     dispatch(getUserProfileAction());
-
   }, [dispatch]);
 
-   useEffect(() => {
-     if (userUpdated) {
-       toast.success(userUpdated.message)
-     }
-   }, [userUpdated]);
+  useEffect(() => {
+    if (userUpdated) {
+      toast.success(userUpdated.message);
+    }
+  }, [userUpdated]);
 
   const uploadingHandler = async (e) => {
     const file = e.target.files[0];

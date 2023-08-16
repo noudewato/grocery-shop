@@ -80,7 +80,7 @@ function applySortFilter(array, comparator, query) {
     return a[1] - b[1];
   });
   if (query) {
-    return filter(array, (_user) => _user.username.toLowerCase().indexOf(query.toLowerCase()) !== -1);
+    return filter(array, (_user) => _user?.username?.toLowerCase().indexOf(query?.toLowerCase()) !== -1);
   }
   return stabilizedThis?.map((el) => el[0]);
 }
@@ -187,7 +187,7 @@ export default function UserPage() {
             />
 
             <Scrollbar>
-              <TableContainer sx={{ minWidth: 1000 }}>
+              <TableContainer sx={{ minWidth: 1250 }}>
                 <Table>
                   <UserListHead
                     order={order}
@@ -295,7 +295,7 @@ export default function UserPage() {
             </Scrollbar>
 
             <TablePagination
-              rowsPerPageOptions={[5, 10, 25]}
+              rowsPerPageOptions={[10, 25]}
               component="div"
               count={users?.length}
               rowsPerPage={rowsPerPage}

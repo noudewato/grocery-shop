@@ -20,7 +20,7 @@ export const createCategoryController = async (req, res) => {
     const existingCategory = await Category.findOne({ name });
 
     if (existingCategory) {
-      res.status(400).json({
+     return res.status(200).json({ success: false,
         message: "category already exists",
       });
     }
@@ -32,7 +32,7 @@ export const createCategoryController = async (req, res) => {
 
     const category = await newCategory.save();
 
-    res.status(200).json(category);
+    res.status(200).json({success: true, category});
   } catch (error) {
     console.log(error);
     res.status(500).json({
@@ -59,15 +59,23 @@ export const updateCategoryController = async (req, res) => {
         });
     }
 
-    const updatedCategory = await Category.findByIdAndUpdate(
+    const existingCategory = await Category.findOne({ name });
+
+     if (existingCategory) {
+       return res
+         .status(200)
+         .json({ success: false, message: "category already exists" });
+     }
+
+    const category = await Category.findByIdAndUpdate(
       id,
       { ...req.body, slug: slugify(name) },
       { new: true }
     );
 
-    await updatedCategory.save()
+    await category.save()
 
-    res.status(200).json(updatedCategory);
+    res.status(200).json({success:true, category});
   } catch (error) {
     console.log(error);
     res.status(500).json({

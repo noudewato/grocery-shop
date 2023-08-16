@@ -1,5 +1,8 @@
 import axios from 'axios';
 import {
+  ALL_USER_LIST_FAILED,
+  ALL_USER_LIST_REQUEST,
+  ALL_USER_LIST_SUCCESS,
   USER_DELETE_FAILED,
   USER_DELETE_REQUEST,
   USER_DELETE_SUCCESS,
@@ -21,11 +24,13 @@ import {
   USER_UPDATE_SUCCESS,
   USER_PROFILE_FAILED,
   USER_PROFILE_REQUEST,
-  USER_PROFILE_RESET,
   USER_PROFILE_SUCCESS,
   USER_PROFILE_DETAILS_REQUEST,
   USER_PROFILE_DETAILS_SUCCESS,
   USER_PROFILE_DETAILS_FAILED,
+  USER_PROFILE_UPDATE_FAILED,
+  USER_PROFILE_UPDATE_SUCCESS,
+  USER_PROFILE_UPDATE_REQUEST,
 } from '../constants/auth.constant';
 import { CLEAR_CART } from '../constants/cart.constant';
 
@@ -57,7 +62,7 @@ export const userLoginAction = (email, password) => async (dispatch) => {
   }
 };
 
-export const userRegisterAction = (username, email, phonenumber, password) => async (dispatch) => {
+export const userRegisterAction = (username, email, phonenumber, password, image) => async (dispatch) => {
   try {
     dispatch({
       type: USER_REGISTER_REQUEST,
@@ -69,7 +74,11 @@ export const userRegisterAction = (username, email, phonenumber, password) => as
       },
     };
 
-    const { data } = await axios.post('/api/auth/registerUser', { username, phonenumber, email, password }, config);
+    const { data } = await axios.post(
+      '/api/auth/registerUser',
+      { username, phonenumber, email, password, image },
+      config
+    );
 
     dispatch({
       type: USER_REGISTER_SUCCESS,
@@ -90,7 +99,7 @@ export const userRegisterAction = (username, email, phonenumber, password) => as
   }
 };
 
-export const userUpdateAction = (userData) => async (dispatch, getState) => {
+export const userUpdateAction = (userData) => async (dispatch) => {
   try {
     dispatch({
       type: USER_UPDATE_REQUEST,
@@ -159,43 +168,94 @@ export const getUserProfileAction = () => async (dispatch, getState) => {
   }
 };
 
-export const userProfileUpdateAction = (userData) => async (dispatch, getState) => {
-  try {
-    dispatch({
-      type: USER_PROFILE_REQUEST,
-    });
+export const userProfileUpdateAction =
+  (user) =>
+  async (dispatch, getState) => {
+    try {
+      dispatch({
+        type: USER_PROFILE_REQUEST,
+      });
 
-    const {
-      userLogin: {userInfo},
-    } = getState();
+      const {
+        userLogin: {userInfo},
+      } = getState();
 
-    const config = {
-      headers: {
-        'content-type': 'application/json',
-        Authorization: `Baerer ${userInfo?.user?.token}`,
-      },
-    };
+      const config = {
+        headers: {
+          'content-type': 'application/json',
+          Authorization: `Baerer ${userInfo.user.token}`,
+        },
+      };
 
-    const { data } = await axios.put('/api/auth/me/e', userData, config);
+      console.log(config);
 
-    dispatch({
-      type: USER_PROFILE_SUCCESS,
-      payload: data,
-    });
+      const { data } = await axios.put('/api/auth/me/e', config)
+      console.log(data)
 
-    dispatch({
-      type: USER_LOGIN_SUCCESS,
-      payload: data,
-    });
+      dispatch({
+        type: USER_PROFILE_SUCCESS,
+        payload: data,
+      });
 
-    localStorage.setItem('userInfo', JSON.stringify(data));
-  } catch (error) {
-    dispatch({
-      type: USER_PROFILE_FAILED,
-      payload: error.response && error.response.data.message ? error.response.data.message : error.message,
-    });
-  }
-};
+      dispatch({
+        type: USER_LOGIN_SUCCESS,
+        payload: data,
+      });
+
+      localStorage.setItem('userInfo', JSON.stringify(data));
+    } catch (error) {
+      dispatch({
+        type: USER_PROFILE_FAILED,
+        payload: error.response && error.response.data.message ? error.response.data.message : error.message,
+      });
+    }
+  };
+
+  export const userProfileUpdatedAction =
+  (user) =>
+  async (dispatch, getState) => {
+    try {
+      dispatch({
+        type: USER_PROFILE_UPDATE_REQUEST,
+      });
+
+      const {
+        userLogin: {userInfo},
+      } = getState();
+
+      const config = {
+        headers: {
+          'content-type': 'application/json',
+          Authorization: `Baerer ${userInfo.user.token}`,
+        },
+      };
+
+      console.log(config);
+
+      const { data } = await axios.put('/api/auth/me/e',user,{ headers: {
+          'content-type': 'application/json',
+          Authorization: `Baerer ${userInfo?.user?.token}`,
+        }},)
+      console.log(data)
+
+      dispatch({
+        type: USER_PROFILE_UPDATE_SUCCESS,
+        payload: data,
+      });
+
+      dispatch({
+        type: USER_LOGIN_SUCCESS,
+        payload: data,
+      });
+
+      localStorage.setItem('userInfo', JSON.stringify(data));
+    } catch (error) {
+      dispatch({
+        type: USER_PROFILE_UPDATE_FAILED,
+        payload: error.response && error.response.data.message ? error.response.data.message : error.message,
+      });
+    }
+  };
 
 export const userListAction = () => async (dispatch, getState) => {
   try {
@@ -223,6 +283,37 @@ export const userListAction = () => async (dispatch, getState) => {
   } catch (error) {
     dispatch({
       type: USER_LIST_FAILED,
+      payload: error.response && error.response.data.message ? error.response.data.message : error.message,
+    });
+  }
+};
+
+export const allUserListAction = () => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: ALL_USER_LIST_REQUEST,
+    });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        'content-type': 'application/json',
+        Authorization: `Bearer ${userInfo?.user?.token}`,
+      },
+    };
+
+    const { data } = await axios.get('/api/auth/all-users', config);
+
+    dispatch({
+      type: ALL_USER_LIST_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: ALL_USER_LIST_FAILED,
       payload: error.response && error.response.data.message ? error.response.data.message : error.message,
     });
   }
@@ -259,7 +350,7 @@ export const userDetailsAction = (id) => async (dispatch, getState) => {
   }
 };
 
-export const userDeleteAction = (id) => async (dispatch, getState) => {
+export const userDeleteAction = (id) => async (dispatch) => {
   try {
     dispatch({
       type: USER_DELETE_REQUEST,
