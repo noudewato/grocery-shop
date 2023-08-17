@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import {  useParams } from 'react-router-dom';
+import {  useNavigate, useParams } from 'react-router-dom';
 import {
   Box,
   Button,
@@ -30,6 +30,11 @@ import { getOrderDetailsAction } from '../actions/order.action';
 const OrderDetailsPage = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
+  const navigate = useNavigate()
+
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
+
   const orderDetails = useSelector((state) => state.orderDetails);
   const { order, loading } = orderDetails;
 
@@ -98,6 +103,12 @@ const OrderDetailsPage = () => {
 
     return () => clearTimeout(setTimmer);
   }, [isLoading]);
+
+   useEffect(() => {
+     if (userInfo && !userInfo.user.isAdmin) {
+       navigate('/login');
+     }
+   }, [userInfo, navigate]);
 
   return (
     <div>
@@ -273,7 +284,7 @@ const OrderDetailsPage = () => {
       </Helmet>
 
       <div
-        style={{ display: 'none' }} // This make ComponentToPrint show   only while printing
+        style={{ display: 'none', margin:"5rem" }} // This make ComponentToPrint show   only while printing
       >
         <ComponentToPrint
           ref={componentRef}
@@ -282,6 +293,9 @@ const OrderDetailsPage = () => {
           totalPrice={order?.totalPrice}
           taxPrice={order?.taxPrice}
           order={order}
+          createdAt={order?.createdAt}
+          city={order?.deliverAddress?.city}
+          location={order?.deliverAddress?.location}
         />
       </div>
     </div>

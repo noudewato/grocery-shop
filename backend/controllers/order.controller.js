@@ -126,12 +126,41 @@ export const GetOrders = async (req, res) => {
 
 export const getPendingOrder = async (req, res) => {
   const status = await orderModel.aggregate([
-  {$match: { isPaid: true }},
     {      
-      $group: { _id: { status: "$status" }, count: { $sum: 1 } },
+      $group: { _id: "$status", count: { $sum: 1 } },
     },
-    { $sort: { status: 1 } },
+    { $sort: { _id: 1 } },
   ]);
 
   res.status(200).json({ status });
+};
+
+export const calculateDiverseOrderAmount = async (req, res) => {
+  const diversAmount = await orderModel.aggregate([
+    {
+      $group: {
+        _id: "$status",
+        totalAmount: { $sum: "$totalPrice" },
+        count: { $sum: 1 },
+      },
+    },
+    { $sort: { _id: 1 } },
+  ]);
+
+  res.status(200).json({ diversAmount });
+};
+
+export const calculateAllOrderAmount = async (req, res) => {
+  const amount = await orderModel.aggregate([
+    {
+      $group: {
+        _id: "$isPaid",
+        totalAmount: { $sum: "$totalPrice" },
+        count: { $sum: 1 },
+      },
+    },
+    { $sort: { _id: 1 } },
+  ]);
+
+  res.status(200).json({ amount });
 };

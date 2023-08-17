@@ -1,4 +1,4 @@
-import { Container, Stack, Typography, Button, Box, FormControlLabel, Switch, Grid, Avatar } from '@mui/material';
+import { Container, Stack, Typography, Box, FormControlLabel, Switch, Grid, Avatar } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { LoadingButton } from '@mui/lab';
 import { useDispatch, useSelector } from 'react-redux';
@@ -18,21 +18,27 @@ const EditUserPage = () => {
   const userDetails = useSelector((state) => state.userDetails);
   const { user, error } = userDetails;
 
+   const userLogin = useSelector((state) => state.userLogin);
+   const { userInfo } = userLogin;
+
   const userUpdate = useSelector((state) => state.userUpdate);
   const { success: successUpdate, error: errorUpdate, loading: loadingUpdate } = userUpdate;
+
+  useEffect(() => {
+    if (userInfo && !userInfo.user.isAdmin) {
+      navigate('/login');
+    }
+  }, [userInfo, navigate]);
 
   const [username, setUsername] = useState('');
   const [usernameError, setusernameError] = useState('');
   const [email, setEmail] = useState('');
   const [emailError, setemailError] = useState('');
   const [password, setPassword] = useState('');
-  const [passwordError, setpasswordError] = useState('');
   const [phonenumber, setPhonenumber] = useState('');
   const [phonenumberError, setphonenumberError] = useState('');
   const [isAdmin, setisAdmin] = useState(true);
-  const [isadminError, setisadminError] = useState(false);
   const [image, setImage] = useState('');
-  const [imageError, setimageError] = useState('');
 
   useEffect(() => {
     dispatch(userDetailsAction(id));
@@ -56,7 +62,7 @@ const EditUserPage = () => {
     } else {
       toast.error(errorUpdate);
     }
-  }, [successUpdate, error]);
+  }, [successUpdate, errorUpdate, dispatch, navigate]);
 
   const handleValidation = () => {
     let formIsValid = true;
@@ -96,7 +102,7 @@ const EditUserPage = () => {
       }, 2500);
 
       return () => clearTimeout(setTimmer);
-    }, []);
+    }, [isLoading]);
 
     const handleEditProductClick = (e) => {
       e.preventDefault();

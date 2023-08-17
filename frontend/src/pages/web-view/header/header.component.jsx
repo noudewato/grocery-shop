@@ -121,7 +121,7 @@ function Header(props) {
            
           </Box>
           <Box sx={{ flexGrow: 1 }} />
-          <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
+          <Box sx={{ display: { xs: 'none', sm: 'block',lg:'none' } }}>
             {navItems.map((item) => (
               <Button key={item} sx={{ color: 'black' }}>
                 {item}

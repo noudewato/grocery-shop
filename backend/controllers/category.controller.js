@@ -61,11 +61,11 @@ export const updateCategoryController = async (req, res) => {
 
     const existingCategory = await Category.findOne({ name });
 
-     if (existingCategory) {
-       return res
-         .status(200)
-         .json({ success: false, message: "category already exists" });
-     }
+    //  if (existingCategory) {
+    //    return res
+    //      .status(200)
+    //      .json({ success: false, message: "category already exists" });
+    //  }
 
     const category = await Category.findByIdAndUpdate(
       id,
@@ -75,20 +75,20 @@ export const updateCategoryController = async (req, res) => {
 
     await category.save()
 
-    res.status(200).json({success:true, category});
+    res.status(200).json({ success: true, category });
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     res.status(500).json({
       success: false,
-      error,
-      msg: "Error while updating category",
+      error: error.message,
+      message: "Error while updating category",
     });
   }
 };
 
 export const getAllCategoryController = async (req, res) => {
   try {
-    const category = await Category.find().sort({ createdAt: -1 }).populate("user");
+    const category = await Category.find().sort({ name:'asc' }).populate("user");
     res.status(200).json(category);
   } catch (error) {
     console.log(error);

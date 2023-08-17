@@ -27,7 +27,7 @@ import {
   TablePagination,
 } from '@mui/material';
 
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { toast } from 'react-toastify';
 
@@ -95,6 +95,11 @@ function applySortFilter(array, comparator, query) {
 
 const ProductsPage = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate()
+
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
+
   const productList = useSelector((state) => state.productList);
   const { products, loading } = productList;
 
@@ -205,6 +210,12 @@ const ProductsPage = () => {
     setOpen(true);
     setDeleteData(row);
   };
+
+  useEffect(() => {
+    if (userInfo && !userInfo.user.isAdmin) {
+      navigate('/login');
+    }
+  }, [userInfo, navigate]);
 
   return (
     <>

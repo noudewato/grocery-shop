@@ -1,19 +1,16 @@
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { faker } from '@faker-js/faker';
 // @mui
 import { useTheme } from '@mui/material/styles';
 import { Grid, Container, Typography, Box, Stack } from '@mui/material';
 import LoopIcon from '@mui/icons-material/Loop';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import DoneIcon from '@mui/icons-material/Done';
-import CancelIcon from '@mui/icons-material/Cancel';
 import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { orderListAction, orderStatusAction } from '../actions/order.action';
 import Spinner from '../components/spinner/spinner.component';
-import Label from '../components/label/Label';
 // components
-import Iconify from '../components/form-input/iconify';
 import { userListAction } from '../actions/auth.action';
 import { productListAction } from '../actions/product.action';
 import { categoryListAction } from '../actions/category.action';
@@ -36,6 +33,11 @@ import RecentOrderPage from './RecentOrderPage';
 export default function DashboardAppPage() {
   const theme = useTheme();
   const dispatch = useDispatch();
+  const navigate = useNavigate()
+
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
+
   const userList = useSelector((state) => state.userList);
   const { users } = userList;
 
@@ -49,7 +51,7 @@ export default function DashboardAppPage() {
   const { orders } = orderList;
 
   const orderStatus = useSelector((state) => state.orderStatus);
-  const { status } = orderStatus;
+  const { status, loading } = orderStatus;
 
   useEffect(() => {
     dispatch(userListAction());
@@ -70,6 +72,12 @@ export default function DashboardAppPage() {
 
     return () => clearTimeout(setTimmer);
   }, [isLoading]);
+
+   useEffect(() => {
+     if (userInfo && !userInfo.user.isAdmin) {
+      navigate('/login')
+    }
+   }, [userInfo, navigate]);
 
   return (
     <>
@@ -112,56 +120,61 @@ export default function DashboardAppPage() {
               <AppWidgetSummary title="Categories" total={categories?.length} icon={'ant-design:android-filled'} />
             </Grid>
 
-            <Grid item xs={12} sm={6} md={4}>
-              <Stack
-                direction="row"
-                spacing={2}
-                alignItems="center"
-                sx={{ py: 3, px: 2, borderRadius: 2, backgroundColor: 'whiteSmoke', boxShadow: 4 }}
-              >
-                <LoopIcon sx={{ fontSize: '80px', color: 'purple' }} />
-                <Typography variant="body2" noWrap>
-                  {status.status[1]?._id?.status} <br />
-                  <Typography variant="h6">
-                    {status.status[1]?.count} <br />
-                  </Typography>
-                </Typography>
-              </Stack>
-            </Grid>
-
-            {/* <Grid item xs={12} sm={6} md={4}>
-              <Stack
-                direction="row"
-                spacing={2}
-                alignItems="center"
-                sx={{ py: 3, px: 2, borderRadius: 2, backgroundColor: 'whiteSmoke', boxShadow: 4 }}
-              >
-                <LocalShippingIcon sx={{ fontSize: '80px', color: 'tomato' }} />
-                <Typography variant="body2" noWrap>
-                  {status.status[1]._id} <br />
-                  <Typography variant="h6">
-                    {status.status[1].count} <br />
-                  </Typography>
-                </Typography>
-              </Stack>
-            </Grid>
-
-            <Grid item xs={12} sm={6} md={4}>
-              <Stack
-                direction="row"
-                spacing={2}
-                alignItems="center"
-                sx={{ py: 3, px: 2, borderRadius: 2, backgroundColor: 'whiteSmoke', boxShadow: 4 }}
-              >
-                <DoneIcon sx={{ fontSize: '80px', color: 'green' }} />
-                <Typography variant="body2" noWrap>
-                  {status.status[2]._id} <br />
-                  <Typography variant="h6">
-                    {status.status[2].count} <br />
-                  </Typography>
-                </Typography>
-              </Stack>
-            </Grid> */}
+            {loading ? (
+              <Spinner />
+            ) : (
+              <>
+                {' '}
+                <Grid item xs={12} sm={12} md={4}>
+                  <Stack
+                    direction="row"
+                    spacing={2}
+                    alignItems="center"
+                    sx={{ py: 3, px: 2, borderRadius: 2, backgroundColor: 'whiteSmoke', boxShadow: 4 }}
+                  >
+                    <LoopIcon sx={{ fontSize: '80px', color: 'purple' }} />
+                    <Typography variant="body2" noWrap sx={{ textTransform: 'uppercase' }}>
+                      {status.status[3]?._id} <br />
+                      <Typography variant="h6">
+                        {status.status[3]?.count} <br />
+                      </Typography>
+                    </Typography>
+                  </Stack>
+                </Grid>
+                <Grid item xs={12} sm={12} md={4}>
+                  <Stack
+                    direction="row"
+                    spacing={2}
+                    alignItems="center"
+                    sx={{ py: 3, px: 2, borderRadius: 2, backgroundColor: 'whiteSmoke', boxShadow: 4 }}
+                  >
+                    <LocalShippingIcon sx={{ fontSize: '80px', color: 'tomato' }} />
+                    <Typography variant="body2" noWrap>
+                      {status.status[2]._id} <br />
+                      <Typography variant="h6">
+                        {status.status[2].count} <br />
+                      </Typography>
+                    </Typography>
+                  </Stack>
+                </Grid>
+                <Grid item xs={12} sm={12} md={4}>
+                  <Stack
+                    direction="row"
+                    spacing={2}
+                    alignItems="center"
+                    sx={{ py: 3, px: 2, borderRadius: 2, backgroundColor: 'whiteSmoke', boxShadow: 4 }}
+                  >
+                    <DoneIcon sx={{ fontSize: '80px', color: 'green' }} />
+                    <Typography variant="body2" noWrap>
+                      {status.status[1]._id} <br />
+                      <Typography variant="h6">
+                        {status.status[1].count} <br />
+                      </Typography>
+                    </Typography>
+                  </Stack>
+                </Grid>
+              </>
+            )}
 
             <Grid item xs={12} sm={12} md={12}>
               <RecentOrderPage />

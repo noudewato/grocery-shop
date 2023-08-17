@@ -55,6 +55,14 @@ export default function LoginForm() {
       });
       localStorage.removeItem('userInfo');
     }
+
+     if (userInfo && !userInfo?.user?.isAdmin) {
+       toast.error(`User is not an admin`);
+       dispatch({
+         type: USER_LOGIN_RESET,
+       });
+       localStorage.removeItem('userInfo');
+     }
   }, [navigate, userInfo, dispatch]);
 
   const handleValidation = () => {

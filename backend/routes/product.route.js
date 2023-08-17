@@ -3,6 +3,7 @@ import {
   createProductController,
   deleteProductController,
   getAllProductsController,
+  getCategoryController,
   getProductPhotoController,
   getSingleProductController,
   productsCategory,
@@ -45,6 +46,11 @@ productRouter.delete(
   protect,
   isAdmin,
   deleteProductController
+);
+
+productRouter.get(
+  "/divers-category",
+  getCategoryController
 );
 
 //product image

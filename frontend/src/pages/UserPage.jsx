@@ -27,7 +27,7 @@ import {
   Switch,
 } from '@mui/material';
 
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { USER_DELETE_RESET } from '../constants/auth.constant';
 
@@ -48,8 +48,8 @@ import Spinner from '../components/spinner/spinner.component';
 const TABLE_HEAD = [
   { id: 'user', label: 'user', alignRight: false },
   { id: 'contact', label: 'contact', alignRight: false },
-  { id: 'createdAt', label: 'CreatedAt', alignRight: false },
-  { id: 'updatedAt', label: 'updatedAt', alignRight: false },
+  { id: 'date', label: 'CreatedAt', alignRight: false },
+  // { id: 'updatedAt', label: 'updatedAt', alignRight: false },
   { id: 'isAdmin?', label: 'isAdmin?', alignRight: false },
   { id: 'action', label: 'Action', alignRight: false },
 ];
@@ -80,18 +80,22 @@ function applySortFilter(array, comparator, query) {
     return a[1] - b[1];
   });
   if (query) {
-    return filter(array, (_user) => _user?.username?.toLowerCase().indexOf(query?.toLowerCase()) !== -1);
+    return filter(array, (_user) => _user.username.toLowerCase().indexOf(query.toLowerCase()) !== -1);
   }
   return stabilizedThis?.map((el) => el[0]);
 }
 
 export default function UserPage() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const userList = useSelector((state) => state.userList);
   const { users, loading } = userList;
 
   const userDelete = useSelector((state) => state.userDelete);
   const { success } = userDelete;
+
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
 
   useEffect(() => {
     dispatch(userListAction());
@@ -116,6 +120,12 @@ export default function UserPage() {
     }
   }, [success, dispatch]);
 
+  useEffect(() => {
+    if (userInfo && !userInfo.user.isAdmin) {
+      navigate('/login');
+    }
+  }, [userInfo, navigate]);
+
   const [openm, setOpenm] = useState(null);
 
   const [page, setPage] = useState(0);
@@ -128,7 +138,7 @@ export default function UserPage() {
 
   const [filterusername, setFilterusername] = useState('');
 
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const handleCloseMenu = () => {
     setOpenm(null);
@@ -153,8 +163,9 @@ export default function UserPage() {
     setPage(0);
     setFilterusername(event.target.value);
   };
+  console.log(filterusername);
 
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - users.length) : 0;
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - users?.length) : 0;
 
   const filteredusers = applySortFilter(users, getComparator(order, orderBy), filterusername);
 
@@ -187,7 +198,7 @@ export default function UserPage() {
             />
 
             <Scrollbar>
-              <TableContainer sx={{ minWidth: 1250 }}>
+              <TableContainer sx={{ minWidth: 1000 }}>
                 <Table>
                   <UserListHead
                     order={order}
@@ -200,7 +211,7 @@ export default function UserPage() {
                   />
                   <TableBody>
                     {filteredusers?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                      const { _id, username, email, image, phonenumber, createdAt, updatedAt, isAdmin } = row;
+                      const { _id, username, email, image, phonenumber, date, isAdmin } = row;
                       // const selectedUser = selected.indexOf(username) !== -1;
 
                       return (
@@ -224,11 +235,11 @@ export default function UserPage() {
                             </Typography>
                           </TableCell>
                           <TableCell align="left">
-                            {moment(createdAt).format(`Do MMMM YYYY`)} <br /> {moment(createdAt).format(`h:mm A`)}
+                            {moment(date).format(`Do MMMM YYYY`)} <br /> {moment(date).format(`h:mm A`)}
                           </TableCell>
-                          <TableCell align="left">
+                          {/* <TableCell align="left">
                             {moment(updatedAt).format(`Do MMMM YYYY`)} <br /> {moment(updatedAt).format(`h:mm A`)}
-                          </TableCell>
+                          </TableCell> */}
                           <TableCell align="left">
                             {isAdmin ? (
                               <FormControlLabel checked={isAdmin} onChange={() => {}} control={<Switch />} />

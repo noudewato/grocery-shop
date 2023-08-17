@@ -19,6 +19,12 @@ import {
   ORDER_STATUS_REQUEST,
   ORDER_STATUS_SUCCESS,
   ORDER_STATUS_FAIL,
+  ORDER_TOTAL_AMOUNT_REQUEST,
+  ORDER_TOTAL_AMOUNT_SUCCESS,
+  ORDER_TOTAL_AMOUNT_FAIL,
+  ORDER_STATUS_TOTAL_AMOUNT_REQUEST,
+  ORDER_STATUS_TOTAL_AMOUNT_SUCCESS,
+  ORDER_STATUS_TOTAL_AMOUNT_FAIL,
 } from '../constants/order.constant';
 
 export const createOrderReducer = (state = {}, action) => {
@@ -162,6 +168,54 @@ export const updateOrderStatusReducer = (state = {}, action) => {
       };
 
     case ORDER_UPDATE_STATUS_FAIL:
+      return {
+        loading: false,
+        error: action.payload,
+      };
+
+    default:
+      return state;
+  }
+};
+
+export const orderTotalAmountReducer = (state = { amount: [] }, action) => {
+  switch (action.type) {
+    case ORDER_TOTAL_AMOUNT_REQUEST:
+      return {
+        loading: true,
+      };
+    case ORDER_TOTAL_AMOUNT_SUCCESS:
+      return {
+        loading: false,
+        success: true,
+        amount: action.payload,
+      };
+
+    case ORDER_TOTAL_AMOUNT_FAIL:
+      return {
+        loading: false,
+        error: action.payload,
+      };
+
+    default:
+      return state;
+  }
+};
+
+export const orderTotalStatusReducer = (state = { diversAmount: [] }, action) => {
+  switch (action.type) {
+    case ORDER_STATUS_TOTAL_AMOUNT_REQUEST:
+      return {
+        loading: true,
+      };
+    case ORDER_STATUS_TOTAL_AMOUNT_SUCCESS:
+      return {
+        loading: false,
+        success: true,
+        diversAmount: action.payload,
+      };
+
+    case ORDER_STATUS_TOTAL_AMOUNT_FAIL:
       return {
         loading: false,
         error: action.payload,

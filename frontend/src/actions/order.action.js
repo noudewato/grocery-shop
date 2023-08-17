@@ -18,6 +18,12 @@ import {
   ORDER_STATUS_REQUEST,
   ORDER_STATUS_SUCCESS,
   ORDER_STATUS_FAIL,
+  ORDER_TOTAL_AMOUNT_REQUEST,
+  ORDER_TOTAL_AMOUNT_SUCCESS,
+  ORDER_TOTAL_AMOUNT_FAIL,
+  ORDER_STATUS_TOTAL_AMOUNT_REQUEST,
+  ORDER_STATUS_TOTAL_AMOUNT_SUCCESS,
+  ORDER_STATUS_TOTAL_AMOUNT_FAIL,
 } from '../constants/order.constant';
 
 export const addOrder = (order) => async (dispatch, getState) => {
@@ -229,6 +235,66 @@ export const orderDeleteAction = (order) => async (dispatch, getState) => {
   } catch (error) {
     dispatch({
       type: ORDER_UPDATE_STATUS_FAIL,
+      payload: error.response && error.response.data.message ? error.response.data.message : error.message,
+    });
+  }
+};
+
+export const orderTotalAmountAction = () => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: ORDER_TOTAL_AMOUNT_REQUEST,
+    });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await axios.get(`/api/order/totalAmount`, config);
+
+    dispatch({
+      type: ORDER_TOTAL_AMOUNT_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: ORDER_TOTAL_AMOUNT_FAIL,
+      payload: error.response && error.response.data.message ? error.response.data.message : error.message,
+    });
+  }
+};
+
+export const orderTotalDiverseAmountAction = () => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: ORDER_STATUS_TOTAL_AMOUNT_REQUEST,
+    });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await axios.get(`/api/order/diversAmount`, config);
+
+    dispatch({
+      type: ORDER_STATUS_TOTAL_AMOUNT_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: ORDER_STATUS_TOTAL_AMOUNT_FAIL,
       payload: error.response && error.response.data.message ? error.response.data.message : error.message,
     });
   }

@@ -26,17 +26,22 @@ import {
   TablePagination,
   Collapse,
   Box,
+  Grid,
 } from '@mui/material';
-
+import LoopIcon from '@mui/icons-material/Loop';
+import LocalShippingIcon from '@mui/icons-material/LocalShipping';
+import DoneIcon from '@mui/icons-material/Done';
+import CancelIcon from '@mui/icons-material/Cancel';
+import DataUsageIcon from '@mui/icons-material/DataUsage';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import moment from 'moment';
 
 import Spinner from '../components/spinner/spinner.component';
 
-import { orderListAction } from '../actions/order.action';
+import { orderListAction, orderTotalAmountAction, orderTotalDiverseAmountAction } from '../actions/order.action';
 
 // components
 import Label from '../components/label';
@@ -44,8 +49,6 @@ import Iconify from '../components/form-input/iconify';
 import Scrollbar from '../components/scrollbar';
 // sections
 import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
-
-import DialogBox from '../components/dialog-box/dialog.component';
 
 // ----------------------------------------------------------------------
 
@@ -95,12 +98,31 @@ function applySortFilter(array, comparator, query) {
 
 const OrderPage = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate()
+
+   const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
+  
+
   const orderList = useSelector((state) => state.orderList);
   const { orders, loading } = orderList;
-  const primary = grey[900];
+
+  const orderDiversAmount = useSelector((state) => state.orderDiversAmount);
+  const { diversAmount, loading: loadingDivers } = orderDiversAmount;
+
+  const orderTotalAmount = useSelector((state) => state.orderTotalAmount);
+  const { amount, loading: loadingAmount } = orderTotalAmount;
 
   useEffect(() => {
     dispatch(orderListAction());
+  }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(orderTotalAmountAction());
+  }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(orderTotalDiverseAmountAction());
   }, [dispatch]);
 
   const [openm, setOpenm] = useState(null);
@@ -159,12 +181,31 @@ const OrderPage = () => {
   const [open, setOpen] = useState(false);
   const [opentable, setOpenTable] = useState(false);
 
+  useEffect(() => {
+    if (userInfo && !userInfo.user.isAdmin) {
+      navigate('/login');
+    }
+  }, [userInfo, navigate]);
+
+   const [isLoading, setIsLoading] = useState(true);
+
+   useEffect(() => {
+     const setTimmer = setTimeout(() => {
+       if (isLoading) {
+         setIsLoading(false);
+       }
+     }, 5000);
+
+     return () => clearTimeout(setTimmer);
+   }, [isLoading]);
+
+
   return (
     <>
       <Helmet>
         <title> Grocery Shop | Dashbord | Order </title>
       </Helmet>
-      {loading ? (
+      {isLoading || loading ? (
         <Spinner />
       ) : (
         <Container>
@@ -173,6 +214,113 @@ const OrderPage = () => {
               Order
             </Typography>
           </Stack>
+
+          {loadingDivers || loadingAmount ? (
+            <>...</>
+          ) : (
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={12} md={2.4}>
+                <Stack
+                  direction="row"
+                  spacing={2}
+                  alignItems="center"
+                  sx={{ py: 3, px: 2, borderRadius: 2, backgroundColor: 'white', my: 3, boxShadow: 4 }}
+                >
+                  <DataUsageIcon sx={{ fontSize: '50px', color: 'greenyellow' }} />
+
+                  <Typography variant="body2" noWrap sx={{ textTransform: 'capitalize' }}>
+                    <Typography variant="body1" noWrap sx={{ textTransform: 'capitalize' }}>
+                      Total
+                    </Typography>
+                    {amount?.amount[0]?.count} <br />
+                    <Typography variant="h6">
+                      {(amount?.amount[0]?.totalAmount).toFixed(2)} <br />
+                    </Typography>
+                  </Typography>
+                </Stack>
+              </Grid>
+
+              <Grid item xs={12} sm={12} md={2.4}>
+                <Stack
+                  direction="row"
+                  spacing={2}
+                  alignItems="center"
+                  sx={{ py: 3, px: 2, borderRadius: 2, backgroundColor: 'white', my: 3, boxShadow: 4 }}
+                >
+                  <LoopIcon sx={{ fontSize: '50px', color: 'purple' }} />
+                  <Typography variant="body2" noWrap sx={{ textTransform: 'capitalize' }}>
+                    <Typography variant="body2" noWrap sx={{ textTransform: 'capitalize' }}>
+                      Pending
+                    </Typography>
+                    {diversAmount?.diversAmount[3]?.count} <br />
+                    <Typography variant="h6">
+                      {(diversAmount?.diversAmount[3]?.totalAmount).toFixed(2)} <br />
+                    </Typography>
+                  </Typography>
+                </Stack>
+              </Grid>
+
+              <Grid item xs={12} sm={12} md={2.4}>
+                <Stack
+                  direction="row"
+                  spacing={2}
+                  alignItems="center"
+                  sx={{ py: 3, px: 2, borderRadius: 2, backgroundColor: 'white', my: 3, boxShadow: 4 }}
+                >
+                  <LocalShippingIcon sx={{ fontSize: '50px', color: 'tomato' }} />
+                  <Typography variant="body2" noWrap sx={{ textTransform: 'capitalize' }}>
+                    <Typography variant="body2" noWrap sx={{ textTransform: 'capitalize' }}>
+                      Processing
+                    </Typography>
+                    {diversAmount?.diversAmount[2]?.count} <br />
+                    <Typography variant="h6">
+                      {(diversAmount?.diversAmount[2]?.totalAmount).toFixed(2)} <br />
+                    </Typography>
+                  </Typography>
+                </Stack>
+              </Grid>
+
+              <Grid item xs={12} sm={12} md={2.4}>
+                <Stack
+                  direction="row"
+                  spacing={2}
+                  alignItems="center"
+                  sx={{ py: 3, px: 2, borderRadius: 2, backgroundColor: 'white', my: 3, boxShadow: 4 }}
+                >
+                  <DoneIcon sx={{ fontSize: '50px', color: 'green' }} />
+                  <Typography variant="body2" noWrap sx={{ textTransform: 'capitalize' }}>
+                    <Typography variant="body2" noWrap sx={{ textTransform: 'capitalize' }}>
+                      Completed
+                    </Typography>
+                    {diversAmount?.diversAmount[1]?.count} <br />
+                    <Typography variant="h6">
+                      {(diversAmount?.diversAmount[1]?.totalAmount).toFixed(2)} <br />
+                    </Typography>
+                  </Typography>
+                </Stack>
+              </Grid>
+
+              <Grid item xs={12} sm={12} md={2.4}>
+                <Stack
+                  direction="row"
+                  spacing={2}
+                  alignItems="center"
+                  sx={{ py: 3, px: 2, borderRadius: 2, backgroundColor: 'white', my: 3, boxShadow: 4 }}
+                >
+                  <CancelIcon sx={{ fontSize: '50px', color: 'red' }} />
+                  <Typography variant="body2" noWrap sx={{ textTransform: 'capitalize' }}>
+                    <Typography variant="body2" noWrap sx={{ textTransform: 'capitalize' }}>
+                      Cancel
+                    </Typography>
+                    {diversAmount?.diversAmount[0]?.count} <br />
+                    <Typography variant="h6">
+                      {(diversAmount?.diversAmount[0]?.totalAmount).toFixed(2)} <br />
+                    </Typography>
+                  </Typography>
+                </Stack>
+              </Grid>
+            </Grid>
+          )}
 
           <Card>
             <UserListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} />
@@ -244,11 +392,11 @@ const OrderPage = () => {
                             {status === 'pending' ? (
                               <Label color="success">Pending</Label>
                             ) : status === 'Processing' ? (
-                              <Label color='secondary'>Processing</Label>
+                              <Label color="secondary">Processing</Label>
                             ) : status === 'Completed' ? (
                               <Label color="warning">Completed</Label>
                             ) : (
-                              <Label color='error'>Cancel</Label>
+                              <Label color="error">Cancel</Label>
                             )}
                             {/* <Label color={(status === 'banned' && 'error') || 'success'}>{sentenceCase(status)}</Label> */}
                           </TableCell>

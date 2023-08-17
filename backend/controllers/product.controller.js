@@ -1,7 +1,4 @@
 import Product from "../models/product.model.js";
-import category from "../models/category.model.js";
-import fs from "fs";
-import { type } from "os";
 import slugify from "slugify";
 
 export const createProductController = async (req, res) => {
@@ -121,9 +118,29 @@ export const getAllProductsController = async (req, res) => {
     const products = await Product.find({})
       .populate("user")
       .populate("category")
-      .sort({ createdAt: -1 });
+      .sort({ name: "asc" });
 
     res.status(200).json(products);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      error,
+      msg: "Error while getting product lists",
+    });
+  }
+};
+
+export const getCategoryController = async (req, res) => {
+  try {
+    const diversCategory = await Product.aggregate([
+      {
+        $group: { _id: "$category", count: { $sum: 1 } },
+      },
+      {$sort:{_id: 1}}
+    ]);
+
+    res.status(200).json(diversCategory);
   } catch (error) {
     console.log(error);
     res.status(500).json({
@@ -179,12 +196,6 @@ export const updateProductController = async (req, res) => {
 
     const existingProduct = await Product.findOne({ name });
 
-    if (existingProduct) {
-      return res
-        .status(200)
-        .json({ success: false, message: "Product already exists" });
-    }
-
     const product = await Product.findByIdAndUpdate(
       req.params.id,
       { ...req.body, slug: slugify(name) },
@@ -194,7 +205,7 @@ export const updateProductController = async (req, res) => {
     await product.save();
     res.status(200).json({ success: true, product });
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     res.status(500).json({
       success: false,
       error: error.message,

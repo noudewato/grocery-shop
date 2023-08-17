@@ -17,10 +17,13 @@ const EditCategoryPage = () => {
   const { id } = useParams();
 
   const categoryDetails = useSelector((state) => state.categoryDetails);
-  const { success, category, error } = categoryDetails;
+  const { category } = categoryDetails;
+  
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
 
   const categoryUpdate = useSelector((state) => state.categoryUpdate);
-  const { category: categoryUpdated, loading } = categoryUpdate;
+  const { category: categoryUpdated, loading, error } = categoryUpdate;
 
   const [name, setName] = useState('');
   const [nameError, setnameError] = useState('');
@@ -98,17 +101,23 @@ const EditCategoryPage = () => {
       setName('');
       setImage('');
     }
-    if (categoryUpdated && !categoryUpdated.success){
-      toast.error(categoryUpdated.message);
+    if (error){
+      toast.error(error);
         dispatch({
           type: CATEGORY_UPDATE_RESET,
         });
     }
-  }, [dispatch, navigate, categoryUpdated]);
+  }, [dispatch, navigate, categoryUpdated, error]);
 
   useEffect(() => {
     dispatch(categoryDetailsAction(id));
   }, [id, dispatch]);
+
+  useEffect(() => {
+    if (userInfo && !userInfo.user.isAdmin) {
+      navigate('/login');
+    }
+  }, [userInfo, navigate]);
 
   return (
     <div className="new-pr">

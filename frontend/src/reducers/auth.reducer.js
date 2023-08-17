@@ -89,12 +89,12 @@ export const userListReducer = (state = { users: [] }, action) => {
   }
 };
 
-export const allUserListReducer = (state = { myUsers: [] }, action) => {
+export const allUserListReducer = (state = { customer: [] }, action) => {
   switch (action.type) {
     case ALL_USER_LIST_REQUEST:
       return { loading: true };
     case ALL_USER_LIST_SUCCESS:
-      return { loading: false, success: true, myUsers: action.payload };
+      return { loading: false, success: true, customer: action.payload };
     case ALL_USER_LIST_FAILED:
       return { loading: false, error: action.payload };
     default:

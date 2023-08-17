@@ -18,6 +18,9 @@ const NewCategoryPage = () => {
   const categoryCreate = useSelector((state) => state.categoryCreate);
   const { success, category, error, loading } = categoryCreate;
 
+   const userLogin = useSelector((state) => state.userLogin);
+   const { userInfo } = userLogin;
+
   const [name, setName] = useState('');
   const [nameError, setnameError] = useState('');
   const [uploading, setUploading] = useState(false);
@@ -106,6 +109,12 @@ const NewCategoryPage = () => {
      }
 
   }, [dispatch, navigate, success, category, error]);
+
+  useEffect(() => {
+    if (userInfo && !userInfo.user.isAdmin) {
+      navigate('/login');
+    }
+  }, [userInfo, navigate]);
 
   return (
     <div className="new-pr">

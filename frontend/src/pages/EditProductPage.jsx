@@ -31,6 +31,9 @@ const EditProductPage = () => {
   const categoryList = useSelector((state) => state.categoryList);
   const { categories } = categoryList;
 
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
+
   const productDetails = useSelector((state) => state.productDetails);
   const { product, error } = productDetails;
 
@@ -79,8 +82,8 @@ const EditProductPage = () => {
       });
     }
 
-      if (productUpdated && !productUpdated.success) {
-        toast.error(productUpdated?.message);
+      if (error) {
+        toast.error(errorUpdate);
         dispatch({
           type: PRODUCT_UPDATE_RESET,
         });
@@ -98,6 +101,12 @@ const EditProductPage = () => {
       setIsActive(product.isActive);
     }
   }, [product]);
+
+  useEffect(() => {
+    if (userInfo && !userInfo.user.isAdmin) {
+      navigate('/login');
+    }
+  }, [userInfo, navigate]);
 
   const [isLoading, setIsLoading] = useState(true);
 

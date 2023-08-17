@@ -10,8 +10,7 @@ import {
   createAddress,
   getAllUsersOrder,
   updateUserProfile,
-  userProfile,
-  AllUsers,
+  userProfile
 } from "../controllers/user.controller.js";
 const userRouter = express.Router();
 import { isAdmin, protect } from "../utils/authMiddleware.js";
@@ -24,7 +23,6 @@ userRouter.get("/get-user", protect, isAdmin, getAllUsers);
 userRouter.get("/user-order", getAllUsersOrder);
 userRouter.get("/:id", getSingleUser);
 userRouter.get("/me/s", protect, userProfile);
-userRouter.get("/all-users", protect, AllUsers);
 userRouter.put("/:id", updateUser);
 userRouter.put("/me/e", protect, updateUserProfile);
 userRouter.delete("/:id", deleteUser);

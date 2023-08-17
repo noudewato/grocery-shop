@@ -1,5 +1,4 @@
 import userModel from "../models/user.model.js";
-import expressAsyncHandler from "express-async-handler";
 import { generateToken } from "../utils/generateToken.js";
 import { sendEmail } from "../utils/sendEmail.js";
 
@@ -109,18 +108,9 @@ export const getAllUsers = async (req, res) => {
   try {
     const users = await userModel
       .find()
-      .populate("orders", "_id")
-      .sort({ createdAt: -1 });
+      .sort({ date: -1 });
 
-    if (users) {
       res.status(200).json(users);
-    } else {
-      res.status(404).json({
-        success: false,
-        message: "users list not found",
-        allUsers,
-      });
-    }
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -130,19 +120,6 @@ export const getAllUsers = async (req, res) => {
   }
 };
 
-export const AllUsers = async (req, res) => {
-  try {
-    const myUsers = await userModel.find().sort({ createdAt: -1 });
-    res.status(200).json({ success: true, myUsers });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Your request could not be processed. Please try again.",
-      error,
-    });
-    ;
-  }
-};
 
 export const getSingleUser = async (req, res) => {
   try {
@@ -153,9 +130,8 @@ export const getSingleUser = async (req, res) => {
       res.json(user);
     } else
       res.status(400).json({
-        success: true,
-        message: "failed, user not found",
-        allUsers,
+        success: false,
+        message: "failed, user not found"
       });
   } catch (error) {
     res.status(500).json({

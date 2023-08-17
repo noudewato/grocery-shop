@@ -305,7 +305,7 @@ export const allUserListAction = () => async (dispatch, getState) => {
       },
     };
 
-    const { data } = await axios.get('/api/auth/all-users', config);
+    const { data } = await axios.get('/api/auth/my-users', config);
 
     dispatch({
       type: ALL_USER_LIST_SUCCESS,

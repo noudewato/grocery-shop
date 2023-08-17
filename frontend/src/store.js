@@ -27,7 +27,7 @@ import {
   productListReducer,
   productUpdateReducer,
 } from './reducers/product.reducer';
-import { createOrderReducer, orderDetailsReducer, orderListMyReducer, orderListReducer, orderStatusReducer } from './reducers/order.reducer';
+import { createOrderReducer, orderDetailsReducer, orderListMyReducer, orderListReducer, orderStatusReducer, orderTotalAmountReducer, orderTotalStatusReducer } from './reducers/order.reducer';
 import { cartReducer } from './reducers/cart.reducer';
 
 const reducers = combineReducers({
@@ -56,7 +56,9 @@ const reducers = combineReducers({
   orderList: orderListReducer,
   orderListMy: orderListMyReducer,
   orderDetails: orderDetailsReducer,
-  orderStatus: orderStatusReducer
+  orderStatus: orderStatusReducer,
+  orderTotalAmount: orderTotalAmountReducer,
+  orderDiversAmount: orderTotalStatusReducer
 });
 
 const userInfo = localStorage.getItem('userInfo') ? JSON.parse(localStorage.getItem('userInfo')) : null;

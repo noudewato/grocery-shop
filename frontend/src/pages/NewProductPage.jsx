@@ -26,11 +26,22 @@ import { PRODUCT_CREATE_RESET } from '../constants/product.constant';
 const NewProductPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
+
+
   const categoryList = useSelector((state) => state.categoryList);
   const { categories } = categoryList;
 
   const productCreate = useSelector((state) => state.productCreate);
   const { success, product, error, loading } = productCreate;
+
+    useEffect(() => {
+      if (userInfo && !userInfo.user.isAdmin) {
+        navigate('/login');
+      }
+    }, [userInfo, navigate]);
 
   const [name, setName] = useState('');
   const [nameError, setnameError] = useState('');
