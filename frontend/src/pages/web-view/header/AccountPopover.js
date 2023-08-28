@@ -86,7 +86,7 @@ export default function AccountPopover() {
           },
         }}
       >
-        {userInfo && userInfo?.user?.isAdmin ? (
+        {userInfo && userInfo?.user ? (
           <>
             <Box sx={{ my: 1.5, px: 2.5 }}>
               <Typography variant="subtitle2" noWrap>
@@ -102,15 +102,6 @@ export default function AccountPopover() {
               </Link>
             </MenuItem>
           </>
-        ) : userInfo && userInfo?.user?.isAdmin ? (
-            <Box sx={{ my: 1.5, px: 2.5 }}>
-              <Typography variant="subtitle2" noWrap>
-                {userInfo?.user?.email}
-              </Typography>
-              <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-                {userInfo?.user?.email}
-              </Typography>
-            </Box>
         ) : (
           <MenuItem>User</MenuItem>
         )}

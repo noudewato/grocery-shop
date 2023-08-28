@@ -96,7 +96,7 @@ export default function ProductList() {
   const [currentItems, setCurrentItems] = useState(myProducts);
   const [pageCount, setPageCount] = useState(0);
   const [itemOffset, setItemOffset] = useState(0);
-  const itemsPerPage = 15;
+  const itemsPerPage = 20;
 
   useEffect(() => {
     const endOffset = itemOffset + itemsPerPage;
