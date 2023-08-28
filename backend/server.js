@@ -60,6 +60,8 @@ app.use("/api/auth", (req, res) => {
 });
 
 const folder = path.resolve();
+const __dirname = path.resolve();
+
 app.use("/upload-images", express.static(path.join(folder, "/upload-images")));
 
 if (process.env.NODE_ENV === 'production') {

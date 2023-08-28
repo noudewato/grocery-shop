@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "start":"node backend/server.js",
     "server": "nodemon backend/server.js",
     "frontend": "npm start ---prefix frontend",
     "admin": "npm start ---prefix admin",
