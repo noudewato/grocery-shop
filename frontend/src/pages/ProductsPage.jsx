@@ -281,7 +281,7 @@ const ProductsPage = () => {
                               </Typography>
                             </Stack>
                           </TableCell>
-                          <TableCell align="left">{category?.name}</TableCell>
+                          <TableCell align="left">{category}</TableCell>
                           <TableCell align="left">
                             <span style={{ color: 'tomato' }}>GHC</span>
                             {price}

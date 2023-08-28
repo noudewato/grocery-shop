@@ -26,7 +26,7 @@ ProductCard.propTypes = {
   product: PropTypes.object,
 };
 export default function ProductCard({ product }) {
-  const { name, image, isActive, price, status } = product;
+  const { name, image, isActive, price, status, category } = product;
   const dispatch = useDispatch();
 
   const handleClick = () => {

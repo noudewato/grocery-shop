@@ -86,10 +86,15 @@ export const updateCategoryController = async (req, res) => {
   }
 };
 
-export const getAllCategoryController = async (req, res) => {
+export const getActiveCategoryController = async (req, res) => {
   try {
-    const category = await Category.find().sort({ name:'asc' }).populate("user");
-    res.status(200).json(category);
+    const notActiveCategory = await Category.find().where({ isActive: false });
+    const activeCategory = await Category.find().where({ isActive: true })
+    
+    if (notActiveCategory) {
+      res.status(200).json(activeCategory);
+    }
+    
   } catch (error) {
     console.log(error);
     res.status(500).json({
@@ -99,6 +104,23 @@ export const getAllCategoryController = async (req, res) => {
     });
   }
 };
+
+export const getAllCategoryController = async (req, res) => {
+  try {
+    const category = await Category.find()
+      .sort({ name: "asc" })
+      .populate("user");
+      res.status(200).json(category);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      error,
+      msg: "Error while getting category list",
+    });
+  }
+};
+
 
 export const getSingleCategoryController = async (req, res) => {
   try {

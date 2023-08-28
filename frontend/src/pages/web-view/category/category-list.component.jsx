@@ -56,7 +56,7 @@ export default function Category() {
             cursor: 'pointer',
           }}
         >
-          <div style={{ border: '1px solid white', padding: '.5rem', dispatch: `${category.isActive ? 'block' : 'none'}` }}>
+          <div style={{ border: '1px solid white', padding: '.5rem' }}>
             <Link style={{ color: 'white', textDecoration: 'none' }} to="">
               {category.name}
             </Link>

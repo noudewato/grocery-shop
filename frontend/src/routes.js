@@ -92,10 +92,6 @@ export default function Router() {
       element: <Home />,
     },
     {
-      path: '/GroceryShop/home/:keyword',
-      element: <Home />,
-    },
-    {
       path: '/GroceryShop/user-profile',
       element: <UserProfile />,
     },

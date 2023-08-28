@@ -17,6 +17,9 @@ import {
   PRODUCT_UPDATE_REQUEST,
   PRODUCT_UPDATE_RESET,
   PRODUCT_UPDATE_SUCCESS,
+  PRODUCT_ACTIVE_LIST_REQUEST,
+  PRODUCT_ACTIVE_LIST_SUCCESS,
+  PRODUCT_ACTIVE_LIST_FAILED,
 } from '../constants/product.constant';
 
 export const productListReducer = (state = { products: [] }, action) => {
@@ -34,6 +37,30 @@ export const productListReducer = (state = { products: [] }, action) => {
       };
 
     case PRODUCT_LIST_FAILED:
+      return {
+        loading: false,
+        error: action.payload,
+      };
+    default:
+      return state;
+  }
+};
+
+export const productActiveListReducer = (state = { myProducts: [] }, action) => {
+  switch (action.type) {
+    case PRODUCT_ACTIVE_LIST_REQUEST:
+      return {
+        loading: true,
+        myProducts: [],
+      };
+    case PRODUCT_ACTIVE_LIST_SUCCESS:
+      return {
+        loading: false,
+        success: true,
+        myProducts: action.payload,
+      };
+
+    case PRODUCT_ACTIVE_LIST_FAILED:
       return {
         loading: false,
         error: action.payload,

@@ -1,37 +1,26 @@
-.item {
-  align-items: center;
-  color: #FFF;
-  cursor: pointer;
-  display: flex;
-  font-size: 16px;
-  height: 40px;
-  justify-content: center;
-  width: 40px;
+.pagination{
+  list-style: none;
+  font-size: 18px;
+  gap: 7px;
   text-decoration: none;
+  margin: 1rem 0;
 }
 
-.disabled-page {
-  color: #808e9b;
+.pagination .page-num{
+  cursor: pointer;
+   list-style: none;
+  text-decoration: none;
+  border-radius: 5px;
+  color: black;
+  padding: 8px 15px;
 }
 
-.active {
-  border: solid 3px #808e9b;
-  border-radius: 40px;
-  color: #808e9b;
+.pagination .page-num:hover{
+   background-color: tomato;
+   color: white;
 }
 
-.break-me {
-}
-
-.next {
-  border-left: solid 1px #808e9b;
-  font-size: 4px;
-  height: 60px;
-  position: absolute;
-  right: 0;
-  width: 150px;
-}
-
-.pagination-page {
-  font-weight: 700;
+.pagination .active{
+   background-color: tomato;
+   color: white;
 }

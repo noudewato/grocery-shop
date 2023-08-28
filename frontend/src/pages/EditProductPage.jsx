@@ -295,7 +295,7 @@ const EditProductPage = () => {
                     helperText={categoryError}
                   >
                     {categories.map((c) => (
-                      <MenuItem key={c._id} value={c._id}>
+                      <MenuItem key={c._id} value={c.name}>
                         {c.name}
                       </MenuItem>
                     ))}

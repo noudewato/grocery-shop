@@ -2,6 +2,7 @@ import express from "express";
 import {
   createProductController,
   deleteProductController,
+  getActiveProductsController,
   getAllProductsController,
   getCategoryController,
   getProductPhotoController,
@@ -10,6 +11,7 @@ import {
   updateProductController,
 } from "../controllers/product.controller.js";
 import { protect, isAdmin } from "../utils/authMiddleware.js";
+import { getActiveCategoryController } from "../controllers/category.controller.js";
 
 const productRouter = express.Router();
 
@@ -23,6 +25,7 @@ productRouter.post(
 
 //get products
 productRouter.get("/get-products", getAllProductsController);
+productRouter.get("/active-products", getActiveProductsController);
 
 productRouter.get("/get-product-category", productsCategory);
 

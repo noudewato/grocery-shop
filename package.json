@@ -11,7 +11,8 @@
     "admin": "npm start ---prefix admin",
     "admindev": "concurrently \"npm run server\"  \" npm run admin \"",
     "dev": "concurrently \"npm run server\"  \" npm run frontend \"",
-    "dev+": "concurrently \"npm run server\"  \" npm run frontend \"  \" npm run admin\""
+    "dev+": "concurrently \"npm run server\"  \" npm run frontend \"  \" npm run admin\"",
+    "build":"npm install && npm install --prefix frontend && npm run build --prefix frontend"
   },
   "repository": {
     "type": "git",

@@ -1,4 +1,5 @@
 import Product from "../models/product.model.js";
+import Category from "../models/category.model.js"
 import slugify from "slugify";
 
 export const createProductController = async (req, res) => {
@@ -97,8 +98,20 @@ export const createProductController = async (req, res) => {
         .json({ success: false, message: "Product already exists" });
     }
 
+     const categoryFound = await Category.findOne({
+       name: category,
+     });
+     if (!categoryFound) {
+      return res.status(400).json({
+        message: "category not found create category",
+      });
+     }
+
     const newProduct = new Product({ ...req.body, slug: slugify(name) });
     const product = await newProduct.save();
+
+      categoryFound.products.push(product);
+      await categoryFound.save();
 
     if (product) {
       res.status(201).json({ success: true, product });
@@ -117,10 +130,47 @@ export const getAllProductsController = async (req, res) => {
   try {
     const products = await Product.find({})
       .populate("user")
-      .populate("category")
       .sort({ name: "asc" });
 
     res.status(200).json(products);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      error,
+      msg: "Error while getting product lists",
+    });
+  }
+};
+
+export const getActiveProductsController = async (req, res) => {
+  try {
+     
+    // const activeProduct = await Product.find().populate({ path:'category', match:{isActive:true}, select:'name -_id' })
+     // .populate('category', null, { isActive: true })  
+    // const notactiveProduct = await Product.find({ isActive: false });
+    // const countactiveProdutcs = await Product.find().count({ isActive: true });
+    //  const products = await Product.find({})
+    let products = Product.find({isActive:true}); 
+
+    if (req.query.name) {
+      products = products.find({
+        name: { $regex: req.query.name, $options: "i" }
+      });
+    }
+
+      if (req.query.category) {
+        products = products.find({
+          category: { $regex: req.query.category, $options: "i" },
+        });
+      }
+
+    const myProducts = await products.populate('user')
+    
+      res.status(200).json(myProducts);
+   
+
+    
   } catch (error) {
     console.log(error);
     res.status(500).json({

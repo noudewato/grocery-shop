@@ -21,6 +21,7 @@ import {
   categoryUpdateReducer,
 } from './reducers/category.reducer';
 import {
+  productActiveListReducer,
   productCreateReducer,
   productDeleteReducer,
   productDetailsReducer,
@@ -52,6 +53,7 @@ const reducers = combineReducers({
   productDetails: productDetailsReducer,
   productUpdate: productUpdateReducer,
   productDelete: productDeleteReducer,
+  productsActiveList: productActiveListReducer,
   orderCreate: createOrderReducer,
   orderList: orderListReducer,
   orderListMy: orderListMyReducer,

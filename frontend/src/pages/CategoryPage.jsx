@@ -48,7 +48,7 @@ const TABLE_HEAD = [
   { id: 'name', label: 'Name', alignRight: false },
   { id: 'createdAt', label: 'CreatedAt', alignRight: false },
   { id: 'updatedAt', label: 'updatedAt', alignRight: false },
-  { id: 'isActive?', label: 'isActive?', alignRight: false },
+  // { id: 'isActive?', label: 'isActive?', alignRight: false },
   { id: 'createdBy', label: 'createdBy', alignRight: false },
   { id: 'action', label: 'Action', alignRight: false },
 ];
@@ -236,7 +236,7 @@ export default function CategoryPage() {
                   />
                   <TableBody>
                     {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                      const { _id, name, image, createdAt, updatedAt, isActive, user } = row;
+                      const { _id, name, image, createdAt, updatedAt, /* isActive */ user } = row;
                       const selectedUser = selected.indexOf(name) !== -1;
 
                       return (
@@ -262,9 +262,9 @@ export default function CategoryPage() {
                             <br />
                             {moment(updatedAt).format(`h:mm A`)}
                           </TableCell>
-                          <TableCell align="left">
+                          {/* <TableCell align="left">
                             {isActive ? <Label color="success">Yes</Label> : <Label color="error">No</Label>}
-                          </TableCell>
+                          </TableCell> */}
 
                           <TableCell align="left">{user?.username}</TableCell>
 

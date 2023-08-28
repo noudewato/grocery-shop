@@ -6,7 +6,7 @@ import axios from 'axios';
 import moment from 'moment';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
-import { getUserProfileAction, userProfileUpdateAction, userProfileUpdatedAction } from '../../actions/auth.action';
+import { getUserProfileAction, userProfileUpdateAction } from '../../actions/auth.action';
 import { orderListMyAction } from '../../actions/order.action';
 import FormInput from '../../components/form-input/form-input.component';
 import Header from './header/header.component';
@@ -63,15 +63,15 @@ const UserProfile = () => {
   const handleEditProfileClick = async (e) => {
     e.preventDefault();
     if (handleValidation()) {
-      dispatch(userProfileUpdateAction());
-      dispatch(userProfileUpdatedAction());
-      const url = `http://localhost:8080/api/auth/me/e`;
-      const { data } = await axios.put(url, {
-        headers: {
-          authorization: `Bearer ${localStorage.getItem('userInfo.user.token')}`,
-        },
-      });
-      console.log(data);
+       dispatch(
+         userProfileUpdateAction({
+           username,
+           email,
+           password,
+           phonenumber,
+           image,
+         })
+       );
     }
   };
 
@@ -265,15 +265,15 @@ const UserProfile = () => {
                 </Box>
                 <Box>
                   <Typography sx={{ my: 1 }}>
-                    {o.status === 'pending' ? (
-                      <Label color="success">Pending</Label>
-                    ) : o.status === 'cancel' ? (
-                      <Label color="error">Cancel</Label>
-                    ) : o.status === 'approved' ? (
-                      <Label color="secondary">Approved</Label>
-                    ) : (
-                      <Label color="primary">Approved</Label>
-                    )}
+                    {o?.status === 'pending' ? (
+                  <Label color="success">Pending</Label>
+                ) : o?.status === 'Processing' ? (
+                  <Label color="secondary">Proccessing</Label>
+                ) : o?.status === 'Completed' ? (
+                  <Label color="warning">Completed</Label>
+                ) : (
+                  <Label color="error">Cancel</Label>
+                )}
                   </Typography>
 
                   <Typography sx={{ my: 1 }}>{o.totalPrice}</Typography>

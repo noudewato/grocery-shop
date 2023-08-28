@@ -2,6 +2,7 @@ import express from "express";
 import {
   createCategoryController,
   deleteCategoryController,
+  getActiveCategoryController,
   getAllCategoryController,
   getSingleCategoryController,
   updateCategoryController,
@@ -17,6 +18,7 @@ categoryRouter.post(
   createCategoryController
 );
 categoryRouter.get("/get-category", getAllCategoryController);
+categoryRouter.get("/active-category", getActiveCategoryController);
 categoryRouter.get("/single-category/:id", getSingleCategoryController);
 categoryRouter.put(
   "/update-category/:id",

@@ -212,12 +212,12 @@ const EditCategoryPage = () => {
                   label="Category Image"
                 />
 
-                <FormControlLabel
+                {/* <FormControlLabel
                   checked={isActive}
                   onChange={(e) => setIsActive(e.target.checked)}
                   label="isActive?"
                   control={<Switch />}
-                />
+                /> */}
 
                 <LoadingButton
                   fullWidth

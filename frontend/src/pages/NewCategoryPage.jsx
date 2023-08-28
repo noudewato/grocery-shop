@@ -138,7 +138,7 @@ const NewCategoryPage = () => {
               bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#101010' : '#fff'),
               color: (theme) => (theme.palette.mode === 'dark' ? 'grey.300' : 'grey.800'),
               boxShadow: 1,
-              borderRadius: 4,
+              borderRadius: 6,
             }}
           >
             <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
@@ -193,7 +193,7 @@ const NewCategoryPage = () => {
                 </Box>
               </Grid>
               <Grid item xs={6}>
-                <Stack spacing={3}>
+                <Stack spacing={5} sx={{marginTop:"2rem"}}>
                   <FormInput
                     text="text"
                     value={name}
@@ -218,7 +218,8 @@ const NewCategoryPage = () => {
                     label="Category Image"
                   />
 
-                  <FormControlLabel
+                    <FormControlLabel
+                      hidden
                     checked={isActive}
                     onChange={(e) => setIsActive(e.target.checked)}
                     label="isActive?"

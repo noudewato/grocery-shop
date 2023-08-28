@@ -17,7 +17,7 @@ import { Stack, Divider, Avatar } from '@mui/material';
 import { styled, alpha } from '@mui/material/styles';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
-import AccountPopover from '../../../layouts/dashboard/header/AccountPopover';
+import AccountPopover from './AccountPopover';
 
 const drawerWidth = 240;
 const navItems = ['Home', 'Shop', 'About', 'Contact'];
@@ -46,13 +46,15 @@ function Header(props) {
       <Box sx={{ px: 2.5, py: 3, display: 'inline-flex' }}>
         <Stack direction="row">
           <Button>
-            <Link to={'/GroceryShop/home'}>
-              <Typography variant="h6" component="div">
-                Grocery
-              </Typography>
-              <Typography variant="h6" component="div" sx={{ color: 'green' }}>
-                Shop
-              </Typography>
+            <Link style={{ color: 'black', listStyle: 'none', textDecoration: 'none' }} to={'/GroceryShop/home'}>
+              <Stack direction="row">
+                <Typography variant="h6" component="div">
+                  Grocery
+                </Typography>
+                <Typography variant="h6" component="div" sx={{ color: 'green' }}>
+                  Shop
+                </Typography>
+              </Stack>
             </Link>
           </Button>
         </Stack>
@@ -76,7 +78,7 @@ function Header(props) {
         </StyledAccount>
       </Box>
 
-      <List>
+      <List sx={{display:'none'}}>
         {navItems.map((item) => (
           <ListItem key={item} disablePadding>
             <Link>
@@ -107,21 +109,19 @@ function Header(props) {
             <MenuIcon />
           </IconButton>
           <Box sx={{ display: { xs: 'none', sm: 'block' }, ml: 5 }}>
-           
-              <Link style={{ color: 'black', listStyle: 'none', textDecoration: 'none' }} to={'/GroceryShop/home'}>
-               <Stack direction="row">
+            <Link style={{ color: 'black', listStyle: 'none', textDecoration: 'none' }} to={'/GroceryShop/home'}>
+              <Stack direction="row">
                 <Typography variant="h6" component="div">
                   Grocery
                 </Typography>
                 <Typography variant="h6" component="div" sx={{ color: 'green' }}>
                   Shop
-              </Typography>
-               </Stack>
-              </Link>
-           
+                </Typography>
+              </Stack>
+            </Link>
           </Box>
           <Box sx={{ flexGrow: 1 }} />
-          <Box sx={{ display: { xs: 'none', sm: 'block',lg:'none' } }}>
+          <Box sx={{ display: { xs: 'none', sm: 'none', lg: 'none' } }}>
             {navItems.map((item) => (
               <Button key={item} sx={{ color: 'black' }}>
                 {item}

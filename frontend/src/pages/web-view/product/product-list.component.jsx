@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import './pagination.css'
 import {
   Box,
   Grid,
@@ -10,12 +11,15 @@ import {
   Pagination,
   TextField,
   Checkbox,
+  InputAdornment,
+  IconButton,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import ReactPaginate from 'react-paginate';
-import { productListAction } from '../../../actions/product.action';
+import SearchIcon from '@mui/icons-material/Search';
+import { productActiveListAction } from '../../../actions/product.action';
 import { categoryListAction } from '../../../actions/category.action';
 import { productFilterAction } from '../../../actions/filter.action';
 import ProductCard from './product-card.component';
@@ -29,58 +33,67 @@ const StyledProductImg = styled('img')({
 });
 
 export default function ProductList() {
-  const [text, setText] = useState('');
-  console.log(text);
-  const [categoryIds, setCategoryIds] = useState([]);
+  // const [text, setText] = useState('');
+  // console.log(text);
+  // const [categoryIds, setCategoryIds] = useState([]);
   const dispatch = useDispatch();
-  const keyword = useParams();
-  const productList = useSelector((state) => state.productList);
-  const { products } = productList;
+  // const productList = useSelector((state) => state.productList);
+  // const { products } = productList;
+
+  const productsActiveList = useSelector((state) => state.productsActiveList);
+  const { myProducts } = productsActiveList;
+  console.log(myProducts);
 
   const categoryList = useSelector((state) => state.categoryList);
   const { categories } = categoryList;
 
-  console.log(products);
   useEffect(() => {
-    dispatch(productListAction());
-    dispatch(categoryListAction());
+    dispatch(productActiveListAction());
   }, [dispatch]);
 
-  const handleSearch = (e) => {
-    resetState();
-    setText(e.target.value);
+   useEffect(() => {
+     dispatch(categoryListAction());
+   }, [dispatch]);
 
-    dispatch(productFilterAction({ type: 'text', query: e.target.value }));
-  };
 
-  const resetState = () => {
-    setText('');
-    setCategoryIds([]);
-  };
+
+   const navigate = useNavigate();
+   const [name, setName] = useState("");
+   const [category, setCategory] = useState([]);
 
   const handleCategory = (e) => {
     resetState();
 
     const currentCategoryChecked = e.target.value;
-    const allCategoriesChecked = [...categoryIds];
+    const allCategoriesChecked = [...category];
     const indexFound = allCategoriesChecked.indexOf(currentCategoryChecked);
 
-    let updatedCategoryIds;
+    let updatedCategory;
     if (indexFound === -1) {
       // add
-      updatedCategoryIds = [...categoryIds, currentCategoryChecked];
-      setCategoryIds(updatedCategoryIds);
+      updatedCategory = [...category, currentCategoryChecked];
+      setCategory(updatedCategory);
     } else {
       // remove
-      updatedCategoryIds = [...categoryIds];
-      updatedCategoryIds.splice(indexFound, 1);
-      setCategoryIds(updatedCategoryIds);
+      updatedCategory = [...category];
+      updatedCategory.splice(indexFound, 1);
+      setCategory(updatedCategory);
     }
 
-    dispatch(productFilterAction({ type: 'category', query: updatedCategoryIds }));
+    dispatch(productActiveListAction(`&category=${updatedCategory}`));
   };
 
-  const [currentItems, setCurrentItems] = useState(products);
+  const resetState = () => {
+    setCategory([]);
+  };
+
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    dispatch(productActiveListAction(`${name}${category}`))
+  };
+
+  const [currentItems, setCurrentItems] = useState(myProducts);
   const [pageCount, setPageCount] = useState(0);
   const [itemOffset, setItemOffset] = useState(0);
   const itemsPerPage = 15;
@@ -88,12 +101,12 @@ export default function ProductList() {
   useEffect(() => {
     const endOffset = itemOffset + itemsPerPage;
 
-    setCurrentItems(products.slice(itemOffset, endOffset));
-    setPageCount(Math.ceil(products.length / itemsPerPage));
-  }, [itemOffset, itemsPerPage, products]);
+    setCurrentItems(myProducts.slice(itemOffset, endOffset));
+    setPageCount(Math.ceil(myProducts.length / itemsPerPage));
+  }, [itemOffset, itemsPerPage, myProducts]);
 
   const handlePageClick = (event) => {
-    const newOffset = (event.selected * itemsPerPage) % products.length;
+    const newOffset = (event.selected * itemsPerPage) % myProducts.length;
     setItemOffset(newOffset);
   };
 
@@ -111,9 +124,6 @@ export default function ProductList() {
       image: 'https://borobazar.vercel.app/_next/image?url=%2Fassets%2Fimages%2Fbundle%2F17.png&w=1200&q=75',
     },
   ];
-
-  const [page, setPage] = useState(1)
-  const [itemperpage, setItemperpage] = useState('')
 
   return (
     <>
@@ -133,16 +143,24 @@ export default function ProductList() {
               color="secondary"
               fullWidth
               variant="outlined"
-              value={text}
-              onChange={handleSearch}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton>
+                      <SearchIcon onClick={handleSearch} sx={{ cursor: 'pointer' }} />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
-            {/* <Button type='submit' >.</Button> */}
           </Box>
-          {categories.map((category) => (
-            <Grid key={category._id} item>
+          {categories.map((c) => (
+            <Grid key={c._id} item>
               <ListItem>
-                <Checkbox value={category._id} checked={categoryIds.includes(category._id)} onChange={handleCategory} />
-                <ListItemText secondary={category.name} />
+                <Checkbox value={c.name} onChange={handleCategory} checked={category.includes(c.name)} />
+                <ListItemText secondary={c.name} />
               </ListItem>
             </Grid>
           ))}
@@ -159,23 +177,23 @@ export default function ProductList() {
           <div className="text-center d-flex justify-content-center m-4">
             <ReactPaginate
               breakLabel="..."
-              nextLabel=""
               onPageChange={handlePageClick}
               pageRangeDisplayed={3}
               pageCount={pageCount}
-              previousLabel={null}
+              previousLabel={'prev'}
+              nextLabel={'next'}
               renderOnZeroPageCount={null}
               containerClassName="pagination"
               pageLinkClassName="page-num"
               previousLinkClassName="page-num"
               nextLinkClassName="page-num"
-              activeLinkClassName="activePage"
+              activeLinkClassName="active"
             />
           </div>
         </Stack>
       </Grid>
 
-      <Box sx={{my:'2rem'}}>
+      <Box sx={{ my: '2rem' }}>
         <Grid container spacing={3}>
           {imagesFromWeb.map((imageView, i) => (
             <Grid item xs={12} key={i} sm={12} md={4}>

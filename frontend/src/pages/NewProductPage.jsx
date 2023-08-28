@@ -277,7 +277,7 @@ const NewProductPage = () => {
               <Grid item xs={6}>
                 <Stack spacing={3}>
                   <FormInput
-                    text="text"
+                    type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     fullWidth
@@ -287,7 +287,7 @@ const NewProductPage = () => {
                     helperText={nameError}
                   />
                   <FormInput
-                    text="text"
+                    type="text"
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
                     select
@@ -298,14 +298,14 @@ const NewProductPage = () => {
                     helperText={categoryError}
                   >
                     {categories.map((c) => (
-                      <MenuItem key={c._id} value={c._id}>
+                      <MenuItem key={c._id} value={c.name}>
                         {c.name}
                       </MenuItem>
                     ))}
                   </FormInput>
 
                   <FormInput
-                    text="text"
+                    type="text"
                     value={status}
                     onChange={(e) => setStatus(e.target.value)}
                     select
@@ -323,7 +323,7 @@ const NewProductPage = () => {
                   </FormInput>
 
                   <FormInput
-                    text="number"
+                    type="number"
                     value={price}
                     onChange={(e) => setPrice(e.target.value)}
                     fullWidth
@@ -334,7 +334,7 @@ const NewProductPage = () => {
                   />
 
                   <FormInput
-                    text="text"
+                    type="text"
                     value={image}
                     onChange={(e) => setImage(e.target.value)}
                     fullWidth
@@ -352,7 +352,7 @@ const NewProductPage = () => {
                   />
 
                   <FormInput
-                    text="text"
+                    type="text"
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     fullWidth
