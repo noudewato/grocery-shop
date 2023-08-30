@@ -86,23 +86,19 @@ export const updateCategoryController = async (req, res) => {
   }
 };
 
-export const getActiveCategoryController = async (req, res) => {
-  try {
-    const notActiveCategory = await Category.find().where({ isActive: false });
-    const activeCategory = await Category.find().where({ isActive: true })
-    
-    if (notActiveCategory) {
-      res.status(200).json(activeCategory);
-    }
-    
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({
-      success: false,
-      error,
-      msg: "Error while getting category list",
-    });
-  }
+export const getActiveProductsCategoryController = async (req, res) => {
+   try {
+     const categories = await Category.find({products:{$exists: true, $ne:[]}})
+       .sort({ name: "asc" }).populate("products")
+     res.status(200).json(categories);
+   } catch (error) {
+     console.log(error);
+     res.status(500).json({
+       success: false,
+       error,
+       msg: "Error while getting category list",
+     });
+   }
 };
 
 export const getAllCategoryController = async (req, res) => {

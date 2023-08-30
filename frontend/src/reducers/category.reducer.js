@@ -13,6 +13,9 @@ import {
   CATEGORY_LIST_FAILED,
   CATEGORY_LIST_REQUEST,
   CATEGORY_LIST_SUCCESS,
+  CATEGORY_PRODUCTS_LIST_FAILED,
+  CATEGORY_PRODUCTS_LIST_REQUEST,
+  CATEGORY_PRODUCTS_LIST_SUCCESS,
   CATEGORY_UPDATE_FAILED,
   CATEGORY_UPDATE_REQUEST,
   CATEGORY_UPDATE_RESET,
@@ -34,6 +37,30 @@ export const categoryListReducer = (state = { categories: [] }, action) => {
       };
 
     case CATEGORY_LIST_FAILED:
+      return {
+        loading: false,
+        error: action.payload,
+      };
+    default:
+      return state;
+  }
+};
+
+export const categoryProductsListReducer = (state = { categories: [] }, action) => {
+  switch (action.type) {
+    case CATEGORY_PRODUCTS_LIST_REQUEST:
+      return {
+        loading: true,
+        categories: [],
+      };
+    case CATEGORY_PRODUCTS_LIST_SUCCESS:
+      return {
+        loading: false,
+        success: true,
+        categories: action.payload,
+      };
+
+    case CATEGORY_PRODUCTS_LIST_FAILED:
       return {
         loading: false,
         error: action.payload,

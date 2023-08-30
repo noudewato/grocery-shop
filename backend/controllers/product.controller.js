@@ -246,6 +246,15 @@ export const updateProductController = async (req, res) => {
 
     const existingProduct = await Product.findOne({ name });
 
+     const categoryFound = await Category.findOne({
+       name: category,
+     });
+     if (!categoryFound) {
+       return res.status(400).json({
+         message: "category not found create category",
+       });
+     }
+
     const product = await Product.findByIdAndUpdate(
       req.params.id,
       { ...req.body, slug: slugify(name) },
@@ -253,6 +262,11 @@ export const updateProductController = async (req, res) => {
     );
 
     await product.save();
+
+    categoryFound.products.push(product);
+    await categoryFound.save();
+
+    
     res.status(200).json({ success: true, product });
   } catch (error) {
     // console.log(error);

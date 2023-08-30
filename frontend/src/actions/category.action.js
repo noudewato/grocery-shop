@@ -16,6 +16,9 @@ import {
   CATEGORY_DELETE_FAILED,
   CATEGORY_DELETE_SUCCESS,
   CATEGORY_DELETE_REQUEST,
+  CATEGORY_PRODUCTS_LIST_FAILED,
+  CATEGORY_PRODUCTS_LIST_REQUEST,
+  CATEGORY_PRODUCTS_LIST_SUCCESS,
 } from '../constants/category.constant';
 
 const CATEGORY_URL = '/api/category';
@@ -46,6 +49,26 @@ export const categoryListAction = () => async (dispatch, getState) => {
   } catch (error) {
     dispatch({
       type: CATEGORY_LIST_FAILED,
+      payload: error.response && error.response.data.message ? error.response.data.message : error.message,
+    });
+  }
+};
+
+export const categoryProductListAction = () => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: CATEGORY_PRODUCTS_LIST_REQUEST,
+    });
+
+    const {data} = await axios.get(`${CATEGORY_URL}/active-products-category`);
+
+    dispatch({
+      type: CATEGORY_PRODUCTS_LIST_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: CATEGORY_PRODUCTS_LIST_FAILED,
       payload: error.response && error.response.data.message ? error.response.data.message : error.message,
     });
   }

@@ -11,7 +11,6 @@ import {
   updateProductController,
 } from "../controllers/product.controller.js";
 import { protect, isAdmin } from "../utils/authMiddleware.js";
-import { getActiveCategoryController } from "../controllers/category.controller.js";
 
 const productRouter = express.Router();
 

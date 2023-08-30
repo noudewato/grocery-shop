@@ -2,10 +2,10 @@ import express from "express";
 import {
   createCategoryController,
   deleteCategoryController,
-  getActiveCategoryController,
   getAllCategoryController,
   getSingleCategoryController,
   updateCategoryController,
+  getActiveProductsCategoryController
 } from "../controllers/category.controller.js";
 import { isAdmin, protect } from "../utils/authMiddleware.js";
 
@@ -18,7 +18,7 @@ categoryRouter.post(
   createCategoryController
 );
 categoryRouter.get("/get-category", getAllCategoryController);
-categoryRouter.get("/active-category", getActiveCategoryController);
+categoryRouter.get("/active-products-category", getActiveProductsCategoryController);
 categoryRouter.get("/single-category/:id", getSingleCategoryController);
 categoryRouter.put(
   "/update-category/:id",

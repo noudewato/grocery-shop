@@ -20,8 +20,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import ReactPaginate from 'react-paginate';
 import SearchIcon from '@mui/icons-material/Search';
 import { productActiveListAction } from '../../../actions/product.action';
-import { categoryListAction } from '../../../actions/category.action';
-import { productFilterAction } from '../../../actions/filter.action';
+import { categoryProductListAction} from '../../../actions/category.action';
 import ProductCard from './product-card.component';
 
 // ----------------------------------------------------------------------
@@ -44,15 +43,15 @@ export default function ProductList() {
   const { myProducts } = productsActiveList;
   console.log(myProducts);
 
-  const categoryList = useSelector((state) => state.categoryList);
-  const { categories } = categoryList;
+  const categoryProductList = useSelector((state) => state.categoryProductList);
+  const { categories } = categoryProductList;
 
   useEffect(() => {
     dispatch(productActiveListAction());
   }, [dispatch]);
 
    useEffect(() => {
-     dispatch(categoryListAction());
+     dispatch(categoryProductListAction());
    }, [dispatch]);
 
 
@@ -156,7 +155,7 @@ export default function ProductList() {
               }}
             />
           </Box>
-          {categories.map((c) => (
+          {categories && categories.map((c) => (
             <Grid key={c._id} item>
               <ListItem>
                 <Checkbox value={c.name} onChange={handleCategory} checked={category.includes(c.name)} />
@@ -168,7 +167,7 @@ export default function ProductList() {
         <Grid xs={12} sm={12} md={10} container spacing={2}>
           {currentItems &&
             currentItems.map((product) => (
-              <Grid key={product.id} item xs={6} sm={6} md={2.4}>
+              <Grid key={product.id} item xs={6} sm={6} md={3}>
                 <ProductCard product={product} />
               </Grid>
             ))}
