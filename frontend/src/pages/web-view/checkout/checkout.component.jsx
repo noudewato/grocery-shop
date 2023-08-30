@@ -46,7 +46,7 @@ const Checkout = () => {
       case 0:
         return <Cart />;
       case 1:
-        return <Payment />;
+        return <Payment city />;
       case 2:
         return <ReviewOrder />;
       default:
@@ -107,7 +107,7 @@ const Checkout = () => {
                 disabled={
                   !userInfo?.user?.username ||
                   cartItems.length === 0 ||
-                  activeStep === steps.length - 1
+                  activeStep === steps.length - 1 || city.length === 0
                 }
               >
                 {activeStep === steps.length - 1 ? 'End' : 'Next'}

@@ -204,6 +204,7 @@ const ProductsPage = () => {
 
   const [open, setOpen] = useState(false);
   const [deleteData, setDeleteData] = useState({});
+  const [placeholder, setPlaceholder] = useState('Search product...')
   console.log(open);
 
   const handleDialogClickOpen = (row) => {
@@ -238,7 +239,7 @@ const ProductsPage = () => {
           </Stack>
 
           <Card>
-            <UserListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} />
+            <UserListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} placeholder={placeholder}/>
 
             <Scrollbar>
               <TableContainer sx={{ minWidth: 1500 }}>

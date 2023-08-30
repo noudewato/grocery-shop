@@ -181,6 +181,8 @@ const OrderPage = () => {
   const [open, setOpen] = useState(false);
   const [opentable, setOpenTable] = useState(false);
 
+  const [placeholder, setPlaceholder] = useState('Search by status...');
+
   useEffect(() => {
     if (userInfo && !userInfo.user.isAdmin) {
       navigate('/login');
@@ -209,7 +211,7 @@ const OrderPage = () => {
         <Spinner />
       ) : (
         <Container>
-          <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
+          <Stack direction="row" alignItems="center" justifyContent="space-between" mb={3}>
             <Typography variant="h4" gutterBottom>
               Order
             </Typography>
@@ -323,7 +325,7 @@ const OrderPage = () => {
           )}
 
           <Card>
-            <UserListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} />
+            <UserListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} placeholder={placeholder}/>
 
             <Scrollbar>
               <TableContainer sx={{ minWidth: 1250 }}>
@@ -335,7 +337,8 @@ const OrderPage = () => {
                     rowCount={orders.length}
                     numSelected={selected.length}
                     onRequestSort={handleRequestSort}
-                    onSelectAllClick={handleSelectAllClick}
+                      onSelectAllClick={handleSelectAllClick}
+                      placeholder
                   />
                   <TableBody>
                     {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {

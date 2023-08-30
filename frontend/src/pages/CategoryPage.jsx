@@ -186,6 +186,8 @@ export default function CategoryPage() {
     setFilterName(event.target.value);
   };
 
+  const [placeholder, setPlaceholder] = useState('Search category...');
+
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - categories.length) : 0;
 
   const filteredUsers = applySortFilter(categories, getComparator(order, orderBy), filterName);
@@ -220,7 +222,7 @@ export default function CategoryPage() {
           </Stack>
 
           <Card>
-            <UserListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} />
+            <UserListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} placeholder={placeholder}/>
 
             <Scrollbar>
               <TableContainer sx={{ minWidth: 1250 }}>

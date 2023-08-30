@@ -173,6 +173,7 @@ export default function UserPage() {
 
   const [open, setOpen] = useState(false);
   const [selectUser, setSelectUser] = useState({});
+  const [placeholder, setPlaceholder] = useState('Search user...');
 
   return (
     <>
@@ -194,7 +195,8 @@ export default function UserPage() {
             <UserListToolbar
               numSelected={selected.length}
               filterusername={filterusername}
-              onFilterusername={handleFilterByusername}
+                onFilterusername={handleFilterByusername}
+                placeholder={placeholder}
             />
 
             <Scrollbar>
