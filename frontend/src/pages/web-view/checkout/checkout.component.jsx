@@ -39,14 +39,12 @@ const Checkout = () => {
 
   const steps = ['Cart', 'Payment and Address', 'Review your order'];
 
-  
   function getStepContent(step) {
-   
     switch (step) {
       case 0:
         return <Cart />;
       case 1:
-        return <Payment city />;
+        return <Payment />;
       case 2:
         return <ReviewOrder />;
       default:
@@ -104,11 +102,7 @@ const Checkout = () => {
                 variant="contained"
                 onClick={handleNext}
                 sx={{ mt: 3, ml: 1, mr: 2 }}
-                disabled={
-                  !userInfo?.user?.username ||
-                  cartItems.length === 0 ||
-                  activeStep === steps.length - 1 || city.length === 0
-                }
+                disabled={!userInfo?.user?.username || cartItems.length === 0 || activeStep === steps.length - 1 && 'End'}
               >
                 {activeStep === steps.length - 1 ? 'End' : 'Next'}
               </Button>
