@@ -31,6 +31,11 @@ const navConfig = [
     path: '/dashboard/order',
     icon: icon('ic_cart'),
   },
+  {
+    title: 'Online Store',
+    path: '/GroceryShop/home',
+    icon: icon('ic_label'),
+  },
 ];
 
 export default navConfig;

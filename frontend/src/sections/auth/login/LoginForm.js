@@ -23,8 +23,8 @@ export default function LoginForm() {
   const { success, loading, userInfo } = userLogin;
 
   const loginField = {
-    email: '',
-    password: '',
+    email: 'admin@admin.com',
+    password: '123456',
   };
 
   const [formField, setFormField] = useState(loginField);
