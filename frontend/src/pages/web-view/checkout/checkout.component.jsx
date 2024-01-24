@@ -111,14 +111,6 @@ const Checkout = () => {
             >
               {activeStep === steps.length - 1 ? '' : 'Next'}
             </Button>
-              <Button
-                variant="contained"
-                onClick={handleNext}
-                sx={{ mt: 3, ml: 1, mr: 2 }}
-                disabled={!userInfo?.user?.username || cartItems.length === 0 || activeStep === steps.length - 1 && 'End'}
-              >
-                {activeStep === steps.length - 1 ? 'End' : 'Next'}
-              </Button>
             </Box>
           </>
         )}
