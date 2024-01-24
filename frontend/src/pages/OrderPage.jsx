@@ -49,6 +49,7 @@ import Iconify from '../components/form-input/iconify';
 import Scrollbar from '../components/scrollbar';
 // sections
 import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
+import { fCurrency } from '../utils/formatNumber';
 
 // ----------------------------------------------------------------------
 
@@ -236,7 +237,7 @@ const OrderPage = () => {
                     </Typography>
                     {amount?.amount[0]?.count} <br />
                     <Typography variant="h6">
-                      {(amount?.amount[0]?.totalAmount).toFixed(2)} <br />
+                      {fCurrency(amount?.amount[0]?.totalAmount)} <br />
                     </Typography>
                   </Typography>
                 </Stack>
@@ -256,7 +257,7 @@ const OrderPage = () => {
                     </Typography>
                     {diversAmount?.diversAmount[3]?.count} <br />
                     <Typography variant="h6">
-                      {(diversAmount?.diversAmount[3]?.totalAmount).toFixed(2)} <br />
+                      {fCurrency(diversAmount?.diversAmount[3]?.totalAmount)} <br />
                     </Typography>
                   </Typography>
                 </Stack>
@@ -276,7 +277,7 @@ const OrderPage = () => {
                     </Typography>
                     {diversAmount?.diversAmount[2]?.count} <br />
                     <Typography variant="h6">
-                      {(diversAmount?.diversAmount[2]?.totalAmount).toFixed(2)} <br />
+                      {fCurrency(diversAmount?.diversAmount[2]?.totalAmount)} <br />
                     </Typography>
                   </Typography>
                 </Stack>
@@ -296,7 +297,7 @@ const OrderPage = () => {
                     </Typography>
                     {diversAmount?.diversAmount[1]?.count} <br />
                     <Typography variant="h6">
-                      {(diversAmount?.diversAmount[1]?.totalAmount).toFixed(2)} <br />
+                      {fCurrency(diversAmount?.diversAmount[1]?.totalAmount)} <br />
                     </Typography>
                   </Typography>
                 </Stack>
@@ -316,7 +317,7 @@ const OrderPage = () => {
                     </Typography>
                     {diversAmount?.diversAmount[0]?.count} <br />
                     <Typography variant="h6">
-                      {(diversAmount?.diversAmount[0]?.totalAmount).toFixed(2)} <br />
+                      {fCurrency(diversAmount?.diversAmount[0]?.totalAmount)} <br />
                     </Typography>
                   </Typography>
                 </Stack>
@@ -448,7 +449,7 @@ const OrderPage = () => {
                                             />
                                           </TableCell>
                                           <TableCell>{item.name}</TableCell>
-                                          <TableCell align="left">{item.price}</TableCell>
+                                          <TableCell align="left">{fCurrency(item.price)}</TableCell>
                                           <TableCell align="left">{item.qty}</TableCell>
                                           <TableCell align="left">{item.qty * item.price}</TableCell>
                                         </TableRow>

@@ -26,6 +26,7 @@ import FormValidation from './components/web/form-validation.component';
 import Form from './pages/web-view/productService';
 import OrderDetailsPage from './pages/OrderDetailsPage';
 import UserProfile from './pages/web-view/user-profile';
+import SimilarProduct from './pages/web-view/SimilarProduct';
 
 // ----------------------------------------------------------------------
 
@@ -78,6 +79,10 @@ export default function Router() {
     {
       path: '/GroceryShop/form',
       element: <FormValidation />,
+    },
+    {
+      path: '/GroceryShop/similar-product/:id',
+      element: <SimilarProduct />,
     },
     {
       element: <SimpleLayout />,

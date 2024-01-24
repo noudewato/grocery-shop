@@ -21,6 +21,7 @@ import {
 } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { addToCart, reduceItemFromCart, removeFromCart } from '../../../actions/cart.action';
+import { fCurrency } from '../../../utils/formatNumber';
 
 const Cart = () => {
   const dispatch = useDispatch();
@@ -149,7 +150,7 @@ const Cart = () => {
                         </TableCell>
                         <TableCell>
                           <Typography variant="subtitle2" noWrap>
-                            GHs{cartItem.qty * cartItem.price}
+                            GHs{fCurrency(cartItem.qty * cartItem.price)}
                           </Typography>
                         </TableCell>
 
@@ -177,13 +178,13 @@ const Cart = () => {
                 {orthers.map((orther, index) => (
                   <ListItem key={index} sx={{ py: 1, px: 0 }}>
                     <ListItemText primary={orther.name} />
-                    <Typography variant="body2">{orther.price}</Typography>
+                    <Typography variant="body2">{fCurrency(orther.price)}</Typography>
                   </ListItem>
                 ))}
                 <ListItem sx={{ py: 1, px: 0 }}>
                   <ListItemText primary="Total" />
                   <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-                    {cartItems.totalPrice}
+                    {fCurrency(cartItems.totalPrice)}
                   </Typography>
                 </ListItem>
               </Stack>

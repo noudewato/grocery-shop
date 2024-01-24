@@ -129,7 +129,7 @@ export const createProductController = async (req, res) => {
 export const getAllProductsController = async (req, res) => {
   try {
     const products = await Product.find({})
-      .populate("user")
+      .populate("user", "category")
       .sort({ name: "asc" });
 
     res.status(200).json(products);
@@ -165,7 +165,7 @@ export const getActiveProductsController = async (req, res) => {
         });
       }
 
-    const myProducts = await products.populate('user')
+    const myProducts = await products.populate('user', "category")
     
       res.status(200).json(myProducts);
    

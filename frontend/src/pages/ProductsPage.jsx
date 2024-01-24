@@ -48,6 +48,8 @@ import DialogBox from '../components/dialog-box/dialog.component';
 
 // ----------------------------------------------------------------------
 
+import { fCurrency } from '../utils/formatNumber';
+
 const TABLE_HEAD = [
   { id: 'name', label: 'Name', alignRight: false },
   { id: 'category', label: 'Category', alignRight: false },
@@ -285,7 +287,7 @@ const ProductsPage = () => {
                           <TableCell align="left">{category}</TableCell>
                           <TableCell align="left">
                             <span style={{ color: 'tomato' }}>GHC</span>
-                            {price}
+                            {fCurrency(price)}
                           </TableCell>
                           <TableCell align="left">
                             {isActive ? <Label color="success">Yes</Label> : <Label color="error">No</Label>}

@@ -3,8 +3,9 @@ import { Stack, Typography, Grid, Box, Button, FormControlLabel, RadioGroup, Rad
 import { useDispatch, useSelector } from 'react-redux';
 import { saveDeliverAddress, savePaymentMethod } from '../../../actions/cart.action';
 import FormInput from '../../../components/form-input/form-input.component';
+import { fCurrency } from '../../../utils/formatNumber';
 
-const Payment = () => {
+const Payment = ({ setIsAddressFilled }) => {
   const dispatch = useDispatch();
   const cart = useSelector((state) => state.cart);
   const { cartItems, paymentMethod, deliverAddress } = cart;
@@ -13,6 +14,7 @@ const Payment = () => {
     e.preventDefault();
     dispatch(savePaymentMethod(paymentMethodName));
     dispatch(saveDeliverAddress({city, location}));
+    setIsAddressFilled(!!city && !!location);
   };
 
    const addRoundedNumber = (num) => Math.round(num * 100 + Number.EPSILON) / 100;
@@ -33,8 +35,9 @@ const Payment = () => {
    ];
 
   const [paymentMethodName, setPaymentMethod] = useState(paymentMethod || 'Cash On Delivery' || 'Mobile Money');
-  const [city, setCity] = useState(deliverAddress?.city);
-  const [location, setLocation] = useState(deliverAddress?.location);
+  const [city, setCity] = useState(deliverAddress?.city || "");
+  const [location, setLocation] = useState(deliverAddress?.location || "");
+  
   console.log(paymentMethodName);
   console.log(city)
   console.log(location);
@@ -65,7 +68,7 @@ const Payment = () => {
                   value="Mobile Money"
                   checked={paymentMethodName === 'Mobile Money'}
                   onChange={(e) => setPaymentMethod(e.target.value)}
-                  control={<Radio />}
+                  control={<Radio />} 
                   label="Mobile Money"
                 />
               </RadioGroup>
@@ -121,13 +124,13 @@ const Payment = () => {
               {orthers.map((orther, index) => (
                 <ListItem key={index} sx={{ py: 1, px: 0 }}>
                   <ListItemText primary={orther.name} />
-                  <Typography variant="body2">{orther.price}</Typography>
+                  <Typography variant="body2">{fCurrency(orther.price)}</Typography>
                 </ListItem>
               ))}
               <ListItem sx={{ py: 1, px: 0 }}>
                 <ListItemText primary="Total" />
                 <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-                  {cartItems.totalPrice}
+                  {fCurrency(cartItems.totalPrice)}
                 </Typography>
               </ListItem>
             </Stack>

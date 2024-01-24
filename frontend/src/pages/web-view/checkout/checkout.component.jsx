@@ -1,14 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import CssBaseline from '@mui/material/CssBaseline';
-import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
-import Paper from '@mui/material/Paper';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import Button from '@mui/material/Button';
-import Link from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useSelector } from 'react-redux';
@@ -21,6 +18,10 @@ import Header from '../header/header.component';
 const defaultTheme = createTheme();
 
 const Checkout = () => {
+
+  const [isAddressFilled, setIsAddressFilled] = useState(false);
+
+
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
@@ -39,14 +40,12 @@ const Checkout = () => {
 
   const steps = ['Cart', 'Payment and Address', 'Review your order'];
 
-  
   function getStepContent(step) {
-   
     switch (step) {
       case 0:
         return <Cart />;
       case 1:
-        return <Payment city />;
+        return <Payment setIsAddressFilled={setIsAddressFilled} />;
       case 2:
         return <ReviewOrder />;
       default:
@@ -99,16 +98,24 @@ const Checkout = () => {
                   Back
                 </Button>
               )}
-
+<Button
+              variant="contained"
+              onClick={handleNext}
+              sx={{ mt: 3, ml: 1, mr: 2, display:`${activeStep === steps.length - 1 && "none"}` }}
+              disabled={
+                !userInfo?.user?.username ||
+                (activeStep === 1 && !isAddressFilled) || // Use isAddressFilled to determine the button's disabled state
+                cartItems.length === 0 ||
+                (activeStep === steps.length - 1 && 'End')
+              }
+            >
+              {activeStep === steps.length - 1 ? '' : 'Next'}
+            </Button>
               <Button
                 variant="contained"
                 onClick={handleNext}
                 sx={{ mt: 3, ml: 1, mr: 2 }}
-                disabled={
-                  !userInfo?.user?.username ||
-                  cartItems.length === 0 ||
-                  activeStep === steps.length - 1 || city.length === 0
-                }
+                disabled={!userInfo?.user?.username || cartItems.length === 0 || activeStep === steps.length - 1 && 'End'}
               >
                 {activeStep === steps.length - 1 ? 'End' : 'Next'}
               </Button>

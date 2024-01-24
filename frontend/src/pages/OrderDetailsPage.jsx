@@ -26,6 +26,7 @@ import Spinner from '../components/spinner/spinner.component';
 import { ComponentToPrint } from './ComponentToPrint';
 import Label from '../components/label';
 import { getOrderDetailsAction } from '../actions/order.action';
+import { fCurrency } from '../utils/formatNumber';
 
 const OrderDetailsPage = () => {
   const { id } = useParams();
@@ -189,7 +190,7 @@ const OrderDetailsPage = () => {
                           <TableCell align="center">x{orderItem.qty}</TableCell>
                           <TableCell align="center">
                             <Typography variant="subtitle2" noWrap>
-                              {orderItem.price}(GHC)
+                              {fCurrency(orderItem.price)}(GHC)
                             </Typography>
                           </TableCell>
                           <TableCell align="center">
@@ -203,9 +204,9 @@ const OrderDetailsPage = () => {
                         <TableCell rowSpan={4} />
                         <TableCell colSpan={2}>Subtotal</TableCell>
                         <TableCell align="center">
-                          {order?.orderItems
+                          {fCurrency(order?.orderItems
                             ?.reduce((acc, orderItem) => acc + orderItem.qty * orderItem.price, 0)
-                            .toFixed(2)}
+                            )}
                           (GHC)
                         </TableCell>
                       </TableRow>
@@ -221,7 +222,7 @@ const OrderDetailsPage = () => {
                       </TableRow>
                       <TableRow>
                         <TableCell colSpan={2}>Total</TableCell>
-                        <TableCell align="center">{order?.totalPrice}(GHC)</TableCell>
+                        <TableCell align="center">{fCurrency(order?.totalPrice)}(GHC)</TableCell>
                       </TableRow>
                     </TableBody>
                   </Table>

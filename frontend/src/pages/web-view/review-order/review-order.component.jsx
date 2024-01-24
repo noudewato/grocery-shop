@@ -6,6 +6,7 @@ import { toast } from 'react-toastify';
 import { CLEAR_CART } from '../../../constants/cart.constant';
 import { addOrder } from '../../../actions/order.action';
 import { ORDER_CREATE_RESET } from '../../../constants/order.constant';
+import { fCurrency } from '../../../utils/formatNumber';
 
 const ReviewOrder = () => {
   const dispatch = useDispatch();
@@ -134,13 +135,13 @@ const ReviewOrder = () => {
               {orthers.map((orther, index) => (
                 <ListItem key={index} sx={{ py: 1, px: 0 }}>
                   <ListItemText primary={orther.name} />
-                  <Typography variant="body2">{orther.price}</Typography>
+                  <Typography variant="body2">{fCurrency(orther.price)}</Typography>
                 </ListItem>
               ))}
               <ListItem sx={{ py: 1, px: 0 }}>
                 <ListItemText primary="Total" />
                 <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-                  {cartItems.totalPrice}
+                  {fCurrency(cartItems.totalPrice)}
                 </Typography>
               </ListItem>
             </Stack>

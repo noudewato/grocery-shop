@@ -57,7 +57,7 @@ export default function Category() {
           }}
         >
           <div style={{ border: '1px solid white', padding: '.5rem' }}>
-            <Link style={{ color: 'white', textDecoration: 'none' }} to="">
+            <Link to={`/GroceryShop/similar-product/${category._id}`} style={{ color: 'white', textDecoration: 'none' }}>
               {category.name}
             </Link>
           </div>
